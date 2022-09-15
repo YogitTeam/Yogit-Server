@@ -15,7 +15,7 @@ public class PhoneNumber {
     @Column(name = "phoneNumber_id")
     private Long id;
 
-    @OneToOne(mappedBy = "phoneNumber")
+    @OneToOne(mappedBy = "phoneNumber", fetch = FetchType.LAZY)
     private User user;
 
     private int contryCode;

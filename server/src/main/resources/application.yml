@@ -4,3 +4,12 @@ spring:
     username: yogit
     password: dyrlt!12
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: create

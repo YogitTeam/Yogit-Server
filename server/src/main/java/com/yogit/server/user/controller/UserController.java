@@ -1,16 +1,15 @@
 package com.yogit.server.user.controller;
 
+import com.yogit.server.user.dto.request.UserEssentialProfileReq;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@Api(value = "UserController")
+@Api(tags = "User API")
 public class UserController {
 
     @ApiOperation(value = "유저 컨트롤러 테스트", notes = "테스트입니다.")
@@ -22,4 +21,12 @@ public class UserController {
     public String test(){
         return "ok";
     }
+
+    @ApiOperation(value = "유저 필수 정보 입력", notes = "languageName1 부터, languageLevel1 부터 차례로 입력해주세요 (swagger에서 enum 열거형을 지원하지 않으므로)")
+    @PostMapping("/essential-profile")
+    public Void essentialProfile(@ModelAttribute UserEssentialProfileReq userEssentialProfileReq){
+
+        return null;
+    }
+
 }

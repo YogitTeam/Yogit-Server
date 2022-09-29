@@ -18,8 +18,9 @@ public class Language {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private LanguageName name;
 
     @Enumerated(EnumType.STRING)
-    private Level level;
+    private LanguageLevel level;
 }

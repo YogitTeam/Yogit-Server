@@ -1,6 +1,7 @@
 package com.yogit.server.user.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,11 @@ public class Language {
 
     @Enumerated(EnumType.STRING)
     private LanguageLevel level;
+
+    @Builder
+    public Language(User user, LanguageName name, LanguageLevel level){
+        this.name = name;
+        this.level = level;
+        user.addLanguage(this);
+    }
 }

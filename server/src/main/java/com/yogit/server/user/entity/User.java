@@ -4,9 +4,7 @@ import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -37,10 +35,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Language> languages;
 
-    private String loginId;
-    private String passWord;
+    private String loginId; // TODO 애플 로그인 성공시, 구현
+    private String passWord; // TODO 애플 로그인 성공시, 구현
     private String name;
-    private String profileImgUrl;
+    private String profileImgUrl; // TODO image 연동 되면, 구현
 
     private String aboutMe;
     private String aboutMeInterest;
@@ -48,7 +46,7 @@ public class User {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber_id")
-    private PhoneNumber phoneNumber;
+    private PhoneNumber phoneNumber; // TODO 필요한가? 문의중
 
     private int age;
     private float memberTemp;
@@ -67,4 +65,19 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
+
+
+
+    @Builder
+    public User (String name, int age, Gender gender, Nationality nationality){
+        this.name = name;
+        this.age = age;
+        this.memberTemp = 0;
+        this.gender = gender;
+        this.nationality = nationality;
+    }
+
+    public void addLanguage(Language language){
+        this.languages.add(language);
+    }
 }

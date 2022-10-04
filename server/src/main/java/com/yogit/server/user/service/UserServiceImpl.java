@@ -2,6 +2,7 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.dto.request.UserEssentialProfileReq;
+import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.Language;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.repository.LanguageRepository;
@@ -20,9 +21,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ApplicationResponse<Void> enterEssentialProfile(UserEssentialProfileReq userEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> enterEssentialProfile(UserEssentialProfileReq userEssentialProfileReq){
 
         User user = userRepository.save(userEssentialProfileReq.toEntityUser(userEssentialProfileReq));
+
+        UserProfileRes userProfileRes = UserProfileRes.create(user);
 
         // language 추가
         if(userEssentialProfileReq.getLanguageName1() != null && userEssentialProfileReq.getLanguageLevel1() != null){
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService {
                     .level(userEssentialProfileReq.getLanguageLevel1())
                     .build();
             languageRepository.save(language);
+            userProfileRes.addLanguage(language);
         }
 
         if(userEssentialProfileReq.getLanguageName2() != null && userEssentialProfileReq.getLanguageLevel2() != null){
@@ -41,6 +45,7 @@ public class UserServiceImpl implements UserService {
                     .level(userEssentialProfileReq.getLanguageLevel2())
                     .build();
             languageRepository.save(language);
+            userProfileRes.addLanguage(language);
         }
 
         if(userEssentialProfileReq.getLanguageName3() != null && userEssentialProfileReq.getLanguageLevel3() != null){
@@ -50,6 +55,7 @@ public class UserServiceImpl implements UserService {
                     .level(userEssentialProfileReq.getLanguageLevel3())
                     .build();
             languageRepository.save(language);
+            userProfileRes.addLanguage(language);
         }
 
         if(userEssentialProfileReq.getLanguageName4() != null && userEssentialProfileReq.getLanguageLevel4() != null){
@@ -59,6 +65,7 @@ public class UserServiceImpl implements UserService {
                     .level(userEssentialProfileReq.getLanguageLevel4())
                     .build();
             languageRepository.save(language);
+            userProfileRes.addLanguage(language);
         }
 
         if(userEssentialProfileReq.getLanguageName5() != null && userEssentialProfileReq.getLanguageLevel5() != null){
@@ -68,9 +75,9 @@ public class UserServiceImpl implements UserService {
                     .level(userEssentialProfileReq.getLanguageLevel5())
                     .build();
             languageRepository.save(language);
+            userProfileRes.addLanguage(language);
         }
 
-
-        return ApplicationResponse.ok();
+        return ApplicationResponse.create("created", userProfileRes);
     }
 }

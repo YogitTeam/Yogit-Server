@@ -2,6 +2,7 @@ package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.dto.request.UserEssentialProfileReq;
+import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.service.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,11 @@ public class UserController {
             @ApiImplicitParam(name = "languageLevel1", required = true)
     })
     @PostMapping("/essential-profile")
-    public ApplicationResponse<Void> enterEssentialProfile(@ModelAttribute UserEssentialProfileReq userEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> enterEssentialProfile(@ModelAttribute UserEssentialProfileReq userEssentialProfileReq){
         return userService.enterEssentialProfile(userEssentialProfileReq);
     }
+
+//    @PatchMapping("/essential-profile")
+//    public ApplicationResponse<>
 
 }

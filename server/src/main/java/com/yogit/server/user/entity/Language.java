@@ -1,9 +1,6 @@
 package com.yogit.server.user.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -26,9 +23,11 @@ public class Language {
     private LanguageLevel level;
 
     @Builder
-    public Language(User user, LanguageName name, LanguageLevel level){
+    public Language (User user, LanguageName name, LanguageLevel level){
         this.name = name;
         this.level = level;
+
+        this.user = user;
         user.addLanguage(this);
     }
 }

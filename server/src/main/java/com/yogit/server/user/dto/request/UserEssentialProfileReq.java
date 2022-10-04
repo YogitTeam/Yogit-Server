@@ -22,18 +22,22 @@ public class UserEssentialProfileReq {
     Gender gender; // Prefer not to say, male, female 중 하나
     Nationality nationality;
 
-//    LanguageName languageName1;
-//    LanguageLevel languageLevel1;
-//    LanguageName languageName2;
-//    LanguageLevel languageLevel2;
-//    LanguageName languageName3;
-//    LanguageLevel languageLevel3;
-//    LanguageName languageName4;
-//    LanguageLevel languageLevel4;
-//    LanguageName languageName5;
-//    LanguageLevel languageLevel5;
+    LanguageName languageName1;
+    LanguageLevel languageLevel1;
 
-    public static User toEntity(UserEssentialProfileReq userEssentialProfileReq){
+    LanguageName languageName2;
+    LanguageLevel languageLevel2;
+
+    LanguageName languageName3;
+    LanguageLevel languageLevel3;
+
+    LanguageName languageName4;
+    LanguageLevel languageLevel4;
+
+    LanguageName languageName5;
+    LanguageLevel languageLevel5;
+
+    public static User toEntityUser(UserEssentialProfileReq userEssentialProfileReq){
         return User.builder()
                 .name(userEssentialProfileReq.getUserName())
                 .age(userEssentialProfileReq.getUserAge())

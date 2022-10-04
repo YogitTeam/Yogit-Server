@@ -4,6 +4,7 @@ import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
+import com.yogit.server.user.dto.request.editUserEssentialProfileReq;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class User {
     private String aboutMeInterest;
     private String aboutMeJob;
 
-    private int age;
+    private Integer age;
     private float memberTemp;
 
     @Enumerated(EnumType.STRING)
@@ -74,5 +75,12 @@ public class User {
 
     public void addLanguage(Language language){
         this.languages.add(language);
+    }
+
+    public void changeUserInfo(editUserEssentialProfileReq editUserEssentialProfileReq){
+        if(editUserEssentialProfileReq.getUserName() != null) this.name = editUserEssentialProfileReq.getUserName();
+        if(editUserEssentialProfileReq.getUserAge() != null) this.age = editUserEssentialProfileReq.getUserAge();
+        if(editUserEssentialProfileReq.getGender() != null) this.gender = editUserEssentialProfileReq.getGender();
+        if(editUserEssentialProfileReq.getNationality() != null) this.nationality = editUserEssentialProfileReq.getNationality();
     }
 }

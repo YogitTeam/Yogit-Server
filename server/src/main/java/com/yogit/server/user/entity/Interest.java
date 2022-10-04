@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class Interest {
     private Long id;
 
     @OneToMany(mappedBy = "interest")
-    private List<UserInterest> userInterests;
+    private List<UserInterest> userInterests = new ArrayList<>();
 
     private String name;
 }

@@ -4,12 +4,11 @@ import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
@@ -29,26 +28,22 @@ public class User {
     private City city;
 
     @OneToMany(mappedBy = "user")
-    private List<BoardUser> boardUsers;
+    private List<BoardUser> boardUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserInterest> userInterests;
+    private List<UserInterest> userInterests = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Language> languages;
+    private List<Language> languages = new ArrayList<>();
 
-    private String loginId;
-    private String passWord;
+    private String loginId; // TODO 애플 로그인 성공시, 구현
+    private String passWord; // TODO 애플 로그인 성공시, 구현
     private String name;
-    private String profileImgUrl;
+    private String profileImgUrl; // TODO image 연동 되면, 구현
 
     private String aboutMe;
     private String aboutMeInterest;
     private String aboutMeJob;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phoneNumber_id")
-    private PhoneNumber phoneNumber;
 
     private int age;
     private float memberTemp;
@@ -60,11 +55,24 @@ public class User {
     private Nationality nationality;
 
     @OneToMany(mappedBy = "user")
-    private List<BookMark> bookMarks;
+    private List<BookMark> bookMarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<ClipBoard> clipBoards;
+    private List<ClipBoard> clipBoard = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
+
+    @Builder
+    public User (String name, int age, Gender gender, Nationality nationality){
+        this.name = name;
+        this.age = age;
+        this.memberTemp = 0;
+        this.gender = gender;
+        this.nationality = nationality;
+    }
+
+    public void addLanguage(Language language){
+        this.languages.add(language);
+    }
 }

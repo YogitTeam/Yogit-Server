@@ -1,8 +1,6 @@
 package com.yogit.server.user.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -18,8 +16,18 @@ public class Language {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private LanguageName name;
 
     @Enumerated(EnumType.STRING)
-    private Level level;
+    private LanguageLevel level;
+
+    @Builder
+    public Language (User user, LanguageName name, LanguageLevel level){
+        this.name = name;
+        this.level = level;
+
+        this.user = user;
+        user.addLanguage(this);
+    }
 }

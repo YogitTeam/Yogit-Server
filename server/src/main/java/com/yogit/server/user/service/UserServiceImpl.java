@@ -1,13 +1,16 @@
 package com.yogit.server.user.service;
 
+import com.yogit.server.board.entity.BoardImage;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.dto.request.createUserEssentialProfileReq;
 import com.yogit.server.user.dto.request.editUserEssentialProfileReq;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.Language;
 import com.yogit.server.user.entity.User;
+import com.yogit.server.user.entity.UserImage;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.LanguageRepository;
+import com.yogit.server.user.repository.UserImageRepository;
 import com.yogit.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final LanguageRepository languageRepository;
+    private final UserImageRepository userImageRepository;
 
     @Transactional
     @Override
@@ -96,10 +100,7 @@ public class UserServiceImpl implements UserService {
 
         if(editUserEssentialProfileReq.getLanguageName1() != null){
             // 기존 language 들 삭제
-            List<Language> languages = languageRepository.findAllByUserId(user.getId());
-            for(Language l : languages){
-                languageRepository.deleteById(l.getId());
-            }
+            languageRepository.deleteAllByUserId(user.getId());
 
             // language 추가
             if(editUserEssentialProfileReq.getLanguageName1() != null && editUserEssentialProfileReq.getLanguageLevel1() != null){
@@ -181,7 +182,7 @@ public class UserServiceImpl implements UserService {
         user.delUser();
 
         // image 엔티티 삭제
-
+        userImageRepository.deleteAllByUserId(user.getId());
 
         return ApplicationResponse.ok();
     }

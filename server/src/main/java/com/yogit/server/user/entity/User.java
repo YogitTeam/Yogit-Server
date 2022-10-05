@@ -35,7 +35,7 @@ public class User {
     private String loginId; // TODO 애플 로그인 성공시, 구현
     private String passWord; // TODO 애플 로그인 성공시, 구현
     private String name;
-    private String profileImgUrl; // 프로필 대표 이미지 TODO image 연동 되면, 구현
+    private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
 
     private String aboutMe;
     private String aboutMeInterest;

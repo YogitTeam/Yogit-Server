@@ -155,4 +155,20 @@ public class UserServiceImpl implements UserService {
 
         return ApplicationResponse.ok(userProfileRes);
     }
+
+    @Override
+    public ApplicationResponse<UserProfileRes> getProfile(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+
+        UserProfileRes userProfileRes = UserProfileRes.create(user);
+
+        List<Language> languages = languageRepository.findAllByUserId(userId);
+        if(!languages.isEmpty()){
+            for(Language l : languages){
+                userProfileRes.addLanguage(l);
+            }
+        }
+
+        return ApplicationResponse.ok(userProfileRes);
+    }
 }

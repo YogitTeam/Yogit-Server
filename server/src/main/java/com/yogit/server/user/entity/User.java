@@ -35,7 +35,7 @@ public class User {
     private String loginId; // TODO 애플 로그인 성공시, 구현
     private String passWord; // TODO 애플 로그인 성공시, 구현
     private String name;
-    private String profileImgUrl; // 프로필 대표 이미지 TODO image 연동 되면, 구현
+    private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
 
     private String aboutMe;
     private String aboutMeInterest;
@@ -43,6 +43,9 @@ public class User {
 
     private Integer age;
     private float memberTemp;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -69,6 +72,7 @@ public class User {
         this.memberTemp = 0;
         this.gender = gender;
         this.nationality = nationality;
+        this.status = UserStatus.ACTIVE;
     }
 
     public void addLanguage(Language language){
@@ -80,5 +84,11 @@ public class User {
         if(editUserEssentialProfileReq.getUserAge() != null) this.age = editUserEssentialProfileReq.getUserAge();
         if(editUserEssentialProfileReq.getGender() != null) this.gender = editUserEssentialProfileReq.getGender();
         if(editUserEssentialProfileReq.getNationality() != null) this.nationality = editUserEssentialProfileReq.getNationality();
+    }
+
+    public void delUser(){
+        this.name = null;
+        this.profileImg = null;
+        this.status = UserStatus.DELETE;
     }
 }

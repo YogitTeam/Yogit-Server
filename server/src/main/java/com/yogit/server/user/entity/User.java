@@ -1,9 +1,6 @@
 package com.yogit.server.user.entity;
 
-import com.yogit.server.board.entity.BoardUser;
-import com.yogit.server.board.entity.BookMark;
-import com.yogit.server.board.entity.ClipBoard;
-import com.yogit.server.board.entity.Comment;
+import com.yogit.server.board.entity.*;
 import com.yogit.server.user.dto.request.editUserEssentialProfileReq;
 import lombok.*;
 
@@ -11,8 +8,6 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Getter
@@ -40,7 +35,7 @@ public class User {
     private String loginId; // TODO 애플 로그인 성공시, 구현
     private String passWord; // TODO 애플 로그인 성공시, 구현
     private String name;
-    private String profileImgUrl; // TODO image 연동 되면, 구현
+    private String profileImgUrl; // 프로필 대표 이미지 TODO image 연동 되면, 구현
 
     private String aboutMe;
     private String aboutMeInterest;
@@ -63,6 +58,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<UserImage> userImages = new ArrayList<>();
 
     @Builder
     public User (String name, int age, Gender gender, Nationality nationality){

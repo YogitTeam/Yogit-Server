@@ -1,0 +1,104 @@
+package com.yogit.server.board.dto.response;
+
+import com.yogit.server.board.entity.Board;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+public class BoardRes {
+
+    @ApiModelProperty(example = "1")
+    @ApiParam(value = "도시 ID")
+    private Long cityId;
+
+    @ApiModelProperty(example = "1")
+    @ApiParam(value = "호스트 ID")
+    private Long hostId;
+
+    @ApiModelProperty(example = "경복궁 탐사입니다.")
+    @ApiParam(value = "게시글 제목")
+    private String title;
+
+    @ApiModelProperty(example = "서울특별시 종로구 사직로 130")
+    @ApiParam(value = "모임 주소")
+    private String address;
+
+    @ApiModelProperty(example = "37.1")
+    @ApiParam(value = "위도")
+    private float longitute;
+
+    @ApiModelProperty(example = "37")
+    @ApiParam(value = "경도")
+    private float latitude;
+
+    @ApiModelProperty(example = "2022-07-13 16:29:30")
+    @ApiParam(value = "사용자 ID")
+    private LocalDateTime date; // 모임 시각
+
+    @ApiModelProperty(example = "시간에 맞춰오시기 바랍니다.")
+    @ApiParam(value = "모임 공지사항")
+    private String notice;
+
+    @ApiModelProperty(example = "3시에 모여서 경복궁역에서 경복궁으로 출발합니다.")
+    @ApiParam(value = "모임 상세설명")
+    private String introduction; // 게시글 내용 상세설명
+
+    @ApiModelProperty(example = "활발한 사람이 오면 좋습니다.")
+    @ApiParam(value = "원하는 사람 설명")
+    private String kindOfPerson; // 이런 사람을 원합니다 설명 글.
+
+    @ApiModelProperty(example = "2")
+    @ApiParam(value = "현재 참여 인원수")
+    private int currentMember;
+
+    @ApiModelProperty(example = "5")
+    @ApiParam(value = "총 인원수")
+    private int totalMember;
+
+    @ApiModelProperty(example = "2")
+    @ApiParam(value = "모임 카테고리 ID")
+    private Long boardCategoryId;
+
+    //TODO: boardImages 리스트 필드값
+
+
+    public static BoardRes toDto(Board board){
+        return BoardRes.builder()
+                .cityId(board.getCity().getId())
+                .hostId(board.getHost().getId())
+                .title(board.getTitle())
+                .address(board.getAddress())
+                .longitute(board.getLongitute())
+                .latitude(board.getLatitude())
+                .date(board.getDate())
+                .notice(board.getNotice())
+                .introduction(board.getIntroduction())
+                .kindOfPerson(board.getKindOfPerson())
+                .build();
+                //.boardCategoryId(board.get)
+    }
+
+    @Builder
+    public BoardRes(Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long boardCategoryId) {
+        this.cityId = cityId;
+        this.hostId = hostId;
+        this.title = title;
+        this.address = address;
+        this.longitute = longitute;
+        this.latitude = latitude;
+        this.date = date;
+        this.notice = notice;
+        this.introduction = introduction;
+        this.kindOfPerson = kindOfPerson;
+        this.currentMember = currentMember;
+        this.totalMember = totalMember;
+        this.boardCategoryId = boardCategoryId;
+    }
+}

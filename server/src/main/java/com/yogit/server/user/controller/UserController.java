@@ -61,4 +61,14 @@ public class UserController {
         return userService.getProfile(userId);
     }
 
+    /**
+     * 유저 Profile 삭제
+     * @author 강신현
+     */
+    @ApiOperation(value = "유저 Profile 삭제")
+    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @PatchMapping("/{userId}")
+    public ApplicationResponse<Void> delProfile(@PathVariable Long userId){
+        return userService.delProfile(userId);
+    }
 }

@@ -11,4 +11,6 @@ public interface UserService {
     ApplicationResponse<UserProfileRes> editEssentialProfile(editUserEssentialProfileReq editUserEssentialProfileReq);
 
     ApplicationResponse<UserProfileRes> getProfile(Long userId);
+
+    ApplicationResponse<Void> delProfile(Long userId);
 }

@@ -171,4 +171,18 @@ public class UserServiceImpl implements UserService {
 
         return ApplicationResponse.ok(userProfileRes);
     }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<Void> delProfile(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+
+        // 유저 탈퇴시 이름, 대표 사진 null 처리
+        user.delUser();
+
+        // image 엔티티 삭제
+
+
+        return ApplicationResponse.ok();
+    }
 }

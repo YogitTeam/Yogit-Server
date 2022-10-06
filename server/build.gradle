@@ -28,8 +28,18 @@ dependencies {
 
 	// Swagger
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	// 메이븐 애플 로그인 플젝에서 가져온 것
+	implementation 'org.apache.httpcomponents:httpclient'
+	implementation 'com.nimbusds:nimbus-jose-jwt:3.10'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+compileJava.options.compilerArgs.addAll([
+		"--add-exports=java.base/sun.security.pkcs=ALL-UNNAMED",
+		"--add-exports=java.base/sun.security.util=ALL-UNNAMED",
+		"--add-exports=java.base/sun.security.x509=ALL-UNNAMED",
+])

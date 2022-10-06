@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,7 @@ public class BoardController {
      */
     @ApiOperation(value = "게시글 등록", notes = "그룹 게시글에 필요한 정보를 입력받아 게시글 생성.")
     @ApiResponses({
-            @ApiResponse(code= 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("")

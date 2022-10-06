@@ -9,10 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class BoardRes {
+    @ApiModelProperty(example = "1")
+    @ApiParam(value = "생성된 Board ID")
+    private Long boardId;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "도시 ID")
@@ -66,27 +70,28 @@ public class BoardRes {
     @ApiParam(value = "모임 카테고리 ID")
     private Long boardCategoryId;
 
-    //TODO: boardImages 리스트 필드값
-
 
     public static BoardRes toDto(Board board){
         return BoardRes.builder()
-                .cityId(board.getCity().getId())
-                .hostId(board.getHost().getId())
-                .title(board.getTitle())
-                .address(board.getAddress())
-                .longitute(board.getLongitute())
-                .latitude(board.getLatitude())
-                .date(board.getDate())
-                .notice(board.getNotice())
-                .introduction(board.getIntroduction())
-                .kindOfPerson(board.getKindOfPerson())
-                .build();
+                .boardId(board.getId())
+                //.cityId(board.getCity().getId())
+//                .hostId(board.getHost().getId())
+//                .title(board.getTitle())
+//                .address(board.getAddress())
+//                .longitute(board.getLongitute())
+//                .latitude(board.getLatitude())
+//                .date(board.getDate())
+//                .notice(board.getNotice())
+//                .introduction(board.getIntroduction())
+//                .kindOfPerson(board.getKindOfPerson())
                 //.boardCategoryId(board.get)
+                .build();
+
     }
 
     @Builder
-    public BoardRes(Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long boardCategoryId) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long boardCategoryId) {
+        this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
         this.title = title;

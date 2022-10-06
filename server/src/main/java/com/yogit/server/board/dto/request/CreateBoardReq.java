@@ -49,7 +49,6 @@ public class CreateBoardReq {
     @ApiModelProperty(example = "2022-07-13 16:29:30")
     @ApiParam(value = "사용자 ID", required = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    @NotBlank
     private LocalDateTime date; // 모임 시각
 
     @ApiModelProperty(example = "시간에 맞춰오시기 바랍니다.")

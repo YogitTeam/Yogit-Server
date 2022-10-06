@@ -50,7 +50,7 @@ public class UserProfileRes {
         userProfileRes.gender = user.getGender();
         userProfileRes.member_temp = user.getMemberTemp();
         userProfileRes.nationality = user.getNationality();
-        userProfileRes.profile_img = user.getProfileImgUrl();
+        userProfileRes.profile_img = user.getProfileImg();
 
         return userProfileRes;
     }

@@ -36,11 +36,6 @@ public class AppleController {
         model.addAttribute("redirect_uri", metaInfo.get("REDIRECT_URI"));
         model.addAttribute("nonce", metaInfo.get("NONCE"));
 
-        System.out.println(model.getAttribute("client_id"));
-        System.out.println(model.getAttribute("redirect_uri"));
-        System.out.println(model.getAttribute("nonce"));
-
-
         return "index";
     }
 
@@ -62,15 +57,6 @@ public class AppleController {
         model.addAttribute("scope", "name email");
         model.addAttribute("response_mode", "form_post");
 
-        System.out.println("==========================");
-        System.out.println(model.getAttribute("client_id"));
-        System.out.println(model.getAttribute("redirect_uri"));
-        System.out.println(model.getAttribute("nonce"));
-        System.out.println(model.getAttribute("response_type"));
-        System.out.println(model.getAttribute("scope"));
-        System.out.println(model.getAttribute("response_mode"));
-
-
         return "redirect:https://appleid.apple.com/auth/authorize";
     }
 
@@ -84,9 +70,13 @@ public class AppleController {
     @ResponseBody
     public TokenResponse servicesRedirect(ServicesResponse serviceResponse) {
 
+        System.out.println("1------------");
+
         if (serviceResponse == null) {
             return null;
         }
+
+        System.out.println("2------------");
 
         String code = serviceResponse.getCode();
         String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
@@ -96,6 +86,8 @@ public class AppleController {
         logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
         logger.debug("client_secret ‣ " + client_secret);
         logger.debug("================================");
+
+        System.out.println("3------------");
 
         return appleService.requestCodeValidations(client_secret, code, null);
     }

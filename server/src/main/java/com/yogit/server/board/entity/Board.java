@@ -55,7 +55,7 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<BoardImage> boardImages;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -117,5 +117,9 @@ public class Board {
 
     public void changeBoardCurrentMember(int currentMember){
         this.currentMember = currentMember;
+    }
+
+    public void addBoardUser(BoardUser boardUser){
+        this.boardUsers.add(boardUser);
     }
 }

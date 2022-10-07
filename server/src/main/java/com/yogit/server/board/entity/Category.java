@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,8 +15,8 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @OneToOne(mappedBy = "category")
-    private Board board;
+    @OneToMany(mappedBy = "category")
+    private List<Board> boards;
 
     private String name;
     private String example;

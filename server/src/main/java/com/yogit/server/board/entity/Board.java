@@ -1,5 +1,6 @@
 package com.yogit.server.board.entity;
 
+import com.yogit.server.board.dto.request.CreateBoardReq;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
@@ -85,6 +86,28 @@ public class Board {
         this.boardCategory = boardCategory;
         this.bookMarks = bookMarks;
         this.clipBoards = clipBoards;
+    }
+
+    // 개발 중 임시 생성자
+    public Board(CreateBoardReq dto, User host){
+//        this.id = id;
+//        this.city = city;
+        this.host = host;
+        this.title = dto.getTitle();
+        this.address = dto.getAddress();
+        this.longitute = dto.getLongitute();
+        this.latitude = dto.getLatitude();
+        this.date = dto.getDate();
+        this.notice = dto.getNotice();
+        this.introduction = dto.getIntroduction();
+        this.kindOfPerson = dto.getKindOfPerson();
+//        this.currentMember = currentMember;
+        this.totalMember = dto.getTotalMember();
+//        this.boardUsers = boardUsers;
+//        this.boardImages = boardImages;
+//        this.boardCategory = dto.getBoardCategoryId();
+//        this.bookMarks = bookMarks;
+//        this.clipBoards = clipBoards;
     }
 
     /*

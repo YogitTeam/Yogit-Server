@@ -26,15 +26,15 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<BoardRes> createBoard(CreateBoardReq dto){
 
         // host 조회
-//        User host = userRepository.findById(dto.getHostId())
-//                .orElseThrow(() -> new NotFoundUserException());
+        User host = userRepository.findById(dto.getHostId())
+                .orElseThrow(() -> new NotFoundUserException());
         // city조회
-        // boardUsers 조회
+        // boardUsers 조회q
         // boardImages 조회
         // boardCategories 조회
 
         // board 생성
-        Board board = dto.toEntity(dto);
+        Board board = new Board(dto, host);
         // currentMember 디폴트=0
         board.changeBoardCurrentMember(0);
 

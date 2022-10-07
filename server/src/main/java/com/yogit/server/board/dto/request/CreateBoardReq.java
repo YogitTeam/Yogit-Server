@@ -75,19 +75,19 @@ public class CreateBoardReq {
     @ApiParam(value = "그룹 카테고리 ID", required = true)
     private Long boardCategoryId;
 
-
-    public Board toEntity(CreateBoardReq dto){
-        return Board.builder()
-                .title(dto.getTitle())
-                .address(dto.getAddress())
-                .longitute(dto.getLongitute())
-                .latitude(dto.getLatitude())
-                .date(dto.getDate())
-                .notice(dto.getNotice())
-                .introduction(dto.getIntroduction())
-                .kindOfPerson(dto.getKindOfPerson())
-                .totalMember(dto.getTotalMember())
-                .build();
-    }
+//    public Board toEntity(CreateBoardReq dto, User host){
+//        return Board.builder()
+//                .title(dto.getTitle())
+//                .address(dto.getAddress())
+//                .longitute(dto.getLongitute())
+//                .latitude(dto.getLatitude())
+//                .date(dto.getDate())
+//                .notice(dto.getNotice())
+//                .introduction(dto.getIntroduction())
+//                .kindOfPerson(dto.getKindOfPerson())
+//                .totalMember(dto.getTotalMember())
+//                .host(host)
+//                .build();
+//    }
 
 }

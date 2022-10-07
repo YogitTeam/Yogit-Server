@@ -74,7 +74,7 @@ public class BoardRes {
     public static BoardRes toDto(Board board){
         return BoardRes.builder()
                 .boardId(board.getId())
-                //.cityId(board.getCity().getId())
+                .cityId(board.getCity().getId())
                 .hostId(board.getHost().getId())
                 .title(board.getTitle())
                 .address(board.getAddress())

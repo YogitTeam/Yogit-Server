@@ -89,9 +89,9 @@ public class Board {
     }
 
     // 개발 중 임시 생성자
-    public Board(CreateBoardReq dto, User host){
+    public Board(CreateBoardReq dto, User host, City city){
 //        this.id = id;
-//        this.city = city;
+        this.city = city;
         this.host = host;
         this.title = dto.getTitle();
         this.address = dto.getAddress();

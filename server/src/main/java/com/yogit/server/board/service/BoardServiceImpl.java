@@ -8,6 +8,8 @@ import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
+import com.yogit.server.user.exception.city.NotFoundCityException;
+import com.yogit.server.user.repository.CityRepository;
 import com.yogit.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final CityRepository cityRepository;
 
     @Transactional(readOnly = false)
     @Override
@@ -29,12 +32,14 @@ public class BoardServiceImpl implements BoardService{
         User host = userRepository.findById(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
+        City city = cityRepository.findById(dto.getCityId())
+                .orElseThrow(() -> new NotFoundCityException());
         // boardUsers 조회q
         // boardImages 조회
         // boardCategories 조회
 
         // board 생성
-        Board board = new Board(dto, host);
+        Board board = new Board(dto, host, city);
         // currentMember 디폴트=0
         board.changeBoardCurrentMember(0);
 

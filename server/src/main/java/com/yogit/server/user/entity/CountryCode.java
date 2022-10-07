@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class CountryCode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "countryCode_id")
+    @Column(name = "country_code_id")
     private Long id;
 
     private int num;

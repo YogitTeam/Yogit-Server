@@ -55,8 +55,9 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<BoardImage> boardImages;
 
-    @OneToOne(mappedBy = "board")
-    private BoardCategory boardCategory;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @OneToMany(mappedBy = "board")
     private List<BookMark> bookMarks;
@@ -67,7 +68,7 @@ public class Board {
 
     // 생성자
     @Builder
-    public Board(Long id, City city, User host, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, BoardCategory boardCategory, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
+    public Board(Long id, City city, User host, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
         this.id = id;
         this.city = city;
         this.host = host;
@@ -83,13 +84,13 @@ public class Board {
         this.totalMember = totalMember;
         this.boardUsers = boardUsers;
         this.boardImages = boardImages;
-        this.boardCategory = boardCategory;
+        this.category = category;
         this.bookMarks = bookMarks;
         this.clipBoards = clipBoards;
     }
 
     // 개발 중 임시 생성자
-    public Board(CreateBoardReq dto, User host, City city){
+    public Board(CreateBoardReq dto, User host, City city, Category category){
 //        this.id = id;
         this.city = city;
         this.host = host;
@@ -105,7 +106,7 @@ public class Board {
         this.totalMember = dto.getTotalMember();
 //        this.boardUsers = boardUsers;
 //        this.boardImages = boardImages;
-//        this.boardCategory = dto.getBoardCategoryId();
+        this.category = category;
 //        this.bookMarks = bookMarks;
 //        this.clipBoards = clipBoards;
     }

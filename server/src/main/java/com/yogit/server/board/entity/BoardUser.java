@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class BoardUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "boardUser_id")
+    @Column(name = "board_user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

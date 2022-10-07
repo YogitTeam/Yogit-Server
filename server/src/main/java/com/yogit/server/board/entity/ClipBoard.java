@@ -14,7 +14,7 @@ import java.util.List;
 public class ClipBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "clipBoard_id")
+    @Column(name = "clip_board_id")
     private Long id;
 
     private String title;

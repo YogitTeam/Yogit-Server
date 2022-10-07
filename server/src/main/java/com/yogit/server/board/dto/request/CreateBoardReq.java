@@ -70,10 +70,9 @@ public class CreateBoardReq {
     @ApiParam(value = "총 인원수", required = true)
     private int totalMember;
 
-    //TODO: boardCategory 필드값
     @ApiModelProperty(example = "1")
     @ApiParam(value = "그룹 카테고리 ID", required = true)
-    private Long boardCategoryId;
+    private Long categoryId;
 
 //    public Board toEntity(CreateBoardReq dto, User host){
 //        return Board.builder()

@@ -3,13 +3,11 @@ package com.yogit.server.board.dto.response;
 import com.yogit.server.board.entity.Board;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -68,7 +66,7 @@ public class BoardRes {
 
     @ApiModelProperty(example = "2")
     @ApiParam(value = "모임 카테고리 ID")
-    private Long boardCategoryId;
+    private Long categoryId;
 
 
     public static BoardRes toDto(Board board){
@@ -84,13 +82,14 @@ public class BoardRes {
                 .notice(board.getNotice())
                 .introduction(board.getIntroduction())
                 .kindOfPerson(board.getKindOfPerson())
-//                .boardCategoryId(board.getBoardCategory().getId())
+                .currentMember(board.getCurrentMember())
+                .totalMember(board.getTotalMember())
+                .categoryId(board.getCategory().getId())
                 .build();
-
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long boardCategoryId) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
@@ -104,6 +103,6 @@ public class BoardRes {
         this.kindOfPerson = kindOfPerson;
         this.currentMember = currentMember;
         this.totalMember = totalMember;
-        this.boardCategoryId = boardCategoryId;
+        this.categoryId = categoryId;
     }
 }

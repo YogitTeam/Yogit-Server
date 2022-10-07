@@ -3,6 +3,9 @@ package com.yogit.server.board.service;
 import com.yogit.server.board.dto.request.CreateBoardReq;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
+import com.yogit.server.board.entity.Category;
+import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
+import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.City;
@@ -23,6 +26,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = false)
     @Override
@@ -34,15 +38,15 @@ public class BoardServiceImpl implements BoardService{
         // city조회
         City city = cityRepository.findById(dto.getCityId())
                 .orElseThrow(() -> new NotFoundCityException());
-        // boardUsers 조회q
+        // boardUsers 조회
         // boardImages 조회
-        // boardCategories 조회
+        // boardCategory 조회
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new NotFoundCategoryException());
 
         // board 생성
-        Board board = new Board(dto, host, city);
-        // currentMember 디폴트=0
-        board.changeBoardCurrentMember(0);
-
+        Board board = new Board(dto, host, city, category);
+        board.changeBoardCurrentMember(0);// currentMember 디폴트=0
         // board 생성 요청
         Board savedBoard = boardRepository.save(board);
         // resDto 벼환

@@ -23,6 +23,6 @@ public class Comment {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clipBoard_id")
+    @JoinColumn(name = "clip_board_id")
     private ClipBoard clipBoard;
 }

@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class BookMark {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "bookMark_id")
+    @Column(name = "book_mark_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
 
@@ -49,8 +50,8 @@ public class Board {
 
     private int totalMember;
 
-    @OneToMany(mappedBy = "board")
-    private List<BoardUser> boardUsers;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL) // 보드 생성 순간 보드 유저 리스트 생성
+    private List<BoardUser> boardUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "board")
     private List<BoardImage> boardImages;

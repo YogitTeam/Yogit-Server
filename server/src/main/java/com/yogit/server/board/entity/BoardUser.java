@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_user_id")
     private Long id;
 
@@ -31,6 +31,6 @@ public class BoardUser {
     public BoardUser(User user, Board board) {
         this.user = user;
         this.board = board;
-        board.addBoardUser(this);
+//        board.addBoardUser(this);
     }
 }

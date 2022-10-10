@@ -1,6 +1,8 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
+import com.yogit.server.board.dto.request.PatchBoardReq;
+import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
@@ -16,7 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Board extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
@@ -54,7 +56,7 @@ public class Board {
     private List<BoardUser> boardUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "board")
-    private List<BoardImage> boardImages;
+    private List<BoardImage> boardImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -122,5 +124,20 @@ public class Board {
 
     public void addBoardUser(BoardUser boardUser){
         this.boardUsers.add(boardUser);
+    }
+
+    public void updateBoard(PatchBoardReq dto, City city, Category category){
+        this.city = city;
+        this.title = dto.getTitle();
+        this.address = dto.getAddress();
+        this.longitute = dto.getLongitute();
+        this.latitude = dto.getLatitude();
+        this.date = dto.getDate();
+        this.notice = dto.getNotice();
+        this.introduction = dto.getIntroduction();
+        this.kindOfPerson = dto.getKindOfPerson();
+        this.totalMember = dto.getTotalMember();
+//        this.boardImages = boardImages;
+        this.category = category;
     }
 }

@@ -1,5 +1,6 @@
 package com.yogit.server.board.entity;
 
+import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoardUser {
+public class BoardUser extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_user_id")

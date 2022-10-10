@@ -31,6 +31,7 @@ public class BaseEntity {
     public void onPrePersist(){
         this.createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.updatedAt = this.createdAt;
+        this.setStatus(BaseStatus.ACTIVE);
     }
 
     @PreUpdate

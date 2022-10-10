@@ -1,6 +1,7 @@
 package com.yogit.server.board.service;
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
+import com.yogit.server.board.dto.request.DeleteBoardReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
@@ -69,7 +70,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
 
-        User host = userRepository.findById(dto.getHostId())
+        User user = userRepository.findById(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         City city = cityRepository.findById(dto.getCityId())
@@ -82,11 +83,31 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
         //validation: 요청자와 host 비교
-        if(!board.getHost().getId().equals(dto.getHostId())){
+        if(!board.getHost().equals(user)){
             throw new NotHostOfBoardExcepion();
         }
 
         board.updateBoard(dto, city, category);
+        BoardRes boardRes = BoardRes.toDto(board);
+        return ApplicationResponse.ok(boardRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq dto){
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        User user = userRepository.findById(dto.getHostId())
+                .orElseThrow(() -> new NotFoundUserException());
+        //validation: 요청자와 host 비교
+        if (!board.getHost().equals(user)) {
+            throw new NotHostOfBoardExcepion();
+        }
+
+        board.deleteBoard();
         BoardRes boardRes = BoardRes.toDto(board);
         return ApplicationResponse.ok(boardRes);
     }

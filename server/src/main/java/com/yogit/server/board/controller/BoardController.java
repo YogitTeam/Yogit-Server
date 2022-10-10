@@ -2,6 +2,7 @@ package com.yogit.server.board.controller;
 
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
+import com.yogit.server.board.dto.request.DeleteBoardReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.service.BoardService;
@@ -49,5 +50,21 @@ public class BoardController {
     @PatchMapping("")
     public ApplicationResponse<BoardRes> updateBoard(@RequestBody @Validated PatchBoardReq patchBoardReq){
         return boardService.updateBoard(patchBoardReq);
+    }
+
+    /**
+     * 게시글 삭제
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 삭제", notes = "그룹 게시글 삭제 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
+            @ApiResponse(code= 404, message = "요청한 유저가 호스트가 아닙니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PatchMapping("/del")
+    public ApplicationResponse<BoardRes> deleteBoard(@RequestBody @Validated DeleteBoardReq deleteBoardReq){
+        return boardService.deleteBoard(deleteBoardReq);
     }
 }

@@ -1,8 +1,10 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
+import com.yogit.server.board.dto.request.DeleteBoardReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
@@ -139,5 +141,9 @@ public class Board extends BaseEntity {
         this.totalMember = dto.getTotalMember();
 //        this.boardImages = boardImages;
         this.category = category;
+    }
+
+    public void deleteBoard(){
+        this.setStatus(BaseStatus.INACTIVE);
     }
 }

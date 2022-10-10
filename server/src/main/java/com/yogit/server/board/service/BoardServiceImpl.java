@@ -2,6 +2,7 @@ package com.yogit.server.board.service;
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
 import com.yogit.server.board.dto.request.DeleteBoardReq;
+import com.yogit.server.board.dto.request.GetAllBoardsReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
@@ -20,11 +21,14 @@ import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.CityRepository;
 import com.yogit.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.sound.midi.Patch;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,6 +39,9 @@ public class BoardServiceImpl implements BoardService{
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
     private final CategoryRepository categoryRepository;
+
+    private static final int PAGING_SIZE = 10;
+    private static final String PAGING_STANDARD = "date";
 
     @Transactional(readOnly = false)
     @Override
@@ -110,6 +117,24 @@ public class BoardServiceImpl implements BoardService{
         board.deleteBoard();
         BoardRes boardRes = BoardRes.toDto(board);
         return ApplicationResponse.ok(boardRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<List<BoardRes>> findAllBoards(GetAllBoardsReq dto){
+        int cursor = dto.getCursor();
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, Sort.by(Sort.Direction.ASC, PAGING_STANDARD ));
+
+        Slice<Board> boards = boardRepository.findAllBoards(pageRequest);
+        List<BoardRes> boardsRes = boards.stream()
+                .map(board -> BoardRes.toDto(board))
+                .collect(Collectors.toList());
+        return ApplicationResponse.ok(boardsRes);
     }
 
 }

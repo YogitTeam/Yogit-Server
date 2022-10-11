@@ -3,7 +3,6 @@ package com.yogit.server.board.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
-    @OneToMany(mappedBy = "board")
-    private List<BoardCategory> boardCategories;
+    @OneToMany(mappedBy = "category")
+    private List<Board> boards;
 
     private String name;
     private String example;

@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class BoardUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "boardUser_id")
+    @Column(name = "board_user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,4 +23,14 @@ public class BoardUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    /*
+    연관관계 편의 메서드
+     */
+
+    public BoardUser(User user, Board board) {
+        this.user = user;
+        this.board = board;
+        board.addBoardUser(this);
+    }
 }

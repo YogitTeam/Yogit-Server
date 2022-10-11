@@ -37,9 +37,12 @@ public class User {
     private String name;
     private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
 
-    private String aboutMe;
-    private String aboutMeInterest;
-    private String aboutMeJob;
+    private String aboutMe; // 300자 이내
+
+    // location
+    private float longtitude;
+    private float latitude;
+    private String administrativeArea;
 
     private Integer age;
     private float memberTemp;

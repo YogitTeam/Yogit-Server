@@ -13,3 +13,23 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: create
+
+cloud:
+  aws:
+    s3:
+      bucket: yogit
+    credentials:
+      accesskey: AKIAVQUIVV2UTNLEJSH4
+      secretkey: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR

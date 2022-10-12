@@ -1,15 +1,20 @@
 package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.dto.request.createUserEssentialProfileReq;
-import com.yogit.server.user.dto.request.editUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserImageReq;
+import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
+import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.Gender;
 import com.yogit.server.user.entity.LanguageLevel;
 import com.yogit.server.user.entity.LanguageName;
 import com.yogit.server.user.entity.Nationality;
 import com.yogit.server.user.service.UserService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +40,7 @@ public class UserController {
             @ApiImplicitParam(name = "languageLevel1", required = true, dataTypeClass = LanguageLevel.class)
     })
     @PostMapping("/essential-profile")
-    public ApplicationResponse<UserProfileRes> enterEssentialProfile(@ModelAttribute createUserEssentialProfileReq createUserEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
         return userService.enterEssentialProfile(createUserEssentialProfileReq);
     }
 
@@ -46,7 +51,7 @@ public class UserController {
     @ApiOperation(value = "유저 필수 정보 수정", notes = "수정할 정보들만 입력해주세요, Language 중에 하나라도 변경사항이 있다면 유저의 모든 Language 를 입력하여 요청해주세요")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
     @PatchMapping("/essential-profile")
-    public ApplicationResponse<UserProfileRes> editEssentialProfile(@ModelAttribute editUserEssentialProfileReq editUserEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> editEssentialProfile(@ModelAttribute EditUserEssentialProfileReq editUserEssentialProfileReq){
         return userService.editEssentialProfile(editUserEssentialProfileReq);
     }
 
@@ -70,5 +75,16 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ApplicationResponse<Void> delProfile(@PathVariable Long userId){
         return userService.delProfile(userId);
+    }
+
+    /**
+     * 유저 Profile + 사진 등록
+     * @author 강신현
+     */
+    @ApiOperation(value = "유저 Profile 사진 등록", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
+    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @PostMapping("/image")
+    public ApplicationResponse<UserImagesRes> enterUserImage(@ModelAttribute CreateUserImageReq createUserImageReq){
+        return userService.enterUserImage(createUserImageReq);
     }
 }

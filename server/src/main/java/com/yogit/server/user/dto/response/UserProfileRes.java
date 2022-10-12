@@ -42,8 +42,6 @@ public class UserProfileRes {
         UserProfileRes userProfileRes = new UserProfileRes();
 
         userProfileRes.about_me = user.getAboutMe();
-        userProfileRes.about_me_interest = user.getAboutMeInterest();
-        userProfileRes.about_me_job = user.getAboutMeJob();
 
         userProfileRes.age = user.getAge();
         userProfileRes.name = user.getName();

@@ -1,9 +1,11 @@
 package com.yogit.server.user.service;
 
-import com.yogit.server.board.entity.BoardImage;
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.dto.request.createUserEssentialProfileReq;
-import com.yogit.server.user.dto.request.editUserEssentialProfileReq;
+import com.yogit.server.s3.AwsS3Service;
+import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserImageReq;
+import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
+import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.Language;
 import com.yogit.server.user.entity.User;
@@ -26,10 +28,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final LanguageRepository languageRepository;
     private final UserImageRepository userImageRepository;
+    private final AwsS3Service awsS3Service;
 
     @Transactional
     @Override
-    public ApplicationResponse<UserProfileRes> enterEssentialProfile(createUserEssentialProfileReq createUserEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
 
         User user = userRepository.save(createUserEssentialProfileReq.toEntityUser(createUserEssentialProfileReq));
 
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ApplicationResponse<UserProfileRes> editEssentialProfile(editUserEssentialProfileReq editUserEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> editEssentialProfile(EditUserEssentialProfileReq editUserEssentialProfileReq){
 
         User user = userRepository.findById(editUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserInfo(editUserEssentialProfileReq);
@@ -185,5 +188,28 @@ public class UserServiceImpl implements UserService {
         userImageRepository.deleteAllByUserId(user.getId());
 
         return ApplicationResponse.ok();
+    }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq){
+
+        User user = userRepository.findById(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        UserImagesRes userImagesRes = new UserImagesRes();
+
+        // 메인 프로필 사진 업로드
+        String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
+        user.changeMainImgUUid(mainImageUUid);
+        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(mainImageUUid));
+
+        // 나머지 사진 업로드
+        List<String> imageUUids = awsS3Service.uploadImages(createUserImageReq.getImages());
+        for(String i : imageUUids){
+            UserImage userImage = createUserImageReq.toEntityUserImage(user, i);
+            userImageRepository.save(userImage);
+            userImagesRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
+        }
+
+        return ApplicationResponse.ok(userImagesRes);
     }
 }

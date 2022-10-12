@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class AwsS3Service{
 
     //    @Value("${cloud.aws.s3.bucket}")
-    private static String bucket = "plogging";
+    private static String bucket = "yogit";
 
     //    @Value("${cloud.aws.region.static}")
     private static String region = "ap-northeast-2";

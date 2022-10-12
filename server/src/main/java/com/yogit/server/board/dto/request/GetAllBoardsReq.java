@@ -10,10 +10,6 @@ import lombok.NoArgsConstructor;
 public class GetAllBoardsReq {
 
     @ApiModelProperty(example = "1")
-    @ApiParam(value = "Board ID", required = true)
-    private Long boardId;
-
-    @ApiModelProperty(example = "1")
     @ApiParam(value = "유저 ID", required = true)
     private Long userId;
 

@@ -1,9 +1,6 @@
 package com.yogit.server.board.service;
 
-import com.yogit.server.board.dto.request.CreateBoardReq;
-import com.yogit.server.board.dto.request.DeleteBoardReq;
-import com.yogit.server.board.dto.request.GetAllBoardsReq;
-import com.yogit.server.board.dto.request.PatchBoardReq;
+import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.BoardUser;
@@ -120,7 +117,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<List<BoardRes>> findAllBoards(GetAllBoardsReq dto){
         int cursor = dto.getCursor();
@@ -135,6 +132,21 @@ public class BoardServiceImpl implements BoardService{
                 .map(board -> BoardRes.toDto(board))
                 .collect(Collectors.toList());
         return ApplicationResponse.ok(boardsRes);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        BoardRes boardRes = BoardRes.toDto(board);
+        return ApplicationResponse.ok(boardRes);
     }
 
 }

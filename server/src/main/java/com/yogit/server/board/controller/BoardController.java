@@ -1,10 +1,7 @@
 package com.yogit.server.board.controller;
 
 
-import com.yogit.server.board.dto.request.CreateBoardReq;
-import com.yogit.server.board.dto.request.DeleteBoardReq;
-import com.yogit.server.board.dto.request.GetAllBoardsReq;
-import com.yogit.server.board.dto.request.PatchBoardReq;
+import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -93,5 +90,21 @@ public class BoardController {
     @PostMapping("/get")
     public ApplicationResponse<List<BoardRes>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
         return boardService.findAllBoards(getAllBoardsReq);
+    }
+
+
+    /**
+     * 게시글 상세 조회
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 상세 조회", notes = "게시물 id로 그룹 게시글 상세조회 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping("/get/detail")
+    public ApplicationResponse<BoardRes> findBoard(@RequestBody @Validated GetBoardReq getBoardReq){
+        return boardService.findBoard(getBoardReq);
     }
 }

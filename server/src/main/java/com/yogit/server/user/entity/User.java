@@ -2,7 +2,7 @@ package com.yogit.server.user.entity;
 
 import com.yogit.server.board.entity.*;
 import com.yogit.server.config.domain.BaseEntity;
-import com.yogit.server.user.dto.request.editUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,9 +38,12 @@ public class User extends BaseEntity {
     private String name;
     private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
 
-    private String aboutMe;
-    private String aboutMeInterest;
-    private String aboutMeJob;
+    private String aboutMe; // 300자 이내
+
+    // location
+    private float longtitude;
+    private float latitude;
+    private String administrativeArea;
 
     private Integer age;
     private float memberTemp;
@@ -80,7 +83,7 @@ public class User extends BaseEntity {
         this.languages.add(language);
     }
 
-    public void changeUserInfo(editUserEssentialProfileReq editUserEssentialProfileReq){
+    public void changeUserInfo(EditUserEssentialProfileReq editUserEssentialProfileReq){
         if(editUserEssentialProfileReq.getUserName() != null) this.name = editUserEssentialProfileReq.getUserName();
         if(editUserEssentialProfileReq.getUserAge() != null) this.age = editUserEssentialProfileReq.getUserAge();
         if(editUserEssentialProfileReq.getGender() != null) this.gender = editUserEssentialProfileReq.getGender();
@@ -91,5 +94,13 @@ public class User extends BaseEntity {
         this.name = null;
         this.profileImg = null;
         this.userStatus = UserStatus.DELETE;
+    }
+
+    public void addImage(UserImage userImage) {
+        this.userImages.add(userImage);
+    }
+
+    public void changeMainImgUUid(String mainImgUUid){
+        this.profileImg = mainImgUUid;
     }
 }

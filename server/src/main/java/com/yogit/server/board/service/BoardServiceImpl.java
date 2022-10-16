@@ -118,7 +118,6 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq dto){
-        List<String> imageUrls = new ArrayList<>();
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
@@ -131,7 +130,7 @@ public class BoardServiceImpl implements BoardService{
         }
 
         board.deleteBoard();
-        BoardRes boardRes = BoardRes.toDto(board, imageUrls);
+        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()));
         return ApplicationResponse.ok(boardRes);
     }
 

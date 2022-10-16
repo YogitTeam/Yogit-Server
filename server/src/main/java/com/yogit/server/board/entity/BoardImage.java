@@ -2,6 +2,7 @@ package com.yogit.server.board.entity;
 
 import com.yogit.server.config.domain.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,5 +21,12 @@ public class BoardImage extends BaseEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    private String imgUrl;
+    private String imgUUid;
+
+    @Builder
+    public BoardImage(Board board, String imgUUid) {
+        this.board = board;
+        board.addBoardImage(this);
+        this.imgUUid = imgUUid;
+    }
 }

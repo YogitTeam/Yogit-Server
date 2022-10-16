@@ -10,10 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -73,6 +75,10 @@ public class CreateBoardReq {
     @ApiModelProperty(example = "1")
     @ApiParam(value = "그룹 카테고리 ID", required = true)
     private Long categoryId;
+
+    @ApiModelProperty(example = "예시 구하면 추가 할 예정입니다.")
+    @ApiParam(value = "게시글 이미지 데이터", required = false)
+    private List<MultipartFile> images; // 최대 5개
 
 //    public Board toEntity(CreateBoardReq dto, User host){
 //        return Board.builder()

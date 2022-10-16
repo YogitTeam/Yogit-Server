@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -69,6 +70,10 @@ public class BoardRes {
     @ApiParam(value = "모임 카테고리 ID")
     private Long categoryId;
 
+    @ApiModelProperty(example = "이미지 url 리스트 예제 넣을 예정")
+    @ApiParam(value = "게시글 이미지 url 리스트")
+    private List<String> imageUrls;
+
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
@@ -82,7 +87,7 @@ public class BoardRes {
     private String updatedAt;
 
 
-    public static BoardRes toDto(Board board){
+    public static BoardRes toDto(Board board, List<String> imageUrls){
         return BoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
@@ -98,6 +103,7 @@ public class BoardRes {
                 .currentMember(board.getCurrentMember())
                 .totalMember(board.getTotalMember())
                 .categoryId(board.getCategory().getId())
+                .imageUrls(imageUrls)
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
@@ -105,7 +111,7 @@ public class BoardRes {
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, BaseStatus status, String createdAt, String updatedAt) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
@@ -120,6 +126,7 @@ public class BoardRes {
         this.currentMember = currentMember;
         this.totalMember = totalMember;
         this.categoryId = categoryId;
+        this.imageUrls = imageUrls;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

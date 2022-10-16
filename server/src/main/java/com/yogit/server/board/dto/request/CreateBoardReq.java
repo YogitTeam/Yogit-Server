@@ -76,7 +76,7 @@ public class CreateBoardReq {
     @ApiParam(value = "그룹 카테고리 ID", required = true)
     private Long categoryId;
 
-    @ApiModelProperty(example = "예시 구하면 추가 할 예정입니다.")
+    @ApiModelProperty(example = "\"https://yogit.s3.ap-northeast-2.amazonaws.com/boardimguuid2\"")
     @ApiParam(value = "게시글 이미지 데이터", required = false)
     private List<MultipartFile> images; // 최대 5개
 

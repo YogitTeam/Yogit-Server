@@ -1,5 +1,6 @@
 package com.yogit.server.board.entity;
 
+import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,9 +12,9 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ClipBoard {
+public class ClipBoard extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clip_board_id")
     private Long id;
 

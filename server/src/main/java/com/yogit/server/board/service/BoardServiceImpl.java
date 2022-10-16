@@ -1,10 +1,12 @@
 package com.yogit.server.board.service;
 
-import com.yogit.server.board.dto.request.CreateBoardReq;
+import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.Category;
+import com.yogit.server.board.exception.NotFoundBoardException;
+import com.yogit.server.board.exception.NotHostOfBoardExcepion;
 import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
@@ -16,8 +18,14 @@ import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.CityRepository;
 import com.yogit.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +36,9 @@ public class BoardServiceImpl implements BoardService{
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
     private final CategoryRepository categoryRepository;
+
+    private static final int PAGING_SIZE = 10;
+    private static final String PAGING_STANDARD = "date";
 
     @Transactional(readOnly = false)
     @Override
@@ -48,14 +59,94 @@ public class BoardServiceImpl implements BoardService{
         board.changeBoardCurrentMember(0);// currentMember 디폴트=0
 
         // 호스트 boardUser 생성 및 board에 추가
-//        board.addBoardUser(new BoardUser(host, board));
+        board.addBoardUser(new BoardUser(host, board));
+
+        //TODO: BoardImages aws s3에 저장 , url board엔티티에 추가
 
         // board 저장
         Board savedBoard = boardRepository.save(board);
-        // resDto 벼환
-        BoardRes boardRes = BoardRes.toDto(savedBoard);
-        // 반환
+        BoardRes boardRes = BoardRes.toDto(savedBoard); // resDto 벼환
         return ApplicationResponse.create("요청에 성공하였습니다.", boardRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
+
+        User user = userRepository.findById(dto.getHostId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        City city = cityRepository.findById(dto.getCityId())
+                .orElseThrow(() -> new NotFoundCityException());
+
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new NotFoundCategoryException());
+
+        //validation: board 존재 여부
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+        //validation: 요청자와 host 비교
+        if(!board.getHost().equals(user)){
+            throw new NotHostOfBoardExcepion();
+        }
+
+        board.updateBoard(dto, city, category);
+        BoardRes boardRes = BoardRes.toDto(board);
+        return ApplicationResponse.ok(boardRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq dto){
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        User user = userRepository.findById(dto.getHostId())
+                .orElseThrow(() -> new NotFoundUserException());
+        //validation: 요청자와 host 비교
+        if (!board.getHost().equals(user)) {
+            throw new NotHostOfBoardExcepion();
+        }
+
+        board.deleteBoard();
+        BoardRes boardRes = BoardRes.toDto(board);
+        return ApplicationResponse.ok(boardRes);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<BoardRes>> findAllBoards(GetAllBoardsReq dto){
+        int cursor = dto.getCursor();
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, Sort.by(Sort.Direction.ASC, PAGING_STANDARD ));
+
+        Slice<Board> boards = boardRepository.findAllBoards(pageRequest);
+        List<BoardRes> boardsRes = boards.stream()
+                .map(board -> BoardRes.toDto(board))
+                .collect(Collectors.toList());
+        return ApplicationResponse.ok(boardsRes);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        BoardRes boardRes = BoardRes.toDto(board);
+        return ApplicationResponse.ok(boardRes);
     }
 
 }

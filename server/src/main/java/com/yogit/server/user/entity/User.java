@@ -1,6 +1,7 @@
 package com.yogit.server.user.entity;
 
 import com.yogit.server.board.entity.*;
+import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
 import lombok.*;
 
@@ -12,10 +13,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -35,7 +36,7 @@ public class User {
     private String loginId; // TODO 애플 로그인 성공시, 구현
     private String passWord; // TODO 애플 로그인 성공시, 구현
     private String name;
-    private String profileImg;
+    private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
 
     private String aboutMe; // 300자 이내
 
@@ -48,7 +49,7 @@ public class User {
     private float memberTemp;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private UserStatus userStatus;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -75,7 +76,7 @@ public class User {
         this.memberTemp = 0;
         this.gender = gender;
         this.nationality = nationality;
-        this.status = UserStatus.ACTIVE;
+        this.userStatus = UserStatus.ACTIVE;
     }
 
     public void addLanguage(Language language){
@@ -92,7 +93,7 @@ public class User {
     public void delUser(){
         this.name = null;
         this.profileImg = null;
-        this.status = UserStatus.DELETE;
+        this.userStatus = UserStatus.DELETE;
     }
 
     public void addImage(UserImage userImage) {

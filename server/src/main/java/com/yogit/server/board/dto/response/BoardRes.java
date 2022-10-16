@@ -1,6 +1,7 @@
 package com.yogit.server.board.dto.response;
 
 import com.yogit.server.board.entity.Board;
+import com.yogit.server.config.domain.BaseStatus;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Builder;
@@ -68,6 +69,18 @@ public class BoardRes {
     @ApiParam(value = "모임 카테고리 ID")
     private Long categoryId;
 
+    @ApiModelProperty(example = "ACTIVE")
+    @ApiParam(value = "객체 상태")
+    private BaseStatus status;
+
+    @ApiModelProperty(example = "2022-07-13 16:29:30")
+    @ApiParam(value = "생성 시각")
+    private String createdAt;
+
+    @ApiModelProperty(example = "2022-07-13 16:29:30")
+    @ApiParam(value = "마지막 업데이트 시각")
+    private String updatedAt;
+
 
     public static BoardRes toDto(Board board){
         return BoardRes.builder()
@@ -85,11 +98,14 @@ public class BoardRes {
                 .currentMember(board.getCurrentMember())
                 .totalMember(board.getTotalMember())
                 .categoryId(board.getCategory().getId())
+                .status(board.getStatus())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
                 .build();
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
@@ -104,5 +120,8 @@ public class BoardRes {
         this.currentMember = currentMember;
         this.totalMember = totalMember;
         this.categoryId = categoryId;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

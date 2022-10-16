@@ -157,15 +157,13 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
-        List<String> imageUrls = new ArrayList<>();
-
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        BoardRes boardRes = BoardRes.toDto(board, imageUrls);
+        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()));
         return ApplicationResponse.ok(boardRes);
     }
 

@@ -103,4 +103,18 @@ public class User extends BaseEntity {
     public void changeMainImgUUid(String mainImgUUid){
         this.profileImg = mainImgUUid;
     }
+
+    public void addUserInterest(UserInterest userInterest){
+        this.userInterests.add(userInterest);
+    }
+
+    public void addAdditionalProfile(float latitude, float longitude, String aboutMe){
+        this.latitude = latitude;
+        this.longtitude = longitude;
+        this.aboutMe = aboutMe;
+    }
+
+    public void addCity(City city){
+        this.city = city;
+    }
 }

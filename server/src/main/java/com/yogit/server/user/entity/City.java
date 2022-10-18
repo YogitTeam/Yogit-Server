@@ -3,6 +3,7 @@ package com.yogit.server.user.entity;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.config.domain.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,5 +27,13 @@ public class City extends BaseEntity {
     @OneToMany(mappedBy = "city")
     private List<Board> boards = new ArrayList<>();
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private CityName name;
+
+    @Builder
+    public City(User user, CityName name){
+        this.name = name;
+        this.users.add(user);
+        user.addCity(this);
+    }
 }

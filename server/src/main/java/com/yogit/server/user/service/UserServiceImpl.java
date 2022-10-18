@@ -2,18 +2,15 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
+import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
 import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
 import com.yogit.server.user.dto.request.CreateUserImageReq;
 import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
-import com.yogit.server.user.entity.Language;
-import com.yogit.server.user.entity.User;
-import com.yogit.server.user.entity.UserImage;
+import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
-import com.yogit.server.user.repository.LanguageRepository;
-import com.yogit.server.user.repository.UserImageRepository;
-import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +25,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final LanguageRepository languageRepository;
     private final UserImageRepository userImageRepository;
+    private final CityRepository cityRepository;
+    private final InterestRepository interestRepository;
+    private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
 
     @Transactional
@@ -211,5 +211,39 @@ public class UserServiceImpl implements UserService {
         }
 
         return ApplicationResponse.ok(userImagesRes);
+    }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<UserProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq){
+        User user = userRepository.findById(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        //UserProfileRes userProfileRes = UserProfileRes.create(user);
+
+        user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe());
+
+        if(addUserAdditionalProfileReq.getCity() != null){
+            City city = City.builder()
+                    .user(user)
+                    .name(addUserAdditionalProfileReq.getCity())
+                    .build();
+            cityRepository.save(city);
+        }
+
+        for(String interestName : addUserAdditionalProfileReq.getInterests()){
+            Interest interest = Interest.builder()
+                    .name(interestName)
+                    .build();
+            interestRepository.save(interest);
+
+            UserInterest userInterest = UserInterest.builder()
+                    .user(user)
+                    .interest(interest)
+                    .build();
+            userInterestRepository.save(userInterest);
+        }
+
+
+
+        return ApplicationResponse.ok();
     }
 }

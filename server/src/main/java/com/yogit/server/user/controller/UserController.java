@@ -1,15 +1,13 @@
 package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
 import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
 import com.yogit.server.user.dto.request.CreateUserImageReq;
 import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
-import com.yogit.server.user.entity.Gender;
-import com.yogit.server.user.entity.LanguageLevel;
-import com.yogit.server.user.entity.LanguageName;
-import com.yogit.server.user.entity.Nationality;
+import com.yogit.server.user.entity.*;
 import com.yogit.server.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -86,5 +84,16 @@ public class UserController {
     @PostMapping("/image")
     public ApplicationResponse<UserImagesRes> enterUserImage(@ModelAttribute CreateUserImageReq createUserImageReq){
         return userService.enterUserImage(createUserImageReq);
+    }
+
+    /**
+     * 유저 추가 정보 입력
+     * @author 강신현
+     */
+    @ApiOperation(value = "유저 추가 정보 입력")
+    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @PatchMapping("/additional-profile")
+    public ApplicationResponse<UserProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
+        return userService.enterAdditionalProfile(addUserAdditionalProfileReq);
     }
 }

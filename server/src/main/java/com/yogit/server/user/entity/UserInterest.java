@@ -2,6 +2,7 @@ package com.yogit.server.user.entity;
 
 import com.yogit.server.config.domain.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,13 @@ public class UserInterest extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interest_id")
     private Interest interest;
+
+    @Builder
+    public UserInterest(User user, Interest interest){
+        this.user = user;
+        user.addUserInterest(this);
+
+        this.interest = interest;
+        interest.addUserInterest(this);
+    }
 }

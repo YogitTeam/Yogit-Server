@@ -1,6 +1,8 @@
 package com.yogit.server.board.service;
 
 import com.yogit.server.board.dto.request.*;
+import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
+import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.BoardImage;
@@ -9,6 +11,7 @@ import com.yogit.server.board.entity.Category;
 import com.yogit.server.board.exception.NotFoundBoardException;
 import com.yogit.server.board.exception.NotHostOfBoardExcepion;
 import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
+import com.yogit.server.board.exception.boardimage.NotFoundBoardImageException;
 import com.yogit.server.board.repository.BoardImageRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
@@ -174,6 +177,30 @@ public class BoardServiceImpl implements BoardService{
 
         BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()));
         return ApplicationResponse.ok(boardRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq dto){
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        //validation: 요청자와 host 비교
+        if (!board.getHost().equals(user)) {
+            throw new NotHostOfBoardExcepion();
+        }
+
+        BoardImage boardImage = boardImageRepository.findBoardImageById(dto.getBoardImageId())
+                .orElseThrow(() -> new NotFoundBoardImageException());
+        String imgUrl = awsS3Service.makeUrlOfFilename(boardImage.getImgUUid());
+
+        boardImage.deleteBoardImage();
+        DeleteBoardImageRes res = DeleteBoardImageRes.toDto(boardImage, imgUrl);
+        return ApplicationResponse.ok(res);
     }
 
 }

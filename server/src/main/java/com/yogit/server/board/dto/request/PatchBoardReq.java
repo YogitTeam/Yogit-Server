@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -72,4 +74,8 @@ public class PatchBoardReq {
     @ApiModelProperty(example = "1")
     @ApiParam(value = "그룹 카테고리 ID", required = false)
     private Long categoryId;
+
+    @ApiModelProperty(example = "\"https://yogit.s3.ap-northeast-2.amazonaws.com/boardimguuid2\"")
+    @ApiParam(value = "게시글 이미지 데이터", required = false)
+    private List<MultipartFile> images; // 최대 5개
 }

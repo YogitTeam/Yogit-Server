@@ -1,16 +1,22 @@
 package com.yogit.server.board.service;
 
 import com.yogit.server.board.dto.request.*;
+import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
+import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.entity.Board;
+import com.yogit.server.board.entity.BoardImage;
 import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.Category;
 import com.yogit.server.board.exception.NotFoundBoardException;
 import com.yogit.server.board.exception.NotHostOfBoardExcepion;
 import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
+import com.yogit.server.board.exception.boardimage.NotFoundBoardImageException;
+import com.yogit.server.board.repository.BoardImageRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
@@ -24,6 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +43,8 @@ public class BoardServiceImpl implements BoardService{
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
     private final CategoryRepository categoryRepository;
+    private final AwsS3Service awsS3Service;
+    private final BoardImageRepository boardImageRepository;
 
     private static final int PAGING_SIZE = 10;
     private static final String PAGING_STANDARD = "date";
@@ -61,11 +70,22 @@ public class BoardServiceImpl implements BoardService{
         // 호스트 boardUser 생성 및 board에 추가
         board.addBoardUser(new BoardUser(host, board));
 
-        //TODO: BoardImages aws s3에 저장 , url board엔티티에 추가
-
         // board 저장
         Board savedBoard = boardRepository.save(board);
-        BoardRes boardRes = BoardRes.toDto(savedBoard); // resDto 벼환
+
+        //BoardImages aws s3에 저장 후 리파지토리에도 저장
+        List<String> imageUrls = new ArrayList<>();
+        if(dto.getImages() != null){
+            List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
+            for(String i : imageUUids){
+                BoardImage boardImage = new BoardImage(savedBoard, i);
+                boardImageRepository.save(boardImage);
+//                boardRes.addImageUrl(awsS3Service.makeUrlOfFilename(i)); // res에 추가
+                imageUrls.add(awsS3Service.makeUrlOfFilename(i));
+            }
+        }
+
+        BoardRes boardRes = BoardRes.toDto(savedBoard, imageUrls); // resDto 벼환
         return ApplicationResponse.create("요청에 성공하였습니다.", boardRes);
     }
 
@@ -73,6 +93,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
+        List<String> imageUrls = new ArrayList<>();
 
         User user = userRepository.findById(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -92,7 +113,17 @@ public class BoardServiceImpl implements BoardService{
         }
 
         board.updateBoard(dto, city, category);
-        BoardRes boardRes = BoardRes.toDto(board);
+
+        //BoardImages aws s3에 저장 후 리파지토리에도 저장
+        if(!dto.getImages().isEmpty()){
+            List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
+            for(String i : imageUUids){
+                BoardImage boardImage = new BoardImage(board, i);
+                boardImageRepository.save(boardImage);
+                imageUrls.add(awsS3Service.makeUrlOfFilename(i));
+            }
+        }
+        BoardRes boardRes = BoardRes.toDto(board, imageUrls);
         return ApplicationResponse.ok(boardRes);
     }
 
@@ -112,7 +143,7 @@ public class BoardServiceImpl implements BoardService{
         }
 
         board.deleteBoard();
-        BoardRes boardRes = BoardRes.toDto(board);
+        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()));
         return ApplicationResponse.ok(boardRes);
     }
 
@@ -129,7 +160,7 @@ public class BoardServiceImpl implements BoardService{
 
         Slice<Board> boards = boardRepository.findAllBoards(pageRequest);
         List<BoardRes> boardsRes = boards.stream()
-                .map(board -> BoardRes.toDto(board))
+                .map(board -> BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids())))
                 .collect(Collectors.toList());
         return ApplicationResponse.ok(boardsRes);
     }
@@ -138,15 +169,38 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
-
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        BoardRes boardRes = BoardRes.toDto(board);
+        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()));
         return ApplicationResponse.ok(boardRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq dto){
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        //validation: 요청자와 host 비교
+        if (!board.getHost().equals(user)) {
+            throw new NotHostOfBoardExcepion();
+        }
+
+        BoardImage boardImage = boardImageRepository.findBoardImageById(dto.getBoardImageId())
+                .orElseThrow(() -> new NotFoundBoardImageException());
+        String imgUrl = awsS3Service.makeUrlOfFilename(boardImage.getImgUUid());
+
+        boardImage.deleteBoardImage();
+        DeleteBoardImageRes res = DeleteBoardImageRes.toDto(boardImage, imgUrl);
+        return ApplicationResponse.ok(res);
     }
 
 }

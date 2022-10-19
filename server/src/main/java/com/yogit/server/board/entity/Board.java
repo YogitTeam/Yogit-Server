@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -128,6 +129,10 @@ public class Board extends BaseEntity {
         this.boardUsers.add(boardUser);
     }
 
+    public void addBoardImage(BoardImage boardImage){
+        this.boardImages.add(boardImage);
+    }
+
     public void updateBoard(PatchBoardReq dto, City city, Category category){
         this.city = city;
         this.title = dto.getTitle();
@@ -145,5 +150,12 @@ public class Board extends BaseEntity {
 
     public void deleteBoard(){
         this.setStatus(BaseStatus.INACTIVE);
+    }
+
+    // BoardImage리스트의 UUID리스트만 String으로 반환
+    public List<String> getBoardImagesUUids(){
+        return this.boardImages.stream()
+                .map(boardImage -> boardImage.getImgUUid())
+                .collect(Collectors.toList());
     }
 }

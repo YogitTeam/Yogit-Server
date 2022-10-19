@@ -5,6 +5,7 @@ import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
 import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
 import com.yogit.server.user.dto.request.CreateUserImageReq;
 import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
+import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
@@ -93,7 +94,7 @@ public class UserController {
     @ApiOperation(value = "유저 추가 정보 입력")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
     @PatchMapping("/additional-profile")
-    public ApplicationResponse<UserProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
+    public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
         return userService.enterAdditionalProfile(addUserAdditionalProfileReq);
     }
 }

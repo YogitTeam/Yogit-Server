@@ -39,11 +39,16 @@ public class SmsService {
     @Value("${sms.secret-key}")
     private String secretKey;
 
-    @Value("${sms.phone-num}")
+    @Value("01046270562")
     private String phoneNum;
 
     public String send(SmsSendReq smsSendReq) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
 //        if(smsSendReq.getPhoneNum().contains("-")) return "-을 제거해주세요.";
+
+        System.out.println(serviceId);
+        System.out.println(accessKey);
+        System.out.println(secretKey);
+        System.out.println(phoneNum); // TODO 위 3가지 변수와 다르게 @Value(application.yml)값이 다른 값으로 불러와지는 문제가 있음, 일단 값을 yml에서 가져오지 않고 바로 넣어주는 식으로 임시 해결
 
         String certification = Integer.toString((int)(Math.random() * (99999 - 10000 + 1)) + 10000);
 
@@ -70,7 +75,7 @@ public class SmsService {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         SmsSendRes smsSendResponse = restTemplate.postForObject(
-                new URI("https://sens.apigw.ntruss.com/sms/v2/services/"+this.serviceId+"/messages"), body, SmsSendRes.class);
+                new URI("https://sens.apigw.ntruss.com/sms/v2/services/" + this.serviceId + "/messages"), body, SmsSendRes.class);
 
         return certification;
     }

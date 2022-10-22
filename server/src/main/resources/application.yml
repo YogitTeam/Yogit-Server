@@ -33,3 +33,9 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+
+sms:
+  service-id: ncp:sms:kr:285557358037:yogit
+  access-key: mPcyRmD3xO51CI8d4DPE
+  secret-key: i1CzRXqgXVhIiRA9ojOLTWmICBJyzJRB6DbbmTV5
+  phone-num: 01046270562

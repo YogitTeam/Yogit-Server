@@ -47,6 +47,7 @@ public class User extends BaseEntity {
 
     private Integer age;
     private float memberTemp;
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;

@@ -1,7 +1,9 @@
 package com.yogit.server.board.controller;
 
 import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
+import com.yogit.server.board.dto.request.clipboard.GetClipBoardReq;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
+import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
 import com.yogit.server.board.service.clipboard.ClipBoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import io.swagger.annotations.ApiOperation;
@@ -36,5 +38,20 @@ public class ClipBoardController {
     @PostMapping("")
     public ApplicationResponse<ClipBoardRes> createClipBoard(@RequestBody @Validated CreateClipBoardReq createClipBoardReq){
         return clipBoardService.createClipBoard(createClipBoardReq);
+    }
+
+    /**
+     * 클립보드 단건 조회
+     * @author 토마스
+     */
+    @ApiOperation(value = "클립보드 단건 조회", notes = "클립보드 ID로 단건 조회 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping("/get")
+    public ApplicationResponse<GetClipBoardRes> findClipBoard(@RequestBody @Validated GetClipBoardReq getClipBoardReq){
+        return clipBoardService.findClipBoard(getClipBoardReq);
     }
 }

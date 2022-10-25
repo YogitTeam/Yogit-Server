@@ -1,6 +1,7 @@
 package com.yogit.server.board.service.clipboard;
 
 import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
+import com.yogit.server.board.dto.request.clipboard.GetAllClipBoardsReq;
 import com.yogit.server.board.dto.request.clipboard.GetClipBoardReq;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
@@ -73,5 +74,23 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         // 코멘트 추가
         GetClipBoardRes getClipBoardRes = GetClipBoardRes.toDto(clipBoard, comments);
         return ApplicationResponse.ok(getClipBoardRes);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<ClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        List<ClipBoardRes> clipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+                .map(clipBoard -> ClipBoardRes.toDto(clipBoard))
+                .collect(Collectors.toList());
+
+        return ApplicationResponse.ok(clipBoardResList);
     }
 }

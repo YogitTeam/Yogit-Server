@@ -2,15 +2,13 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
-import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
-import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
-import com.yogit.server.user.dto.request.CreateUserImageReq;
-import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.*;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
+import com.yogit.server.user.exception.UserDuplicationLoginId;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApplicationResponse<UserProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
 
-        User user = userRepository.save(createUserEssentialProfileReq.toEntityUser(createUserEssentialProfileReq));
+        User user = userRepository.findById(createUserEssentialProfileReq.getUserId()).orElseThrow();
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
@@ -248,9 +246,17 @@ public class UserServiceImpl implements UserService {
             userAdditionalProfileRes.getInterests().add(interestName);
         }
 
-
-
-
         return ApplicationResponse.ok(userAdditionalProfileRes);
+    }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<Void> createUser(CreateUserReq createUserReq){
+
+        if(userRepository.existsByLoginId(createUserReq.getLoginId())) throw new UserDuplicationLoginId();
+
+        userRepository.save(createUserReq.toEntityUser(createUserReq));
+
+        return ApplicationResponse.ok();
     }
 }

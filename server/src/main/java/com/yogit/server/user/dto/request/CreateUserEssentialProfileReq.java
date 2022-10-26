@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CreateUserEssentialProfileReq {
 
+    Long userId;
+
     String userName;
     int userAge;
     Gender gender;
@@ -29,13 +31,4 @@ public class CreateUserEssentialProfileReq {
 
     LanguageName languageName5;
     LanguageLevel languageLevel5;
-
-    public static User toEntityUser(CreateUserEssentialProfileReq createUserEssentialProfileReq){
-        return User.builder()
-                .name(createUserEssentialProfileReq.getUserName())
-                .age(createUserEssentialProfileReq.getUserAge())
-                .gender(createUserEssentialProfileReq.getGender())
-                .nationality(createUserEssentialProfileReq.getNationality())
-                .build();
-    }
 }

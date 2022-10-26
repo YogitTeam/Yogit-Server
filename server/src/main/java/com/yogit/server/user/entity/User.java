@@ -70,13 +70,8 @@ public class User extends BaseEntity {
     private List<UserImage> userImages = new ArrayList<>();
 
     @Builder
-    public User (String name, int age, Gender gender, Nationality nationality){
-        this.name = name;
-        this.age = age;
-        this.memberTemp = 0;
-        this.gender = gender;
-        this.nationality = nationality;
-        this.userStatus = UserStatus.ACTIVE;
+    public User (String loginId){
+        this.loginId = loginId;
     }
 
     public void addLanguage(Language language){

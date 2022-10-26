@@ -33,10 +33,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Language> languages = new ArrayList<>();
 
-    private String loginId; // TODO 애플 로그인 성공시, 구현
-    private String passWord; // TODO 애플 로그인 성공시, 구현
+    private String loginId;
     private String name;
-    private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
+    private String profileImg;
 
     private String aboutMe; // 300자 이내
 

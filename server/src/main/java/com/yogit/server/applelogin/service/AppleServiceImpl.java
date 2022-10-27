@@ -5,6 +5,7 @@ import com.yogit.server.applelogin.util.AppleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 @Service
@@ -20,7 +21,7 @@ public class AppleServiceImpl implements AppleService {
      * @return
      */
     @Override
-    public String getAppleClientSecret(String id_token) {
+    public String getAppleClientSecret(String id_token) throws NoSuchAlgorithmException {
 
         if (appleUtils.verifyIdentityToken(id_token)) {
             return appleUtils.createClientSecret();

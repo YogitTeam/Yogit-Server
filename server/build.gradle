@@ -6,7 +6,8 @@ plugins {
 
 group = 'com.yogit'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 configurations {
 	compileOnly {
@@ -41,5 +42,5 @@ tasks.named('test') {
 compileJava.options.compilerArgs.addAll([
 		"--add-exports=java.base/sun.security.pkcs=ALL-UNNAMED",
 		"--add-exports=java.base/sun.security.util=ALL-UNNAMED",
-		"--add-exports=java.base/sun.security.x509=ALL-UNNAMED",
+		"--add-exports=java.base/sun.security.x509=ALL-UNNAMED"
 ])

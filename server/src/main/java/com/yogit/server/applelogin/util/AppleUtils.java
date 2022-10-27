@@ -22,9 +22,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -126,7 +129,7 @@ public class AppleUtils {
      *
      * @return client_secret(jwt)
      */
-    public String createClientSecret() {
+    public String createClientSecret() throws NoSuchAlgorithmException {
 
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.ES256).keyID(KEY_ID).build();
         JWTClaimsSet claimsSet = new JWTClaimsSet();
@@ -140,16 +143,28 @@ public class AppleUtils {
 
         SignedJWT jwt = new SignedJWT(header, claimsSet);
 
+//        try {
+//            ECPrivateKey ecPrivateKey = new ECPrivateKeyImpl2(readPrivateKey());
+//            JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey.getS());
+//
+//            jwt.sign(jwsSigner);
+//
+//        } catch (InvalidKeyException e) {
+//            e.printStackTrace();
+//        } catch (JOSEException e) {
+//            e.printStackTrace();
+//        }
+
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(readPrivateKey());
+        KeyFactory kf = KeyFactory.getInstance("EC");
         try {
-            ECPrivateKey ecPrivateKey = new ECPrivateKeyImpl2(readPrivateKey());
+            ECPrivateKey ecPrivateKey = (ECPrivateKey) kf.generatePrivate(spec);
             JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey.getS());
-
             jwt.sign(jwsSigner);
-
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
         } catch (JOSEException e) {
             e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
         }
 
         return jwt.serialize();

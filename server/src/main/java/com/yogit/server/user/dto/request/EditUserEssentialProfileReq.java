@@ -17,18 +17,18 @@ public class EditUserEssentialProfileReq {
     Gender gender;
     Nationality nationality;
 
-    LanguageName languageName1;
-    LanguageLevel languageLevel1;
-
-    LanguageName languageName2;
-    LanguageLevel languageLevel2;
-
-    LanguageName languageName3;
-    LanguageLevel languageLevel3;
-
-    LanguageName languageName4;
-    LanguageLevel languageLevel4;
-
-    LanguageName languageName5;
-    LanguageLevel languageLevel5;
+//    LanguageName languageName1;
+//    LanguageLevel languageLevel1;
+//
+//    LanguageName languageName2;
+//    LanguageLevel languageLevel2;
+//
+//    LanguageName languageName3;
+//    LanguageLevel languageLevel3;
+//
+//    LanguageName languageName4;
+//    LanguageLevel languageLevel4;
+//
+//    LanguageName languageName5;
+//    LanguageLevel languageLevel5;
 }

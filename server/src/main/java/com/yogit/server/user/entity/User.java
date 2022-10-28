@@ -1,12 +1,16 @@
 package com.yogit.server.user.entity;
 
-import com.yogit.server.board.entity.*;
+import com.yogit.server.board.entity.BoardUser;
+import com.yogit.server.board.entity.BookMark;
+import com.yogit.server.board.entity.ClipBoard;
+import com.yogit.server.board.entity.Comment;
 import com.yogit.server.config.domain.BaseEntity;
-import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +20,7 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
 
@@ -33,10 +37,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Language> languages = new ArrayList<>();
 
-    private String loginId; // TODO 애플 로그인 성공시, 구현
-    private String passWord; // TODO 애플 로그인 성공시, 구현
+    private String loginId;
     private String name;
-    private String profileImg; // 프로필 대표 이미지 TODO image 연동 되면, 구현
+    private String profileImg;
 
     private String aboutMe; // 300자 이내
 
@@ -71,24 +74,19 @@ public class User extends BaseEntity {
     private List<UserImage> userImages = new ArrayList<>();
 
     @Builder
-    public User (String name, int age, Gender gender, Nationality nationality){
-        this.name = name;
-        this.age = age;
-        this.memberTemp = 0;
-        this.gender = gender;
-        this.nationality = nationality;
-        this.userStatus = UserStatus.ACTIVE;
+    public User (String loginId){
+        this.loginId = loginId;
     }
 
     public void addLanguage(Language language){
         this.languages.add(language);
     }
 
-    public void changeUserInfo(EditUserEssentialProfileReq editUserEssentialProfileReq){
-        if(editUserEssentialProfileReq.getUserName() != null) this.name = editUserEssentialProfileReq.getUserName();
-        if(editUserEssentialProfileReq.getUserAge() != null) this.age = editUserEssentialProfileReq.getUserAge();
-        if(editUserEssentialProfileReq.getGender() != null) this.gender = editUserEssentialProfileReq.getGender();
-        if(editUserEssentialProfileReq.getNationality() != null) this.nationality = editUserEssentialProfileReq.getNationality();
+    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality){
+        if(userName != null) this.name = userName;
+        if(userAge != 0) this.age = userAge;
+        if(gender != null) this.gender = gender;
+        if(nationality != null) this.nationality = nationality;
     }
 
     public void delUser(){

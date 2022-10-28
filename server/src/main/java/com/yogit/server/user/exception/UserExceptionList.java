@@ -11,7 +11,8 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 @RequiredArgsConstructor
 public enum UserExceptionList {
 
-    NOT_FOUND_ID("U0001", NOT_FOUND,"존재하지 않는 아이디입니다.");
+    NOT_FOUND_ID("U0001", NOT_FOUND,"존재하지 않는 아이디입니다."),
+    DUPLICATE_LOGIN_ID("U0002", CONFLICT,"이미 존재하는 아이디입니다.");
 
     private final String CODE;
     private final HttpStatus HTTPSTATUS;

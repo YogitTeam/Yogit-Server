@@ -1,13 +1,14 @@
 package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.dto.request.*;
+import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
+import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserImageReq;
+import com.yogit.server.user.dto.request.CreateUserReq;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
+import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
-import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.Gender;
-import com.yogit.server.user.entity.LanguageLevel;
-import com.yogit.server.user.entity.LanguageName;
 import com.yogit.server.user.entity.Nationality;
 import com.yogit.server.user.service.UserService;
 import io.swagger.annotations.Api;
@@ -33,13 +34,12 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userName", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "userAge", required = true, dataTypeClass = int.class, example = "0"),
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0"),
             @ApiImplicitParam(name = "gender", required = true, dataTypeClass = Gender.class),
-            @ApiImplicitParam(name = "nationality", required = true, dataTypeClass = Nationality.class),
-            @ApiImplicitParam(name = "languageName1", required = true, dataTypeClass = LanguageName.class),
-            @ApiImplicitParam(name = "languageLevel1", required = true, dataTypeClass = LanguageLevel.class)
+            @ApiImplicitParam(name = "nationality", required = true, dataTypeClass = Nationality.class)
     })
     @PatchMapping("/essential-profile")
-    public ApplicationResponse<UserProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
+    public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
         return userService.enterEssentialProfile(createUserEssentialProfileReq);
     }
 
@@ -47,23 +47,23 @@ public class UserController {
      * 유저 필수 정보 수정
      * @author 강신현
      */
-    @ApiOperation(value = "유저 필수 정보 수정", notes = "수정할 정보들만 입력해주세요, Language 중에 하나라도 변경사항이 있다면 유저의 모든 Language 를 입력하여 요청해주세요")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-    @PatchMapping("/edit-essential-profile")
-    public ApplicationResponse<UserProfileRes> editEssentialProfile(@ModelAttribute EditUserEssentialProfileReq editUserEssentialProfileReq){
-        return userService.editEssentialProfile(editUserEssentialProfileReq);
-    }
+//    @ApiOperation(value = "유저 필수 정보 수정", notes = "수정할 정보들만 입력해주세요, Language 중에 하나라도 변경사항이 있다면 유저의 모든 Language 를 입력하여 요청해주세요")
+//    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+//    @PatchMapping("/edit-essential-profile")
+//    public ApplicationResponse<UserProfileRes> editEssentialProfile(@ModelAttribute EditUserEssentialProfileReq editUserEssentialProfileReq){
+//        return userService.editEssentialProfile(editUserEssentialProfileReq);
+//    }
 
     /**
      * 유저 Profile 조회
      * @author 강신현
      */
-    @ApiOperation(value = "유저 Profile 조회")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-    @GetMapping("/prifile/{userId}")
-    public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
-        return userService.getProfile(userId);
-    }
+//    @ApiOperation(value = "유저 Profile 조회")
+//    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+//    @GetMapping("/prifile/{userId}")
+//    public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
+//        return userService.getProfile(userId);
+//    }
 
     /**
      * 유저 Profile 삭제

@@ -1,9 +1,12 @@
 package com.yogit.server.user.dto.request;
 
-import com.yogit.server.user.entity.*;
+import com.yogit.server.user.entity.Gender;
+import com.yogit.server.user.entity.Nationality;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,18 +20,6 @@ public class CreateUserEssentialProfileReq {
     Gender gender;
     Nationality nationality;
 
-    LanguageName languageName1;
-    LanguageLevel languageLevel1;
-
-    LanguageName languageName2;
-    LanguageLevel languageLevel2;
-
-    LanguageName languageName3;
-    LanguageLevel languageLevel3;
-
-    LanguageName languageName4;
-    LanguageLevel languageLevel4;
-
-    LanguageName languageName5;
-    LanguageLevel languageLevel5;
+    List<String> languageNames;
+    List<String> languageLevels;
 }

@@ -1,6 +1,8 @@
 package com.yogit.server.user.dto.response;
 
-import com.yogit.server.user.entity.*;
+import com.yogit.server.user.entity.Gender;
+import com.yogit.server.user.entity.Nationality;
+import com.yogit.server.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,21 +25,6 @@ public class UserProfileRes {
 //    String login_id; //TODO
 //    String pass_word; //TODO
 
-    LanguageName languageName1;
-    LanguageLevel languageLevel1;
-
-    LanguageName languageName2;
-    LanguageLevel languageLevel2;
-
-    LanguageName languageName3;
-    LanguageLevel languageLevel3;
-
-    LanguageName languageName4;
-    LanguageLevel languageLevel4;
-
-    LanguageName languageName5;
-    LanguageLevel languageLevel5;
-
     public static UserProfileRes create(User user){
         UserProfileRes userProfileRes = new UserProfileRes();
 
@@ -51,28 +38,5 @@ public class UserProfileRes {
         userProfileRes.profile_img = user.getProfileImg();
 
         return userProfileRes;
-    }
-
-    public void addLanguage(Language language){
-        if(this.languageName1 == null){
-            this.languageName1 = language.getName();
-            this.languageLevel1 = language.getLevel();
-        }
-        else if(this.languageName2 == null){
-            this.languageName2 = language.getName();
-            this.languageLevel2 = language.getLevel();
-        }
-        else if(this.languageName3 == null){
-            this.languageName3 = language.getName();
-            this.languageLevel3 = language.getLevel();
-        }
-        else if(this.languageName4 == null){
-            this.languageName4 = language.getName();
-            this.languageLevel4 = language.getLevel();
-        }
-        else{
-            this.languageName5 = language.getName();
-            this.languageLevel5 = language.getLevel();
-        }
     }
 }

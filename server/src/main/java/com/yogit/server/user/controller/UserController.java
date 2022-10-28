@@ -1,10 +1,7 @@
 package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
-import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
-import com.yogit.server.user.dto.request.CreateUserImageReq;
-import com.yogit.server.user.dto.request.CreateUserReq;
+import com.yogit.server.user.dto.request.*;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
@@ -30,7 +27,7 @@ public class UserController {
      * 유저 필수 정보 입력
      * @author 강신현
      */
-    @ApiOperation(value = "유저 필수 정보 입력", notes = "languageName1 부터, languageLevel1 부터 차례로 입력해주세요 (swagger에서 enum 열거형을 지원하지 않으므로)")
+    @ApiOperation(value = "유저 필수 정보 입력 및 수정")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userName", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "userAge", required = true, dataTypeClass = int.class, example = "0"),
@@ -42,17 +39,6 @@ public class UserController {
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
         return userService.enterEssentialProfile(createUserEssentialProfileReq);
     }
-
-    /**
-     * 유저 필수 정보 수정
-     * @author 강신현
-     */
-//    @ApiOperation(value = "유저 필수 정보 수정", notes = "수정할 정보들만 입력해주세요, Language 중에 하나라도 변경사항이 있다면 유저의 모든 Language 를 입력하여 요청해주세요")
-//    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-//    @PatchMapping("/edit-essential-profile")
-//    public ApplicationResponse<UserProfileRes> editEssentialProfile(@ModelAttribute EditUserEssentialProfileReq editUserEssentialProfileReq){
-//        return userService.editEssentialProfile(editUserEssentialProfileReq);
-//    }
 
     /**
      * 유저 Profile 조회

@@ -2,10 +2,14 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
-import com.yogit.server.user.dto.request.*;
+import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
+import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserImageReq;
+import com.yogit.server.user.dto.request.CreateUserReq;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
+import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.exception.UserDuplicationLoginId;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,21 +63,28 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    @Override
-//    public ApplicationResponse<UserProfileRes> getProfile(Long userId){
-//        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
-//
-//        UserProfileRes userProfileRes = UserProfileRes.create(user);
-//
-//        List<Language> languages = languageRepository.findAllByUserId(userId);
-//        if(!languages.isEmpty()){
-//            for(Language l : languages){
-//                userProfileRes.addLanguage(l);
-//            }
-//        }
-//
-//        return ApplicationResponse.ok(userProfileRes);
-//    }
+    @Override
+    public ApplicationResponse<UserProfileRes> getProfile(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+
+        UserProfileRes userProfileRes = UserProfileRes.create(user);
+
+        // if(user.getCity())  userProfileRes.addCity(user.getCity().getName()); // TODO administrativeArea 와의 차이 문의중 (활동 지역 필요하면, 지금 city 연관관계로 진행)
+
+        List<Language> languages = languageRepository.findAllByUserId(userId);
+        if(!languages.isEmpty()){
+            for(Language l : languages){
+                userProfileRes.addLanguage(l.getName(), l.getLevel());
+            }
+        }
+
+        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(userId);
+        if(userInterest.isPresent()){
+            userProfileRes.addInterest(userInterest.get().getInterest().getName());
+        }
+
+        return ApplicationResponse.ok(userProfileRes);
+    }
 
     @Override
     @Transactional

@@ -1,10 +1,14 @@
 package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.dto.request.*;
+import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
+import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserImageReq;
+import com.yogit.server.user.dto.request.CreateUserReq;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
+import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.Gender;
 import com.yogit.server.user.entity.Nationality;
 import com.yogit.server.user.service.UserService;
@@ -44,12 +48,12 @@ public class UserController {
      * 유저 Profile 조회
      * @author 강신현
      */
-//    @ApiOperation(value = "유저 Profile 조회")
-//    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-//    @GetMapping("/prifile/{userId}")
-//    public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
-//        return userService.getProfile(userId);
-//    }
+    @ApiOperation(value = "유저 Profile 조회")
+    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @GetMapping("/prifile/{userId}")
+    public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
+        return userService.getProfile(userId);
+    }
 
     /**
      * 유저 Profile 삭제

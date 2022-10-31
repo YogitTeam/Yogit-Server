@@ -50,7 +50,7 @@ public class User extends BaseEntity {
 
     private Integer age;
     private float memberTemp;
-    private String phone;
+    private String phoneNum;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
@@ -82,11 +82,12 @@ public class User extends BaseEntity {
         this.languages.add(language);
     }
 
-    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality){
+    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality, String phoneNum){
         if(userName != null) this.name = userName;
         if(userAge != 0) this.age = userAge;
         if(gender != null) this.gender = gender;
         if(nationality != null) this.nationality = nationality;
+        if(phoneNum != null) this.phoneNum = phoneNum;
     }
 
     public void delUser(){
@@ -115,5 +116,9 @@ public class User extends BaseEntity {
 
     public void addCity(City city){
         this.city = city;
+    }
+
+    public void addPhoneNum(String phoneNum){
+        this.phoneNum = phoneNum;
     }
 }

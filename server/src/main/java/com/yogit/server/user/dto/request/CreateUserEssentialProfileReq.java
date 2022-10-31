@@ -19,6 +19,7 @@ public class CreateUserEssentialProfileReq {
     int userAge;
     Gender gender;
     Nationality nationality;
+    String phoneNum;
 
     List<String> languageNames;
     List<String> languageLevels;

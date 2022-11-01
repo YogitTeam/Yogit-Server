@@ -25,7 +25,7 @@ public class SmsSendReq {
 
     public static SmsSendReq from(User user) {
         return SmsSendReq.builder()
-                .phoneNum(user.getPhone())
+                .phoneNum(user.getPhoneNum())
                 .build();
     }
 }

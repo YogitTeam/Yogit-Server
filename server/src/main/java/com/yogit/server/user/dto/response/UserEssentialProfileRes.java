@@ -1,6 +1,5 @@
 package com.yogit.server.user.dto.response;
 
-import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
 import com.yogit.server.user.entity.Gender;
 import com.yogit.server.user.entity.Nationality;
 import lombok.AllArgsConstructor;
@@ -25,14 +24,14 @@ public class UserEssentialProfileRes {
     List<String> languageNames = new ArrayList<>();
     List<String> languageLevels = new ArrayList<>();
 
-    public static UserEssentialProfileRes create(CreateUserEssentialProfileReq createUserEssentialProfileReq){
+    public static UserEssentialProfileRes create(Long userId, String userName, Integer userAge, Gender gender, Nationality nationality){
         UserEssentialProfileRes userEssentialProfileRes = new UserEssentialProfileRes();
 
-        userEssentialProfileRes.userId = createUserEssentialProfileReq.getUserId();
-        userEssentialProfileRes.userName = createUserEssentialProfileReq.getUserName();
-        userEssentialProfileRes.userAge = createUserEssentialProfileReq.getUserAge();
-        userEssentialProfileRes.gender = createUserEssentialProfileReq.getGender();
-        userEssentialProfileRes.nationality = createUserEssentialProfileReq.getNationality();
+        userEssentialProfileRes.userId = userId;
+        userEssentialProfileRes.userName = userName;
+        userEssentialProfileRes.userAge = userAge;
+        userEssentialProfileRes.gender = gender;
+        userEssentialProfileRes.nationality = nationality;
 
         return userEssentialProfileRes;
     }

@@ -8,13 +8,12 @@ import com.yogit.server.user.dto.request.CreateUserReq;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
+import com.yogit.server.user.dto.response.UserProfileRes;
 
 public interface UserService {
     ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq);
 
-    //ApplicationResponse<UserProfileRes> editEssentialProfile(EditUserEssentialProfileReq editUserEssentialProfileReq);
-
-    //ApplicationResponse<UserProfileRes> getProfile(Long userId);
+    ApplicationResponse<UserProfileRes> getProfile(Long userId);
 
     ApplicationResponse<Void> delProfile(Long userId);
 

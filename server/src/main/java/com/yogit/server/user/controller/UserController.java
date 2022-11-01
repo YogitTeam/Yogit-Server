@@ -31,13 +31,14 @@ public class UserController {
      * 유저 필수 정보 입력
      * @author 강신현
      */
-    @ApiOperation(value = "유저 필수 정보 입력 및 수정")
+    @ApiOperation(value = "유저 필수 정보 입력 및 수정", notes = "sms 인증을 한 경우에는 phoneNum을 꼭 입력해주세요.")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", required = true, dataTypeClass = String.class),
-            @ApiImplicitParam(name = "userAge", required = true, dataTypeClass = int.class, example = "0"),
-            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0"),
-            @ApiImplicitParam(name = "gender", required = true, dataTypeClass = Gender.class),
-            @ApiImplicitParam(name = "nationality", required = true, dataTypeClass = Nationality.class)
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
+            @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
+            @ApiImplicitParam(name = "gender", dataTypeClass = Gender.class, example = "FEMALE"),
+            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea"),
+            @ApiImplicitParam(name = "phoneNum", dataTypeClass = String.class, example = "01012345678")
     })
     @PatchMapping("/essential-profile")
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){

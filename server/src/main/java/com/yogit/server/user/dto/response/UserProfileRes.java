@@ -53,7 +53,7 @@ public class UserProfileRes {
         userProfileRes.aboutMe = user.getAboutMe();
         userProfileRes.login_id = user.getLoginId();
         userProfileRes.userStatus = user.getUserStatus();
-        userProfileRes.phone = user.getPhone();
+        userProfileRes.phone = user.getPhoneNum();
 
         // 유저 추가 정보
         userProfileRes.administrativeArea = user.getAdministrativeArea();

@@ -83,7 +83,13 @@ public class UserController {
      * @author 강신현
      */
     @ApiOperation(value = "유저 추가 정보 입력")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "latitude", dataTypeClass = Float.class, example = "10.23"),
+            @ApiImplicitParam(name = "longitude", dataTypeClass = Float.class, example = "10.23"),
+            @ApiImplicitParam(name = "aboutMe", dataTypeClass = String.class, example = "캠핑 모임에 관심이 많습니다."),
+            @ApiImplicitParam(name = "city", dataTypeClass = Nationality.class, example = "SEOUL")
+    })
     @PatchMapping("/additional-profile")
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
         return userService.enterAdditionalProfile(addUserAdditionalProfileReq);

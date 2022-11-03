@@ -4,11 +4,13 @@ import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
 import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
 import com.yogit.server.user.dto.request.CreateUserImageReq;
-import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserReq;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
+import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
-import com.yogit.server.user.entity.*;
+import com.yogit.server.user.entity.Gender;
+import com.yogit.server.user.entity.Nationality;
 import com.yogit.server.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,29 +31,18 @@ public class UserController {
      * 유저 필수 정보 입력
      * @author 강신현
      */
-    @ApiOperation(value = "유저 필수 정보 입력", notes = "languageName1 부터, languageLevel1 부터 차례로 입력해주세요 (swagger에서 enum 열거형을 지원하지 않으므로)")
+    @ApiOperation(value = "유저 필수 정보 입력 및 수정", notes = "sms 인증을 한 경우에는 phoneNum을 꼭 입력해주세요.")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", required = true, dataTypeClass = String.class),
-            @ApiImplicitParam(name = "userAge", required = true, dataTypeClass = int.class, example = "0"),
-            @ApiImplicitParam(name = "gender", required = true, dataTypeClass = Gender.class),
-            @ApiImplicitParam(name = "nationality", required = true, dataTypeClass = Nationality.class),
-            @ApiImplicitParam(name = "languageName1", required = true, dataTypeClass = LanguageName.class),
-            @ApiImplicitParam(name = "languageLevel1", required = true, dataTypeClass = LanguageLevel.class)
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
+            @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
+            @ApiImplicitParam(name = "gender", dataTypeClass = Gender.class, example = "FEMALE"),
+            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea"),
+            @ApiImplicitParam(name = "phoneNum", dataTypeClass = String.class, example = "01012345678")
     })
-    @PostMapping("/essential-profile")
-    public ApplicationResponse<UserProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
-        return userService.enterEssentialProfile(createUserEssentialProfileReq);
-    }
-
-    /**
-     * 유저 필수 정보 수정
-     * @author 강신현
-     */
-    @ApiOperation(value = "유저 필수 정보 수정", notes = "수정할 정보들만 입력해주세요, Language 중에 하나라도 변경사항이 있다면 유저의 모든 Language 를 입력하여 요청해주세요")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
     @PatchMapping("/essential-profile")
-    public ApplicationResponse<UserProfileRes> editEssentialProfile(@ModelAttribute EditUserEssentialProfileReq editUserEssentialProfileReq){
-        return userService.editEssentialProfile(editUserEssentialProfileReq);
+    public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
+        return userService.enterEssentialProfile(createUserEssentialProfileReq);
     }
 
     /**
@@ -97,4 +88,19 @@ public class UserController {
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
         return userService.enterAdditionalProfile(addUserAdditionalProfileReq);
     }
+
+    /**
+     * 유저 회원가입 (일반)
+     */
+    @ApiOperation(value = "유저 회원가입", notes = "sms 인증이 완료되어야 회원가입이 가능합니다.")
+    @ApiImplicitParam(name = "loginId", required = true, dataTypeClass = String.class)
+    @PostMapping("/join")
+    public ApplicationResponse<Void> createUser(@ModelAttribute CreateUserReq createUserReq){
+        return userService.createUser(createUserReq);
+    }
+
+
+    /**
+     * 유저 로그인
+     */
 }

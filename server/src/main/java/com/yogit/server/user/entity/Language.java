@@ -10,21 +10,19 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Language extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "language_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    private LanguageName name;
+    private String name;
 
-    @Enumerated(EnumType.STRING)
-    private LanguageLevel level;
+    private String level;
 
     @Builder
-    public Language (User user, LanguageName name, LanguageLevel level){
+    public Language (User user, String name, String level){
         this.name = name;
         this.level = level;
 

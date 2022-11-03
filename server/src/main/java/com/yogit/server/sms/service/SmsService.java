@@ -40,7 +40,7 @@ public class SmsService {
     private String secretKey;
 
     @Value("01046270562")
-    private String phoneNum;
+    private String phoneNum; // TODO 위 3가지 변수와 다르게 @Value(application.yml)값이 다른 값으로 불러와지는 문제가 있음, 일단 값을 yml에서 가져오지 않고 바로 넣어주는 식으로 임시 해결
 
     public String send(SmsSendReq smsSendReq) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
 //        if(smsSendReq.getPhoneNum().contains("-")) return "-을 제거해주세요.";
@@ -48,11 +48,11 @@ public class SmsService {
         System.out.println(serviceId);
         System.out.println(accessKey);
         System.out.println(secretKey);
-        System.out.println(phoneNum); // TODO 위 3가지 변수와 다르게 @Value(application.yml)값이 다른 값으로 불러와지는 문제가 있음, 일단 값을 yml에서 가져오지 않고 바로 넣어주는 식으로 임시 해결
+        System.out.println(phoneNum);
 
         String certification = Integer.toString((int)(Math.random() * (99999 - 10000 + 1)) + 10000);
 
-        Long time = System.currentTimeMillis();
+         Long time = System.currentTimeMillis();
 
         List<MessageDTO> messages = new ArrayList<>();
         messages.add(new MessageDTO(smsSendReq.getPhoneNum(), "Yogit \n 인증번호: "+certification));

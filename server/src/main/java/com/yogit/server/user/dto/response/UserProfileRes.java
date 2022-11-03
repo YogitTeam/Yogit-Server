@@ -5,74 +5,74 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class UserProfileRes {
-    String about_me;
-    String about_me_interest;
-    String about_me_job;
 
-    int age;
+    Long userId;
+
+    // 유저 필수 정보
+    Integer age;
     String name;
-    Gender gender; // Prefer not to say, male, female 중 하나
-    float member_temp;
+    Gender gender;
+    float memberTemp;
     Nationality nationality;
-    String profile_img; // 대표 프로필 이미지
+    String profileImg; // 대표 프로필 이미지
+    String aboutMe;
+    String login_id;
+    UserStatus userStatus;
+    String phone;
 
-//    String login_id; //TODO
-//    String pass_word; //TODO
+    List<String> languageNames = new ArrayList<>();
+    List<String> languageLevels = new ArrayList<>();
 
-    LanguageName languageName1;
-    LanguageLevel languageLevel1;
+    // 유저 추가 정보
+    String administrativeArea;
+    float longtitude;
+    float latitude;
 
-    LanguageName languageName2;
-    LanguageLevel languageLevel2;
+    CityName city;
 
-    LanguageName languageName3;
-    LanguageLevel languageLevel3;
-
-    LanguageName languageName4;
-    LanguageLevel languageLevel4;
-
-    LanguageName languageName5;
-    LanguageLevel languageLevel5;
+    List<String> interests = new ArrayList<>();
 
     public static UserProfileRes create(User user){
         UserProfileRes userProfileRes = new UserProfileRes();
 
-        userProfileRes.about_me = user.getAboutMe();
+        userProfileRes.userId = user.getId();
 
+        // 유저 필수 정보
         userProfileRes.age = user.getAge();
         userProfileRes.name = user.getName();
         userProfileRes.gender = user.getGender();
-        userProfileRes.member_temp = user.getMemberTemp();
         userProfileRes.nationality = user.getNationality();
-        userProfileRes.profile_img = user.getProfileImg();
+        userProfileRes.profileImg = user.getProfileImg();
+        userProfileRes.aboutMe = user.getAboutMe();
+        userProfileRes.login_id = user.getLoginId();
+        userProfileRes.userStatus = user.getUserStatus();
+        userProfileRes.phone = user.getPhoneNum();
+
+        // 유저 추가 정보
+        userProfileRes.administrativeArea = user.getAdministrativeArea();
+        userProfileRes.longtitude = user.getLongtitude();
+        userProfileRes.latitude = user.getLatitude();
 
         return userProfileRes;
     }
 
-    public void addLanguage(Language language){
-        if(this.languageName1 == null){
-            this.languageName1 = language.getName();
-            this.languageLevel1 = language.getLevel();
-        }
-        else if(this.languageName2 == null){
-            this.languageName2 = language.getName();
-            this.languageLevel2 = language.getLevel();
-        }
-        else if(this.languageName3 == null){
-            this.languageName3 = language.getName();
-            this.languageLevel3 = language.getLevel();
-        }
-        else if(this.languageName4 == null){
-            this.languageName4 = language.getName();
-            this.languageLevel4 = language.getLevel();
-        }
-        else{
-            this.languageName5 = language.getName();
-            this.languageLevel5 = language.getLevel();
-        }
+    public void addCity(CityName city){
+        this.city = city;
+    }
+
+    public void addLanguage(String languageName, String languageLevel){
+        this.languageNames.add(languageName);
+        this.languageLevels.add(languageLevel);
+    }
+
+    public void addInterest(String interest){
+        this.interests.add(interest);
     }
 }

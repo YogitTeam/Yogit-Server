@@ -5,18 +5,21 @@ import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
 import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
 import com.yogit.server.user.dto.request.CreateUserImageReq;
-import com.yogit.server.user.dto.request.EditUserEssentialProfileReq;
+import com.yogit.server.user.dto.request.CreateUserReq;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
+import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
+import com.yogit.server.user.exception.UserDuplicationLoginId;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,133 +36,32 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ApplicationResponse<UserProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
+    public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
 
-        User user = userRepository.save(createUserEssentialProfileReq.toEntityUser(createUserEssentialProfileReq));
+        User user = userRepository.findById(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        user.changeUserInfo(createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality(), createUserEssentialProfileReq.getPhoneNum());
 
-        UserProfileRes userProfileRes = UserProfileRes.create(user);
+        UserEssentialProfileRes userEssentialProfileRes = UserEssentialProfileRes.create(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
 
-        // language 추가
-        if(createUserEssentialProfileReq.getLanguageName1() != null && createUserEssentialProfileReq.getLanguageLevel1() != null){
-            Language language = Language.builder()
-                    .user(user)
-                    .name(createUserEssentialProfileReq.getLanguageName1())
-                    .level(createUserEssentialProfileReq.getLanguageLevel1())
-                    .build();
-            languageRepository.save(language);
-            userProfileRes.addLanguage(language);
+        if(!createUserEssentialProfileReq.getLanguageNames().isEmpty()) {
+            // 기존 languages 삭제
+            languageRepository.deleteAllByUserId(createUserEssentialProfileReq.getUserId());
+            // 새로운 languages 추가
+            for(int i=0;i < createUserEssentialProfileReq.getLanguageNames().size(); i++){
+                Language language = Language.builder()
+                        .user(user)
+                        .name(createUserEssentialProfileReq.getLanguageNames().get(i))
+                        .level(createUserEssentialProfileReq.getLanguageLevels().get(i))
+                        .build();
+                languageRepository.save(language);
+
+                userEssentialProfileRes.addLanguage(createUserEssentialProfileReq.getLanguageNames().get(i), createUserEssentialProfileReq.getLanguageLevels().get(i));
+            }
         }
 
-        if(createUserEssentialProfileReq.getLanguageName2() != null && createUserEssentialProfileReq.getLanguageLevel2() != null){
-            Language language = Language.builder()
-                    .user(user)
-                    .name(createUserEssentialProfileReq.getLanguageName2())
-                    .level(createUserEssentialProfileReq.getLanguageLevel2())
-                    .build();
-            languageRepository.save(language);
-            userProfileRes.addLanguage(language);
-        }
-
-        if(createUserEssentialProfileReq.getLanguageName3() != null && createUserEssentialProfileReq.getLanguageLevel3() != null){
-            Language language = Language.builder()
-                    .user(user)
-                    .name(createUserEssentialProfileReq.getLanguageName3())
-                    .level(createUserEssentialProfileReq.getLanguageLevel3())
-                    .build();
-            languageRepository.save(language);
-            userProfileRes.addLanguage(language);
-        }
-
-        if(createUserEssentialProfileReq.getLanguageName4() != null && createUserEssentialProfileReq.getLanguageLevel4() != null){
-            Language language = Language.builder()
-                    .user(user)
-                    .name(createUserEssentialProfileReq.getLanguageName4())
-                    .level(createUserEssentialProfileReq.getLanguageLevel4())
-                    .build();
-            languageRepository.save(language);
-            userProfileRes.addLanguage(language);
-        }
-
-        if(createUserEssentialProfileReq.getLanguageName5() != null && createUserEssentialProfileReq.getLanguageLevel5() != null){
-            Language language = Language.builder()
-                    .user(user)
-                    .name(createUserEssentialProfileReq.getLanguageName5())
-                    .level(createUserEssentialProfileReq.getLanguageLevel5())
-                    .build();
-            languageRepository.save(language);
-            userProfileRes.addLanguage(language);
-        }
-
-        return ApplicationResponse.create("created", userProfileRes);
+        return ApplicationResponse.ok(userEssentialProfileRes);
     }
 
-    @Transactional
-    @Override
-    public ApplicationResponse<UserProfileRes> editEssentialProfile(EditUserEssentialProfileReq editUserEssentialProfileReq){
-
-        User user = userRepository.findById(editUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
-        user.changeUserInfo(editUserEssentialProfileReq);
-
-        UserProfileRes userProfileRes = UserProfileRes.create(user);
-
-        if(editUserEssentialProfileReq.getLanguageName1() != null){
-            // 기존 language 들 삭제
-            languageRepository.deleteAllByUserId(user.getId());
-
-            // language 추가
-            if(editUserEssentialProfileReq.getLanguageName1() != null && editUserEssentialProfileReq.getLanguageLevel1() != null){
-                Language language = Language.builder()
-                        .user(user)
-                        .name(editUserEssentialProfileReq.getLanguageName1())
-                        .level(editUserEssentialProfileReq.getLanguageLevel1())
-                        .build();
-                languageRepository.save(language);
-                userProfileRes.addLanguage(language);
-            }
-
-            if(editUserEssentialProfileReq.getLanguageName2() != null && editUserEssentialProfileReq.getLanguageLevel2() != null){
-                Language language = Language.builder()
-                        .user(user)
-                        .name(editUserEssentialProfileReq.getLanguageName2())
-                        .level(editUserEssentialProfileReq.getLanguageLevel2())
-                        .build();
-                languageRepository.save(language);
-                userProfileRes.addLanguage(language);
-            }
-
-            if(editUserEssentialProfileReq.getLanguageName3() != null && editUserEssentialProfileReq.getLanguageLevel3() != null){
-                Language language = Language.builder()
-                        .user(user)
-                        .name(editUserEssentialProfileReq.getLanguageName3())
-                        .level(editUserEssentialProfileReq.getLanguageLevel3())
-                        .build();
-                languageRepository.save(language);
-                userProfileRes.addLanguage(language);
-            }
-
-            if(editUserEssentialProfileReq.getLanguageName4() != null && editUserEssentialProfileReq.getLanguageLevel4() != null){
-                Language language = Language.builder()
-                        .user(user)
-                        .name(editUserEssentialProfileReq.getLanguageName4())
-                        .level(editUserEssentialProfileReq.getLanguageLevel4())
-                        .build();
-                languageRepository.save(language);
-                userProfileRes.addLanguage(language);
-            }
-
-            if(editUserEssentialProfileReq.getLanguageName5() != null && editUserEssentialProfileReq.getLanguageLevel5() != null){
-                Language language = Language.builder()
-                        .user(user)
-                        .name(editUserEssentialProfileReq.getLanguageName5())
-                        .level(editUserEssentialProfileReq.getLanguageLevel5())
-                        .build();
-                languageRepository.save(language);
-                userProfileRes.addLanguage(language);
-            }
-        }
-
-        return ApplicationResponse.ok(userProfileRes);
-    }
 
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(Long userId){
@@ -167,11 +69,18 @@ public class UserServiceImpl implements UserService {
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
+        // if(user.getCity())  userProfileRes.addCity(user.getCity().getName()); // TODO administrativeArea 와의 차이 문의중 (활동 지역 필요하면, 지금 city 연관관계로 진행)
+
         List<Language> languages = languageRepository.findAllByUserId(userId);
         if(!languages.isEmpty()){
             for(Language l : languages){
-                userProfileRes.addLanguage(l);
+                userProfileRes.addLanguage(l.getName(), l.getLevel());
             }
+        }
+
+        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(userId);
+        if(userInterest.isPresent()){
+            userProfileRes.addInterest(userInterest.get().getInterest().getName());
         }
 
         return ApplicationResponse.ok(userProfileRes);
@@ -248,9 +157,17 @@ public class UserServiceImpl implements UserService {
             userAdditionalProfileRes.getInterests().add(interestName);
         }
 
-
-
-
         return ApplicationResponse.ok(userAdditionalProfileRes);
+    }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<Void> createUser(CreateUserReq createUserReq){
+
+        if(userRepository.existsByLoginId(createUserReq.getLoginId())) throw new UserDuplicationLoginId();
+
+        userRepository.save(CreateUserReq.toEntityUser(createUserReq));
+
+        return ApplicationResponse.ok();
     }
 }

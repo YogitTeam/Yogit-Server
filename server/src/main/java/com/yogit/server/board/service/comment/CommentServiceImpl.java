@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -42,5 +45,20 @@ public class CommentServiceImpl implements CommentService{
         return ApplicationResponse.create("코멘트 생성을 성공했습니다.", commentRes);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<CommentRes>> findAllComments(Long clipBoardId, Long userId){
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundUserException());
+
+        ClipBoard clipBoard = clipBoardRepository.findClipBoardById(clipBoardId)
+                .orElseThrow(() -> new NotFoundClipBoardException());
+
+        List<CommentRes> commentResList = commentRepository.findAllCommentsByClipBoardId(clipBoardId).stream()
+                .map(comment -> CommentRes.toDto(comment))
+                .collect(Collectors.toList());
+
+        return ApplicationResponse.ok(commentResList);
+    }
 }

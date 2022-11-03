@@ -2,6 +2,7 @@ package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,5 +37,9 @@ public class Comment extends BaseEntity {
         this.content = dto.getContent();
         this.user = user;
         this.clipBoard = clipBoard;
+    }
+
+    public void deleteComment(){
+        this.setStatus(BaseStatus.INACTIVE);
     }
 }

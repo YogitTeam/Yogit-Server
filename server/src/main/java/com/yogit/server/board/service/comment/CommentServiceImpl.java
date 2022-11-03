@@ -1,10 +1,14 @@
 package com.yogit.server.board.service.comment;
 
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
+import com.yogit.server.board.dto.request.comment.DeleteCommentReq;
+import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
 import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
 import com.yogit.server.board.exception.clipboard.NotFoundClipBoardException;
+import com.yogit.server.board.exception.comment.NotFoundCommentException;
+import com.yogit.server.board.exception.comment.NotHostOfCommentException;
 import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.board.repository.CommentRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -60,5 +64,26 @@ public class CommentServiceImpl implements CommentService{
                 .collect(Collectors.toList());
 
         return ApplicationResponse.ok(commentResList);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<DeleteCommentRes> deleteComment(DeleteCommentReq dto, Long commentId){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Comment comment = commentRepository.findCommentById(commentId)
+                .orElseThrow(() -> new NotFoundCommentException());
+
+        //검증: 요청 유저가 코멘트를 생성한 사람인지
+        if(!user.getId().equals(comment.getUser().getId())){
+            throw new NotHostOfCommentException();
+        }
+
+        comment.deleteComment();
+        DeleteCommentRes deleteCommentRes = DeleteCommentRes.toDto(comment);
+        return ApplicationResponse.ok(deleteCommentRes);
     }
 }

@@ -2,6 +2,7 @@ package com.yogit.server.board.service.comment;
 
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
 import com.yogit.server.board.dto.request.comment.DeleteCommentReq;
+import com.yogit.server.board.dto.request.comment.PatchCommentReq;
 import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
 import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.entity.ClipBoard;
@@ -85,5 +86,26 @@ public class CommentServiceImpl implements CommentService{
         comment.deleteComment();
         DeleteCommentRes deleteCommentRes = DeleteCommentRes.toDto(comment);
         return ApplicationResponse.ok(deleteCommentRes);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<CommentRes> updateComment(PatchCommentReq dto, Long commentId){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Comment comment = commentRepository.findCommentById(dto.getCommentId())
+                .orElseThrow(() -> new NotFoundCommentException());
+
+        //검증: 요청 유저가 코멘트를 생성한 사람인지
+        if(!user.getId().equals(comment.getUser().getId())){
+            throw new NotHostOfCommentException();
+        }
+
+        comment.updateComment(dto);
+        CommentRes commentRes = CommentRes.toDto(comment);
+        return ApplicationResponse.ok(commentRes);
     }
 }

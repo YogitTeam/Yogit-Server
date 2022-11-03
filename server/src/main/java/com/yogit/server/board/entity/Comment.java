@@ -1,6 +1,7 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
+import com.yogit.server.board.dto.request.comment.PatchCommentReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.User;
@@ -41,5 +42,9 @@ public class Comment extends BaseEntity {
 
     public void deleteComment(){
         this.setStatus(BaseStatus.INACTIVE);
+    }
+
+    public void updateComment(PatchCommentReq dto){
+        this.content = dto.getContent();
     }
 }

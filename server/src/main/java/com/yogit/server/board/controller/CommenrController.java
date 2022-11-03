@@ -2,6 +2,7 @@ package com.yogit.server.board.controller;
 
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
 import com.yogit.server.board.dto.request.comment.DeleteCommentReq;
+import com.yogit.server.board.dto.request.comment.PatchCommentReq;
 import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
 import com.yogit.server.board.service.comment.CommentService;
@@ -80,5 +81,27 @@ public class CommenrController {
     @PatchMapping("/{commentId}")
     public ApplicationResponse<DeleteCommentRes> deleteComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated DeleteCommentReq deleteCommentReq){
         return commentService.deleteComment(deleteCommentReq, commentId);
+    }
+
+
+    /**
+     * 코멘트 수정
+     * @author 토마스
+     */
+    @ApiOperation(value = "코멘트 수정", notes = "코멘트 아이디, 수정할 내용을 입력해 코멘트 수정 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 코멘트입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "commentId", required = true, dataTypeClass = Long.class, example = "1")
+    })
+    @PatchMapping("/{commentId}/content")
+    public ApplicationResponse<CommentRes> updateComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated PatchCommentReq patchCommentReq){
+        return commentService.updateComment(patchCommentReq, commentId);
     }
 }

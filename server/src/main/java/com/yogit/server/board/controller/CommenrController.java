@@ -74,7 +74,7 @@ public class CommenrController {
     })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "clipBoardId", required = true, dataTypeClass = Long.class, example = "1")
+            @ApiImplicitParam(name = "commentId", required = true, dataTypeClass = Long.class, example = "1")
     })
     @PatchMapping("/{commentId}")
     public ApplicationResponse<DeleteCommentRes> deleteComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated DeleteCommentReq deleteCommentReq){

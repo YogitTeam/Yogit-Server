@@ -52,10 +52,6 @@ public class CommenrController {
             @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "clipBoardId", required = true, dataTypeClass = Long.class, example = "1")
-    })
     @GetMapping("/clipboard/{clipBoardId}/user/{userId}")
     public ApplicationResponse<List<CommentRes>> findAllComments(@PathVariable("clipBoardId") Long clipBoardId, @PathVariable("userId") Long userId){
         return commentService.findAllComments(clipBoardId, userId);
@@ -74,10 +70,6 @@ public class CommenrController {
             @ApiResponse(code= 404, message = "존재하지 않는 코멘트입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "commentId", required = true, dataTypeClass = Long.class, example = "1")
-    })
     @PatchMapping("/{commentId}")
     public ApplicationResponse<DeleteCommentRes> deleteComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated DeleteCommentReq deleteCommentReq){
         return commentService.deleteComment(deleteCommentReq, commentId);
@@ -95,10 +87,6 @@ public class CommenrController {
             @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 코멘트입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
-    })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "commentId", required = true, dataTypeClass = Long.class, example = "1")
     })
     @PatchMapping("/{commentId}/content")
     public ApplicationResponse<CommentRes> updateComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated PatchCommentReq patchCommentReq){

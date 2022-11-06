@@ -37,8 +37,7 @@ public class UserController {
             @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
             @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
             @ApiImplicitParam(name = "gender", dataTypeClass = Gender.class, example = "FEMALE"),
-            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea"),
-            @ApiImplicitParam(name = "phoneNum", dataTypeClass = String.class, example = "01012345678")
+            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea")
     })
     @PatchMapping("/essential-profile")
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
@@ -99,7 +98,10 @@ public class UserController {
      * 유저 회원가입 (일반)
      */
     @ApiOperation(value = "유저 회원가입", notes = "sms 인증이 완료되어야 회원가입이 가능합니다.")
-    @ApiImplicitParam(name = "loginId", required = true, dataTypeClass = String.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loginId", required = true, dataTypeClass = String.class, example = "kang123"),
+            @ApiImplicitParam(name = "phoneNum", required = true, dataTypeClass = String.class, example = "01012345678")
+    })
     @PostMapping("/join")
     public ApplicationResponse<Void> createUser(@ModelAttribute CreateUserReq createUserReq){
         return userService.createUser(createUserReq);

@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 public class CreateUserReq {
 
     String loginId;
+    String phoneNum;
 
     public static User toEntityUser(CreateUserReq createUserReq){
         return User.builder()
                 .loginId(createUserReq.getLoginId())
+                .phoneNum(createUserReq.getPhoneNum())
                 .build();
     }
 }

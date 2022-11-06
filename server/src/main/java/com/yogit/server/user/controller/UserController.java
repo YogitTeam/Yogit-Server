@@ -37,8 +37,7 @@ public class UserController {
             @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
             @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
             @ApiImplicitParam(name = "gender", dataTypeClass = Gender.class, example = "FEMALE"),
-            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea"),
-            @ApiImplicitParam(name = "phoneNum", dataTypeClass = String.class, example = "01012345678")
+            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea")
     })
     @PatchMapping("/essential-profile")
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
@@ -83,7 +82,13 @@ public class UserController {
      * @author 강신현
      */
     @ApiOperation(value = "유저 추가 정보 입력")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "latitude", dataTypeClass = Float.class, example = "10.23"),
+            @ApiImplicitParam(name = "longitude", dataTypeClass = Float.class, example = "10.23"),
+            @ApiImplicitParam(name = "aboutMe", dataTypeClass = String.class, example = "캠핑 모임에 관심이 많습니다."),
+            @ApiImplicitParam(name = "city", dataTypeClass = Nationality.class, example = "SEOUL")
+    })
     @PatchMapping("/additional-profile")
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
         return userService.enterAdditionalProfile(addUserAdditionalProfileReq);
@@ -93,7 +98,10 @@ public class UserController {
      * 유저 회원가입 (일반)
      */
     @ApiOperation(value = "유저 회원가입", notes = "sms 인증이 완료되어야 회원가입이 가능합니다.")
-    @ApiImplicitParam(name = "loginId", required = true, dataTypeClass = String.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loginId", required = true, dataTypeClass = String.class, example = "kang123"),
+            @ApiImplicitParam(name = "phoneNum", required = true, dataTypeClass = String.class, example = "01012345678")
+    })
     @PostMapping("/join")
     public ApplicationResponse<Void> createUser(@ModelAttribute CreateUserReq createUserReq){
         return userService.createUser(createUserReq);

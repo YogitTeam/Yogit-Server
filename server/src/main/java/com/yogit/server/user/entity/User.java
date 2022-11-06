@@ -74,20 +74,20 @@ public class User extends BaseEntity {
     private List<UserImage> userImages = new ArrayList<>();
 
     @Builder
-    public User (String loginId){
+    public User (String loginId, String phoneNum){
         this.loginId = loginId;
+        this.phoneNum = phoneNum;
     }
 
     public void addLanguage(Language language){
         this.languages.add(language);
     }
 
-    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality, String phoneNum){
+    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality){
         if(userName != null) this.name = userName;
         if(userAge != 0) this.age = userAge;
         if(gender != null) this.gender = gender;
         if(nationality != null) this.nationality = nationality;
-        if(phoneNum != null) this.phoneNum = phoneNum;
     }
 
     public void delUser(){

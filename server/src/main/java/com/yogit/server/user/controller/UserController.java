@@ -70,11 +70,22 @@ public class UserController {
      * 유저 Profile + 사진 등록
      * @author 강신현
      */
-    @ApiOperation(value = "유저 Profile 사진 등록", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
+    @ApiOperation(value = "유저 사진 등록", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
     @PostMapping("/image")
     public ApplicationResponse<UserImagesRes> enterUserImage(@ModelAttribute CreateUserImageReq createUserImageReq){
         return userService.enterUserImage(createUserImageReq);
+    }
+
+    /**
+     * 유저 사진 조회
+     * @author 강신현
+     */
+    @ApiOperation(value = "유저 사진 조회")
+    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @PostMapping("/image/{userId}")
+    public ApplicationResponse<UserImagesRes> getUserImage(@PathVariable Long userId){
+        return userService.getUserImage(userId);
     }
 
     /**

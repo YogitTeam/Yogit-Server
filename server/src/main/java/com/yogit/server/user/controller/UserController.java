@@ -50,7 +50,7 @@ public class UserController {
      */
     @ApiOperation(value = "유저 Profile 조회")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-    @GetMapping("/prifile/{userId}")
+    @GetMapping("/prifile/{userId}") // TODO
     public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
         return userService.getProfile(userId);
     }
@@ -111,4 +111,5 @@ public class UserController {
     /**
      * 유저 로그인
      */
+
 }

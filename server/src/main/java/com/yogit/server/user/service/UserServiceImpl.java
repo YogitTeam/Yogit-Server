@@ -108,16 +108,20 @@ public class UserServiceImpl implements UserService {
         UserImagesRes userImagesRes = new UserImagesRes();
 
         // 메인 프로필 사진 업로드
-        String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
-        user.changeMainImgUUid(mainImageUUid);
-        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(mainImageUUid));
+        if (createUserImageReq.getProfileImage() != null){
+            String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
+            user.changeMainImgUUid(mainImageUUid);
+            userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(mainImageUUid));
+        }
 
         // 나머지 사진 업로드
-        List<String> imageUUids = awsS3Service.uploadImages(createUserImageReq.getImages());
-        for(String i : imageUUids){
-            UserImage userImage = createUserImageReq.toEntityUserImage(user, i);
-            userImageRepository.save(userImage);
-            userImagesRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
+        if(createUserImageReq.getImages() != null){
+            List<String> imageUUids = awsS3Service.uploadImages(createUserImageReq.getImages());
+            for(String i : imageUUids){
+                UserImage userImage = createUserImageReq.toEntityUserImage(user, i);
+                userImageRepository.save(userImage);
+                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
+            }
         }
 
         return ApplicationResponse.ok(userImagesRes);

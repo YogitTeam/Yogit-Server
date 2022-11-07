@@ -83,7 +83,7 @@ public class UserController {
      */
     @ApiOperation(value = "유저 사진 조회")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-    @PostMapping("/image/{userId}")
+    @GetMapping("/image/{userId}")
     public ApplicationResponse<UserImagesRes> getUserImage(@PathVariable Long userId){
         return userService.getUserImage(userId);
     }

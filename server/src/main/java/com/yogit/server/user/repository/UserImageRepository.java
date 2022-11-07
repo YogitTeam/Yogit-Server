@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface UserImageRepository extends JpaRepository<UserImage, Long> {
     void deleteAllByUserId(Long userId);
+
+    List<UserImage> findAllByUserId(Long userId);
 }

@@ -19,6 +19,8 @@ public interface UserService {
 
     ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq);
 
+    ApplicationResponse<UserImagesRes> getUserImage(Long userId);
+
     ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq);
 
     ApplicationResponse<Void> createUser(CreateUserReq createUserReq);

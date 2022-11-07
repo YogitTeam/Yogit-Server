@@ -107,6 +107,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
+        userImageRepository.deleteAllByUserId(user.getId());
+
         // 메인 프로필 사진 업로드
         if (createUserImageReq.getProfileImage() != null){
             String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
@@ -126,6 +128,24 @@ public class UserServiceImpl implements UserService {
 
         return ApplicationResponse.ok(userImagesRes);
     }
+
+    @Override
+    public ApplicationResponse<UserImagesRes> getUserImage(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+        UserImagesRes userImagesRes = new UserImagesRes();
+
+        if(user.getUserImages() != null) userImagesRes.setProfileImageUrl(user.getProfileImg());
+
+        List<UserImage> userImages = userImageRepository.findAllByUserId(userId);
+        if (!userImages.isEmpty()){
+            for(UserImage i : userImages){
+                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()));
+            }
+        }
+
+        return ApplicationResponse.ok(userImagesRes);
+    }
+
 
     @Override
     @Transactional

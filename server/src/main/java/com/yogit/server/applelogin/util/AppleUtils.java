@@ -146,25 +146,13 @@ public class AppleUtils {
         SignedJWT jwt = new SignedJWT(header, claimsSet);
 
         try {
-//            ECPrivateKey ecPrivateKey = new ECPrivateKeyImpl2(readPrivateKey());
-//            JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey.getS());
-//
-//            jwt.sign(jwsSigner);
-            System.out.println("=====새로운 시도 1=====");
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(readPrivateKey());
-            System.out.println("=====새로운 시도 5=====");
-
 
             try{
                 KeyFactory kf = KeyFactory.getInstance("EC");
-                System.out.println("=====새로운 시도 6=====");
                 ECPrivateKey ecPrivateKey = (ECPrivateKey) kf.generatePrivate(spec);
-                System.out.println("=====새로운 시도 7=====");
-                System.out.println("=====새로운 시도 7.5====="+ecPrivateKey.getS());
                 JWSSigner jwsSigner = new ECDSASigner(ecPrivateKey.getS());
-                System.out.println("=====새로운 시도 8=====");
                 jwt.sign(jwsSigner);
-                System.out.println("=====새로운 시도 9=====");
             }catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }catch (InvalidKeySpecException e){
@@ -172,9 +160,6 @@ public class AppleUtils {
             }
 
         }
-//        catch (InvalidKeyException e) {
-//            e.printStackTrace();
-//        }
         catch (JOSEException e) {
             e.printStackTrace();
         }
@@ -191,20 +176,13 @@ public class AppleUtils {
 
         ClassPathResource resource = new ClassPathResource(KEY_PATH);
 
-
-//        Resource resource = new ClassPathResource(KEY_PATH);
         byte[] content = null;
-        System.out.println("=====새로운 시도 2=====");
         try (Reader keyReader = new InputStreamReader(resource.getInputStream());
 
              PemReader pemReader = new PemReader(keyReader)) {
             {
-                System.out.println("=====새로운 시도 3=====");
                 PemObject pemObject = pemReader.readPemObject();
-                System.out.println("=====새로운 시도 3.5=====");
                 content = pemObject.getContent();
-                System.out.println("=====새로운 시도 4=====");
-                System.out.println(content+"=====content=====");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -261,15 +239,9 @@ public class AppleUtils {
     private TokenResponse getTokenResponse(Map<String, String> tokenRequest) {
 
         try {
-            System.out.println("======tokenRequest"+tokenRequest);
             String response = HttpClientUtils.doPost(AUTH_TOKEN_URL, tokenRequest);
-            System.out.println("======response"+response);
-
             ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false); // null허용 설정 추가
-            System.out.println("======objectMapper"+objectMapper);
-
             TokenResponse tokenResponse = objectMapper.readValue(response, TokenResponse.class);
-            System.out.println("======tokenResponse"+tokenResponse);
 
             if (tokenRequest != null) {
                 return tokenResponse;
@@ -307,16 +279,10 @@ public class AppleUtils {
 
         try {
             SignedJWT signedJWT = SignedJWT.parse(id_token);
-            System.out.println("=====payload1"+signedJWT );
             ReadOnlyJWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
-            System.out.println("=====payload2"+getPayload);
             ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-//            objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT); // null 값 허용
-//            objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-//            Payload payload = objectMapper.readValue(getPayload.toJSONObject().toJSONString(), Payload.class);
             JSONObject payload = objectMapper.readValue(getPayload.toJSONObject().toJSONString(), JSONObject.class);
 
-            System.out.println("=====payload3"+payload );
             if (payload != null) {
                 return payload;
             }

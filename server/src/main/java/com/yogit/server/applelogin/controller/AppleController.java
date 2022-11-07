@@ -24,7 +24,7 @@ public class AppleController {
 
     /**
      * Sign in with Apple - JS Page (index.html)
-     *
+     *애플 로그인 index 페이지
      * @param model
      * @return
      */
@@ -37,17 +37,12 @@ public class AppleController {
         model.addAttribute("redirect_uri", metaInfo.get("REDIRECT_URI"));
         model.addAttribute("nonce", metaInfo.get("NONCE"));
 
-        System.out.println(model.getAttribute("client_id"));
-        System.out.println(model.getAttribute("redirect_uri"));
-        System.out.println(model.getAttribute("nonce"));
-
-
         return "index";
     }
 
     /**
      * Apple login page Controller (SSL - https)
-     *
+     * publickey 요청 후 받은 데이터와 함계 redirect 페이지로 연결
      * @param model
      * @return
      */
@@ -63,21 +58,12 @@ public class AppleController {
         model.addAttribute("scope", "name email");
         model.addAttribute("response_mode", "form_post");
 
-        System.out.println("==========================");
-        System.out.println(model.getAttribute("client_id"));
-        System.out.println(model.getAttribute("redirect_uri"));
-        System.out.println(model.getAttribute("nonce"));
-        System.out.println(model.getAttribute("response_type"));
-        System.out.println(model.getAttribute("scope"));
-        System.out.println(model.getAttribute("response_mode"));
-
-
         return "redirect:https://appleid.apple.com/auth/authorize";
     }
 
     /**
      * Apple Login 유저 정보를 받은 후 권한 생성
-     *
+     * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
      * @param serviceResponse
      * @return
      */
@@ -85,37 +71,19 @@ public class AppleController {
     @ResponseBody
     public TokenResponse servicesRedirect(ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
 
-        System.out.println("1-------------");
         if (serviceResponse == null) {
             return null;
         }
-        System.out.println("2-------------");
-
-
-        System.out.println(serviceResponse);
-        System.out.println("3-------------");
-
 
         String code = serviceResponse.getCode();
-        System.out.println(code);
-        System.out.println("4-------------");
-
         String id_token = serviceResponse.getId_token();
-        System.out.println(id_token);
-        System.out.println("5-------------");
-
         String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
-        System.out.println(client_secret);
-        System.out.println("6-------------");
-
 
         logger.debug("================================");
         logger.debug("id_token ‣ " + serviceResponse.getId_token());
         logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
         logger.debug("client_secret ‣ " + client_secret);
         logger.debug("================================");
-
-        System.out.println("7-------------");
 
         return appleService.requestCodeValidations(client_secret, code, null);
     }

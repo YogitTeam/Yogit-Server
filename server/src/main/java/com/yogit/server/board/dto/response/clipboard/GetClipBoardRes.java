@@ -24,6 +24,14 @@ public class GetClipBoardRes {
     @ApiParam(value = "유저 ID")
     private Long userId;
 
+    @ApiModelProperty(example = "Park jun")
+    @ApiParam(value = "유저 이름")
+    private String userName;
+
+    @ApiModelProperty(example = "추가 예정")
+    @ApiParam(value = "유저 프로필 이미지 url")
+    private String profileImgUrl;
+
     @ApiModelProperty(example = "1")
     @ApiParam(value = "Board ID")
     private Long boardId;
@@ -56,10 +64,12 @@ public class GetClipBoardRes {
     @ApiParam(value = "마지막 업데이트 시각")
     private String updatedAt;
 
-    public static GetClipBoardRes toDto(ClipBoard clipBoard, List<CommentRes> commentResList){
+    public static GetClipBoardRes toDto(ClipBoard clipBoard, List<CommentRes> commentResList, String profileImgUrl){
         return GetClipBoardRes.builder()
                 .clipBoardId(clipBoard.getId())
                 .userId(clipBoard.getUser().getId())
+                .userName(clipBoard.getUser().getName())
+                .profileImgUrl(profileImgUrl)
                 .boardId(clipBoard.getBoard().getId())
                 .title(clipBoard.getTitle())
                 .content(clipBoard.getContent())
@@ -72,9 +82,11 @@ public class GetClipBoardRes {
     }
 
     @Builder
-    public GetClipBoardRes(Long clipBoardId, Long userId, Long boardId, String title, String content, List<CommentRes> commentResList, Integer commentCnt, BaseStatus status, String createdAt, String updatedAt) {
+    public GetClipBoardRes(Long clipBoardId, Long userId, String userName, String profileImgUrl, Long boardId, String title, String content, List<CommentRes> commentResList, Integer commentCnt, BaseStatus status, String createdAt, String updatedAt) {
         this.clipBoardId = clipBoardId;
         this.userId = userId;
+        this.userName = userName;
+        this.profileImgUrl = profileImgUrl;
         this.boardId = boardId;
         this.title = title;
         this.content = content;

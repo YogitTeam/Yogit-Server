@@ -15,6 +15,7 @@ import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.board.repository.CommentRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
@@ -34,6 +35,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final AwsS3Service awsS3Service;
 
     @Transactional(readOnly = false)
     @Override
@@ -70,31 +72,33 @@ public class ClipBoardServiceImpl implements ClipBoardService{
                 .map(comment -> CommentRes.toDto(comment))
                 .collect(Collectors.toList());
 
+        String profileImgUrl = awsS3Service.makeUrlOfFilename(user.getProfileImg());// 유저 프로필 사진 multipart -> url 로 변환
+
         // 코멘트 추가
-        GetClipBoardRes getClipBoardRes = GetClipBoardRes.toDto(clipBoard, comments);
+        GetClipBoardRes getClipBoardRes = GetClipBoardRes.toDto(clipBoard, comments, profileImgUrl);
         return ApplicationResponse.ok(getClipBoardRes);
     }
 
 
-    @Transactional(readOnly = true)
-    @Override
-    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
-
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new NotFoundUserException());
-
-        Board board = boardRepository.findBoardById(dto.getBoardId())
-                .orElseThrow(() -> new NotFoundBoardException());
-
-        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
-        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
-                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
-                        .map(comment -> CommentRes.toDto(comment))
-                        .collect(Collectors.toList())))
-                .collect(Collectors.toList());
-
-        return ApplicationResponse.ok(getClipBoardResList);
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
+//
+//        User user = userRepository.findById(dto.getUserId())
+//                .orElseThrow(() -> new NotFoundUserException());
+//
+//        Board board = boardRepository.findBoardById(dto.getBoardId())
+//                .orElseThrow(() -> new NotFoundBoardException());
+//
+//        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
+//        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+//                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+//                        .map(comment -> CommentRes.toDto(comment))
+//                        .collect(Collectors.toList())))
+//                .collect(Collectors.toList());
+//
+//        return ApplicationResponse.ok(getClipBoardResList);
+//    }
 
 
     @Transactional(readOnly = false)

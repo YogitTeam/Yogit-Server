@@ -13,7 +13,7 @@ public interface ClipBoardService {
 
     ApplicationResponse<GetClipBoardRes> findClipBoard(GetClipBoardReq getClipBoardReq);
 
-    ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq getAllClipBoardsReq);
+//    ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq getAllClipBoardsReq);
 
     ApplicationResponse<ClipBoardRes> deleteClipBoard(DeleteClipBoardReq deleteClipBoardReq);
 

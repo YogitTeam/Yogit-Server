@@ -79,7 +79,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<ClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
+    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
 
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -87,10 +87,13 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        List<ClipBoardRes> clipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
-                .map(clipBoard -> ClipBoardRes.toDto(clipBoard))
+        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
+        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+                        .map(comment -> CommentRes.toDto(comment))
+                        .collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
-        return ApplicationResponse.ok(clipBoardResList);
+        return ApplicationResponse.ok(getClipBoardResList);
     }
 }

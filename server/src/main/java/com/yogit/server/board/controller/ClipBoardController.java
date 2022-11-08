@@ -70,7 +70,7 @@ public class ClipBoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/all")
-    public ApplicationResponse<List<ClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq){
+    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq){
         return clipBoardService.findAllClipBoards(getAllClipBoardsReq);
     }
 }

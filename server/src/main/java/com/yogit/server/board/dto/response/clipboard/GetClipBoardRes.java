@@ -40,6 +40,10 @@ public class GetClipBoardRes {
     @ApiParam(value = "코멘트들")
     private List<CommentRes> commentResList;
 
+    @ApiModelProperty(example = "2")
+    @ApiParam(value = "클립보드에 달린 코멘트 갯수")
+    private Integer commentCnt;
+
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
@@ -60,6 +64,7 @@ public class GetClipBoardRes {
                 .title(clipBoard.getTitle())
                 .content(clipBoard.getContent())
                 .commentResList(commentResList)
+                .commentCnt(commentResList.size())
                 .status(clipBoard.getStatus())
                 .createdAt(clipBoard.getCreatedAt())
                 .updatedAt(clipBoard.getUpdatedAt())
@@ -67,14 +72,14 @@ public class GetClipBoardRes {
     }
 
     @Builder
-
-    public GetClipBoardRes(Long clipBoardId, Long userId, Long boardId, String title, String content, List<CommentRes> commentResList, BaseStatus status, String createdAt, String updatedAt) {
+    public GetClipBoardRes(Long clipBoardId, Long userId, Long boardId, String title, String content, List<CommentRes> commentResList, Integer commentCnt, BaseStatus status, String createdAt, String updatedAt) {
         this.clipBoardId = clipBoardId;
         this.userId = userId;
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.commentResList = commentResList;
+        this.commentCnt = commentCnt;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

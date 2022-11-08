@@ -15,5 +15,5 @@ public interface ClipBoardService {
 
     ApplicationResponse<GetClipBoardRes> findClipBoard(GetClipBoardReq getClipBoardReq);
 
-    ApplicationResponse<List<ClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq getAllClipBoardsReq);
+    ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq getAllClipBoardsReq);
 }

@@ -31,7 +31,7 @@ public class BoardController {
      * 게시글 등록
      * @author 토마스
      */
-    @ApiOperation(value = "게시글 등록", notes = "그룹 게시글에 필요한 정보를 입력받아 게시글 생성.")
+    @ApiOperation(value = "게시글 등록", notes = "그룹 게시글에 필요한 정보를 입력받아 게시글 생성. , swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/Yogit~3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/23528495-7fcef771-fae5-486b-a423-b47daf2d0514")
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),

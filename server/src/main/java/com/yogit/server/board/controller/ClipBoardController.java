@@ -1,8 +1,6 @@
 package com.yogit.server.board.controller;
 
-import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
-import com.yogit.server.board.dto.request.clipboard.GetAllClipBoardsReq;
-import com.yogit.server.board.dto.request.clipboard.GetClipBoardReq;
+import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
 import com.yogit.server.board.service.clipboard.ClipBoardService;
@@ -13,10 +11,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,7 +65,40 @@ public class ClipBoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/all")
-    public ApplicationResponse<List<ClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq){
+    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq){
         return clipBoardService.findAllClipBoards(getAllClipBoardsReq);
+    }
+
+
+    /**
+     * 클립보드 수정
+     * @author 토마스
+     */
+    @ApiOperation(value = "클립보드 수정", notes = "클립보드 ID, title, content로 클립보드 수정 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
+            @ApiResponse(code= 404, message = "요청한 유저가 클립보드의 호스트가 아닙니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PatchMapping("/{clipBoardId}")
+    public ApplicationResponse<ClipBoardRes> updateClipBoard(@PathVariable("clipBoardId") Long clipBoardid, @RequestBody @Validated PatchClipBoardReq patchClipBoardReq){
+        return clipBoardService.updateClipBoard(patchClipBoardReq);
+    }
+
+    /**
+     * 클립보드 삭제
+     * @author 토마스
+     */
+    @ApiOperation(value = "클립보드 삭제", notes = "클립보드 ID로 클립보드 삭제 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PatchMapping("/{clipBoardId}/status")
+    public ApplicationResponse<ClipBoardRes> deleteClipBoard(@PathVariable("clipBoardId") Long clipBoardId, @RequestBody @Validated DeleteClipBoardReq deleteClipBoardReq){
+        return clipBoardService.deleteClipBoard(deleteClipBoardReq);
     }
 }

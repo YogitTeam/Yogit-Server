@@ -1,6 +1,7 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
+import com.yogit.server.board.dto.request.clipboard.PatchClipBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.User;
@@ -48,5 +49,10 @@ public class ClipBoard extends BaseEntity {
      */
     public void deleteClipBoard(){
         this.setStatus(BaseStatus.INACTIVE);
+    }
+
+    public void updateClipBoard(PatchClipBoardReq dto){
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
     }
 }

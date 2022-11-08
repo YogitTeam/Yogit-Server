@@ -1,9 +1,6 @@
 package com.yogit.server.board.service.clipboard;
 
-import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
-import com.yogit.server.board.dto.request.clipboard.DeleteClipBoardReq;
-import com.yogit.server.board.dto.request.clipboard.GetAllClipBoardsReq;
-import com.yogit.server.board.dto.request.clipboard.GetClipBoardReq;
+import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
 import com.yogit.server.board.dto.response.comment.CommentRes;
@@ -99,6 +96,26 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         return ApplicationResponse.ok(getClipBoardResList);
     }
 
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<ClipBoardRes> updateClipBoard(PatchClipBoardReq dto){
+        //필요 객체 조회
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        ClipBoard clipBoard = clipBoardRepository.findClipBoardById(dto.getClipBoardId())
+                .orElseThrow(() -> new NotFoundClipBoardException());
+
+        //Validation: 요청 사용자와 클립보드 생성자가 같은지 검증
+        if(!user.getId().equals(clipBoard.getUser().getId())){
+            throw new NotUserOfClipBoardException();
+        }
+
+        clipBoard.updateClipBoard(dto); // 업데이트
+        ClipBoardRes clipBoardRes = ClipBoardRes.toDto(clipBoard);
+        return ApplicationResponse.ok(clipBoardRes);
+    }
 
     @Transactional(readOnly = false)
     @Override

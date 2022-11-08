@@ -1,9 +1,6 @@
 package com.yogit.server.board.service.clipboard;
 
-import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
-import com.yogit.server.board.dto.request.clipboard.DeleteClipBoardReq;
-import com.yogit.server.board.dto.request.clipboard.GetAllClipBoardsReq;
-import com.yogit.server.board.dto.request.clipboard.GetClipBoardReq;
+import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -19,4 +16,6 @@ public interface ClipBoardService {
     ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq getAllClipBoardsReq);
 
     ApplicationResponse<ClipBoardRes> deleteClipBoard(DeleteClipBoardReq deleteClipBoardReq);
+
+    ApplicationResponse<ClipBoardRes> updateClipBoard(PatchClipBoardReq patchClipBoardReq);
 }

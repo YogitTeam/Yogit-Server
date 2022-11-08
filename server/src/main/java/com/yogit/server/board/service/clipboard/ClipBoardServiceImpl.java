@@ -80,25 +80,27 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     }
 
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
-//
-//        User user = userRepository.findById(dto.getUserId())
-//                .orElseThrow(() -> new NotFoundUserException());
-//
-//        Board board = boardRepository.findBoardById(dto.getBoardId())
-//                .orElseThrow(() -> new NotFoundBoardException());
-//
-//        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
-//        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
-//                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
-//                        .map(comment -> CommentRes.toDto(comment))
-//                        .collect(Collectors.toList())))
-//                .collect(Collectors.toList());
-//
-//        return ApplicationResponse.ok(getClipBoardResList);
-//    }
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
+        // 유저 profileImgUrl 또한 img uuid -> s3 url로 변환
+        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+                        .map(comment -> CommentRes.toDto(comment))
+                        .collect(Collectors.toList()),
+                        awsS3Service.makeUrlOfFilename(clipBoard.getUser().getProfileImg())))
+                .collect(Collectors.toList());
+
+        return ApplicationResponse.ok(getClipBoardResList);
+    }
 
 
     @Transactional(readOnly = false)

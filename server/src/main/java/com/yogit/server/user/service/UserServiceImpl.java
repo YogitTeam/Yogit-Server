@@ -12,6 +12,7 @@ import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
+import com.yogit.server.user.exception.NotFoundUserProfileImg;
 import com.yogit.server.user.exception.UserDuplicationLoginId;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -107,17 +108,17 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
-        userImageRepository.deleteAllByUserId(user.getId());
+        if(createUserImageReq.getProfileImage().isEmpty()) throw new NotFoundUserProfileImg();
 
         // 메인 프로필 사진 업로드
-        if (createUserImageReq.getProfileImage() != null){
-            String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
-            user.changeMainImgUUid(mainImageUUid);
-            userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(mainImageUUid));
-        }
+        String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
+        user.changeMainImgUUid(mainImageUUid);
+        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(mainImageUUid));
 
         // 나머지 사진 업로드
         if(createUserImageReq.getImages() != null){
+            userImageRepository.deleteAllByUserId(user.getId());
+
             List<String> imageUUids = awsS3Service.uploadImages(createUserImageReq.getImages());
             for(String i : imageUUids){
                 UserImage userImage = createUserImageReq.toEntityUserImage(user, i);

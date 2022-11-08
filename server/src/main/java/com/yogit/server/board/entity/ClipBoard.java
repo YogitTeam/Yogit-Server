@@ -2,6 +2,7 @@ package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -40,5 +41,12 @@ public class ClipBoard extends BaseEntity {
         this.board = board;
         this.title = dto.getTitle();
         this.content = dto.getContent();
+    }
+
+    /*
+    연관관계 편의 메서드
+     */
+    public void deleteClipBoard(){
+        this.setStatus(BaseStatus.INACTIVE);
     }
 }

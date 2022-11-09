@@ -7,8 +7,6 @@ import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
 import com.yogit.server.board.service.comment.CommentService;
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.entity.Gender;
-import com.yogit.server.user.entity.Nationality;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor // private final DI의존주입
 @RequestMapping("/comments")
-public class CommenrController {
+public class CommentController {
 
     private final CommentService commentService;
     /**
@@ -66,11 +64,11 @@ public class CommenrController {
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
-            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 코멘트입니다."),
+            @ApiResponse(code= 404, message = "요청한 유저가 코멘트의 호스트가 아닙니다"),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/{commentId}/status")
     public ApplicationResponse<DeleteCommentRes> deleteComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated DeleteCommentReq deleteCommentReq){
         return commentService.deleteComment(deleteCommentReq, commentId);
     }
@@ -84,11 +82,11 @@ public class CommenrController {
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
-            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 코멘트입니다."),
+            @ApiResponse(code= 404, message = "요청한 유저가 코멘트의 호스트가 아닙니다"),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PatchMapping("/{commentId}/content")
+    @PatchMapping("/{commentId}")
     public ApplicationResponse<CommentRes> updateComment(@PathVariable("commentId") Long commentId, @RequestBody @Validated PatchCommentReq patchCommentReq){
         return commentService.updateComment(patchCommentReq, commentId);
     }

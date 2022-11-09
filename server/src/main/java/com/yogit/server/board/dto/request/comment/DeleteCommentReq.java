@@ -12,4 +12,8 @@ public class DeleteCommentReq {
     @ApiModelProperty(example = "1")
     @ApiParam(value = "유저 ID", required = true)
     private Long userId;
+
+    @ApiModelProperty(example = "1")
+    @ApiParam(value = "코멘트 ID", required = true)
+    private Long commentId;
 }

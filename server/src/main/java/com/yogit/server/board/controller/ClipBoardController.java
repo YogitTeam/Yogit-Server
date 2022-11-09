@@ -51,8 +51,8 @@ public class ClipBoardController {
             @ApiResponse(code= 404, message = "존재하지 않는 보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PostMapping("/get")
-    public ApplicationResponse<GetClipBoardRes> findClipBoard(@RequestBody @Validated GetClipBoardReq getClipBoardReq){
+    @PostMapping("/board/{boardId}/clipBoard/{clipBoardId}/user/{userId}")
+    public ApplicationResponse<GetClipBoardRes> findClipBoard(@RequestBody @Validated GetClipBoardReq getClipBoardReq, @PathVariable Long boardId, @PathVariable Long clipBoardId, @PathVariable Long userId){
         return clipBoardService.findClipBoard(getClipBoardReq);
     }
 
@@ -68,8 +68,8 @@ public class ClipBoardController {
             @ApiResponse(code= 404, message = "존재하지 않는 보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PostMapping("/get/all")
-    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq){
+    @PostMapping("/all/board/{boardId}/user/{userId}")
+    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq, @PathVariable Long boardId, @PathVariable Long userId){
         return clipBoardService.findAllClipBoards(getAllClipBoardsReq);
     }
 

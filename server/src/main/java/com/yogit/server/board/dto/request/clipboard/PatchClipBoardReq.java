@@ -25,7 +25,7 @@ public class PatchClipBoardReq {
     private String title;
 
     @ApiModelProperty(example = "경복궁역 몇 번 출구인가요?")
-    @ApiParam(value = "클립보드 상세 내용", required = false)
+    @ApiParam(value = "클립보드 상세 내용", required = true)
     @NotBlank
     private String content;
 }

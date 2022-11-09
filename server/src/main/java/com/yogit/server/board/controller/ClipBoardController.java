@@ -31,6 +31,7 @@ public class ClipBoardController {
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("")
@@ -46,6 +47,8 @@ public class ClipBoardController {
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get")
@@ -62,6 +65,7 @@ public class ClipBoardController {
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/all")
@@ -83,7 +87,7 @@ public class ClipBoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("/{clipBoardId}")
-    public ApplicationResponse<ClipBoardRes> updateClipBoard(@PathVariable("clipBoardId") Long clipBoardid, @RequestBody @Validated PatchClipBoardReq patchClipBoardReq){
+    public ApplicationResponse<ClipBoardRes> updateClipBoard(@PathVariable("clipBoardId") Long clipBoardId, @RequestBody @Validated PatchClipBoardReq patchClipBoardReq){
         return clipBoardService.updateClipBoard(patchClipBoardReq);
     }
 
@@ -95,6 +99,8 @@ public class ClipBoardController {
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
+            @ApiResponse(code= 404, message = "요청한 유저가 클립보드의 호스트가 아닙니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("/{clipBoardId}/status")

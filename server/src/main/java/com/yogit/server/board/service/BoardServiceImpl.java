@@ -169,6 +169,30 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
+    public ApplicationResponse<List<BoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
+        int cursor = dto.getCursor();
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.desc("currentMember"),
+                Sort.Order.asc("date")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
+
+        Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
+        //  보드 res에 이미지uuid -> aws s3 url로 변환
+        List<BoardRes> boardsRes = boards.stream()
+                .map(board -> BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids())))
+                .collect(Collectors.toList());
+        return ApplicationResponse.ok(boardsRes);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
     public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());

@@ -97,6 +97,22 @@ public class BoardController {
 
 
     /**
+     * 게시글 카테고리 별 전체 조회
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 카테고리 별 전체 조회", notes = "그룹 게시글 카테고리 별 전체 조회 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping("/get/category")
+    public ApplicationResponse<List<BoardRes>> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
+        return boardService.findAllBoardsByCategory(getAllBoardsByCategoryReq);
+    }
+
+
+    /**
      * 게시글 상세 조회
      * @author 토마스
      */

@@ -70,6 +70,10 @@ public class BoardRes {
     @ApiParam(value = "모임 카테고리 ID")
     private Long categoryId;
 
+    @ApiModelProperty(example = "Nature")
+    @ApiParam(value = "모임 카테고리 이름")
+    private String categoryName;
+
     @ApiModelProperty(example = "이미지 url 리스트 예제 넣을 예정")
     @ApiParam(value = "게시글 이미지 url 리스트")
     private List<String> imageUrls;
@@ -103,6 +107,7 @@ public class BoardRes {
                 .currentMember(board.getCurrentMember())
                 .totalMember(board.getTotalMember())
                 .categoryId(board.getCategory().getId())
+                .categoryName(board.getCategory().getName())
                 .imageUrls(imageUrls)
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
@@ -111,7 +116,7 @@ public class BoardRes {
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
@@ -126,6 +131,7 @@ public class BoardRes {
         this.currentMember = currentMember;
         this.totalMember = totalMember;
         this.categoryId = categoryId;
+        this.categoryName = categoryName;
         this.imageUrls = imageUrls;
         this.status = status;
         this.createdAt = createdAt;

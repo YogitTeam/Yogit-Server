@@ -81,17 +81,18 @@ public class BoardController {
     }
 
     /**
-     * 게시글 전체 조회
+     * 게시글 전체 조회: 게시글 메인 화면
+     * board category 별 리스트 조회 (15개씩)
      * @author 토마스
      */
-    @ApiOperation(value = "게시글 전체 조회", notes = "그룹 게시글 전체조회 요청.")
+    @ApiOperation(value = "게시글 전체 조회: 게시글 메인 화면", notes = "그룹 게시글 전체조회 요청.")
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get")
-    public ApplicationResponse<List<BoardRes>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
+    public ApplicationResponse<List<List<BoardRes>>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
         return boardService.findAllBoards(getAllBoardsReq);
     }
 

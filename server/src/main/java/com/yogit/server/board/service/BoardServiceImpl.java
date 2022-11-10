@@ -159,6 +159,7 @@ public class BoardServiceImpl implements BoardService{
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, Sort.by(Sort.Direction.ASC, PAGING_STANDARD ));
 
         Slice<Board> boards = boardRepository.findAllBoards(pageRequest);
+        //  보드 res에 이미지uuid -> aws s3 url로 변환
         List<BoardRes> boardsRes = boards.stream()
                 .map(board -> BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids())))
                 .collect(Collectors.toList());

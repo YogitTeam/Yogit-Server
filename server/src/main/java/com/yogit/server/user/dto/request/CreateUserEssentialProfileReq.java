@@ -1,6 +1,5 @@
 package com.yogit.server.user.dto.request;
 
-import com.yogit.server.user.entity.Gender;
 import com.yogit.server.user.entity.Nationality;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +16,7 @@ public class CreateUserEssentialProfileReq {
 
     String userName;
     int userAge;
-    Gender gender;
+    String gender;
     Nationality nationality;
 
     List<String> languageNames;

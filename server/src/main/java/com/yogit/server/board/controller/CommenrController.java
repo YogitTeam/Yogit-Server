@@ -7,8 +7,6 @@ import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
 import com.yogit.server.board.service.comment.CommentService;
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.entity.Gender;
-import com.yogit.server.user.entity.Nationality;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

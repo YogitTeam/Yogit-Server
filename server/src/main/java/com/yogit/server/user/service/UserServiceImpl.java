@@ -14,6 +14,7 @@ import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.exception.NotFoundUserProfileImg;
 import com.yogit.server.user.exception.UserDuplicationLoginId;
+import com.yogit.server.user.exception.UserGenderException;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
+
+        if(!createUserEssentialProfileReq.getGender().equals("Prefer not to say") && !createUserEssentialProfileReq.getGender().equals("Male") && !createUserEssentialProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
         User user = userRepository.findById(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserInfo(createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());

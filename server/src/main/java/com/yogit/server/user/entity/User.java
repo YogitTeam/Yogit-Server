@@ -51,12 +51,10 @@ public class User extends BaseEntity {
     private Integer age;
     private float memberTemp;
     private String phoneNum;
+    private String gender;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
 
     @Enumerated(EnumType.STRING)
     private Nationality nationality;
@@ -83,7 +81,7 @@ public class User extends BaseEntity {
         this.languages.add(language);
     }
 
-    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality){
+    public void changeUserInfo(String userName, Integer userAge, String gender, Nationality nationality){
         if(userName != null) this.name = userName;
         if(userAge != 0) this.age = userAge;
         if(gender != null) this.gender = gender;

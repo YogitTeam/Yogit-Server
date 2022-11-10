@@ -16,7 +16,7 @@ public class EditUserEssentialProfileReq {
 
     String userName;
     Integer userAge;
-    Gender gender;
+    String gender;
     Nationality nationality;
 
     List<String> languageNames;

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -83,9 +84,13 @@ public class BoardRes {
     @ApiParam(value = "모임 카테고리 이름")
     private String categoryName;
 
-    @ApiModelProperty(example = "이미지 url 리스트 예제 넣을 예정")
+    @ApiModelProperty(example = "['이미지 url','이미지2 url']")
     @ApiParam(value = "게시글 이미지 url 리스트")
     private List<String> imageUrls;
+
+    @ApiModelProperty(example = "[1,2,3]")
+    @ApiParam(value = "게시글 이미지 ID 리스트")
+    private List<Long> imageIds;
 
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
@@ -120,6 +125,7 @@ public class BoardRes {
                 .categoryId(board.getCategory().getId())
                 .categoryName(board.getCategory().getName())
                 .imageUrls(imageUrls)
+                .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
@@ -127,7 +133,7 @@ public class BoardRes {
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String hostName, String profileImgUrl, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String hostName, String profileImgUrl, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
@@ -146,6 +152,7 @@ public class BoardRes {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.imageUrls = imageUrls;
+        this.imageIds = imageIds;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

@@ -106,7 +106,7 @@ public class BoardController {
             @ApiResponse(code= 404, message = "요청한 유저가 호스트가 아닙니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PatchMapping("/del")
+    @PatchMapping("/status")
     public ApplicationResponse<BoardRes> deleteBoard(@RequestBody @Validated DeleteBoardReq deleteBoardReq){
         return boardService.deleteBoard(deleteBoardReq);
     }

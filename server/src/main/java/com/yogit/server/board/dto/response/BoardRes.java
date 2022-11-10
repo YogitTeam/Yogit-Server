@@ -2,6 +2,7 @@ package com.yogit.server.board.dto.response;
 
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.config.domain.BaseStatus;
+import com.yogit.server.user.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Builder;
@@ -25,6 +26,14 @@ public class BoardRes {
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID")
     private Long hostId;
+
+    @ApiModelProperty(example = "Park Jun")
+    @ApiParam(value = "호스트 이름")
+    private String hostName;
+
+    @ApiModelProperty(example = "추가 예정")
+    @ApiParam(value = "유저 프로필 이미지 url")
+    private String profileImgUrl;
 
     @ApiModelProperty(example = "경복궁 탐사입니다.")
     @ApiParam(value = "게시글 제목")
@@ -91,11 +100,13 @@ public class BoardRes {
     private String updatedAt;
 
 
-    public static BoardRes toDto(Board board, List<String> imageUrls){
+    public static BoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl){
         return BoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
                 .hostId(board.getHost().getId())
+                .hostName(board.getHost().getName())
+                .profileImgUrl(profileImgUrl)
                 .title(board.getTitle())
                 .address(board.getAddress())
                 .longitute(board.getLongitute())
@@ -116,10 +127,12 @@ public class BoardRes {
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String hostName, String profileImgUrl, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
+        this.hostName = hostName;
+        this.profileImgUrl = profileImgUrl;
         this.title = title;
         this.address = address;
         this.longitute = longitute;

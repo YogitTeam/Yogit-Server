@@ -2,6 +2,7 @@ package com.yogit.server.board.dto.response;
 
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.config.domain.BaseStatus;
+import com.yogit.server.user.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +27,14 @@ public class BoardRes {
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID")
     private Long hostId;
+
+    @ApiModelProperty(example = "Park Jun")
+    @ApiParam(value = "호스트 이름")
+    private String hostName;
+
+    @ApiModelProperty(example = "추가 예정")
+    @ApiParam(value = "유저 프로필 이미지 url")
+    private String profileImgUrl;
 
     @ApiModelProperty(example = "경복궁 탐사입니다.")
     @ApiParam(value = "게시글 제목")
@@ -70,9 +80,17 @@ public class BoardRes {
     @ApiParam(value = "모임 카테고리 ID")
     private Long categoryId;
 
-    @ApiModelProperty(example = "이미지 url 리스트 예제 넣을 예정")
+    @ApiModelProperty(example = "Nature")
+    @ApiParam(value = "모임 카테고리 이름")
+    private String categoryName;
+
+    @ApiModelProperty(example = "['이미지 url','이미지2 url']")
     @ApiParam(value = "게시글 이미지 url 리스트")
     private List<String> imageUrls;
+
+    @ApiModelProperty(example = "[1,2,3]")
+    @ApiParam(value = "게시글 이미지 ID 리스트")
+    private List<Long> imageIds;
 
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
@@ -87,11 +105,13 @@ public class BoardRes {
     private String updatedAt;
 
 
-    public static BoardRes toDto(Board board, List<String> imageUrls){
+    public static BoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl){
         return BoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
                 .hostId(board.getHost().getId())
+                .hostName(board.getHost().getName())
+                .profileImgUrl(profileImgUrl)
                 .title(board.getTitle())
                 .address(board.getAddress())
                 .longitute(board.getLongitute())
@@ -103,7 +123,9 @@ public class BoardRes {
                 .currentMember(board.getCurrentMember())
                 .totalMember(board.getTotalMember())
                 .categoryId(board.getCategory().getId())
+                .categoryName(board.getCategory().getName())
                 .imageUrls(imageUrls)
+                .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
@@ -111,10 +133,12 @@ public class BoardRes {
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, List<String> imageUrls, BaseStatus status, String createdAt, String updatedAt) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String hostName, String profileImgUrl, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
+        this.hostName = hostName;
+        this.profileImgUrl = profileImgUrl;
         this.title = title;
         this.address = address;
         this.longitute = longitute;
@@ -126,7 +150,9 @@ public class BoardRes {
         this.currentMember = currentMember;
         this.totalMember = totalMember;
         this.categoryId = categoryId;
+        this.categoryName = categoryName;
         this.imageUrls = imageUrls;
+        this.imageIds = imageIds;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

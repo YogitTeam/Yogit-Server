@@ -24,6 +24,14 @@ public class GetClipBoardRes {
     @ApiParam(value = "유저 ID")
     private Long userId;
 
+    @ApiModelProperty(example = "Park jun")
+    @ApiParam(value = "유저 이름")
+    private String userName;
+
+    @ApiModelProperty(example = "추가 예정")
+    @ApiParam(value = "유저 프로필 이미지 url")
+    private String profileImgUrl;
+
     @ApiModelProperty(example = "1")
     @ApiParam(value = "Board ID")
     private Long boardId;
@@ -40,6 +48,10 @@ public class GetClipBoardRes {
     @ApiParam(value = "코멘트들")
     private List<CommentRes> commentResList;
 
+    @ApiModelProperty(example = "2")
+    @ApiParam(value = "클립보드에 달린 코멘트 갯수")
+    private Integer commentCnt;
+
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
@@ -52,14 +64,17 @@ public class GetClipBoardRes {
     @ApiParam(value = "마지막 업데이트 시각")
     private String updatedAt;
 
-    public static GetClipBoardRes toDto(ClipBoard clipBoard, List<CommentRes> commentResList){
+    public static GetClipBoardRes toDto(ClipBoard clipBoard, List<CommentRes> commentResList, String profileImgUrl){
         return GetClipBoardRes.builder()
                 .clipBoardId(clipBoard.getId())
                 .userId(clipBoard.getUser().getId())
+                .userName(clipBoard.getUser().getName())
+                .profileImgUrl(profileImgUrl)
                 .boardId(clipBoard.getBoard().getId())
                 .title(clipBoard.getTitle())
                 .content(clipBoard.getContent())
                 .commentResList(commentResList)
+                .commentCnt(commentResList.size())
                 .status(clipBoard.getStatus())
                 .createdAt(clipBoard.getCreatedAt())
                 .updatedAt(clipBoard.getUpdatedAt())
@@ -67,14 +82,16 @@ public class GetClipBoardRes {
     }
 
     @Builder
-
-    public GetClipBoardRes(Long clipBoardId, Long userId, Long boardId, String title, String content, List<CommentRes> commentResList, BaseStatus status, String createdAt, String updatedAt) {
+    public GetClipBoardRes(Long clipBoardId, Long userId, String userName, String profileImgUrl, Long boardId, String title, String content, List<CommentRes> commentResList, Integer commentCnt, BaseStatus status, String createdAt, String updatedAt) {
         this.clipBoardId = clipBoardId;
         this.userId = userId;
+        this.userName = userName;
+        this.profileImgUrl = profileImgUrl;
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.commentResList = commentResList;
+        this.commentCnt = commentCnt;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

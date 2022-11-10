@@ -1,4 +1,4 @@
-package com.yogit.server.board.dto.request.comment;
+package com.yogit.server.board.dto.request.clipboard;
 
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class DeleteCommentReq {
+public class DeleteClipBoardReq {
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "유저 ID", required = true)
     private Long userId;
 
     @ApiModelProperty(example = "1")
-    @ApiParam(value = "코멘트 ID", required = true)
-    private Long commentId;
+    @ApiParam(value = "clipBoard ID", required = true)
+    private Long clipBoardId;
 }

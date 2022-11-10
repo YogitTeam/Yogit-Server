@@ -10,7 +10,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public enum ClipBoardExceptionList {
 
-    NOT_FOUND_CLIP_BOARD("CB0001", NOT_FOUND, "존재하지 않는 ClipBoard아이디입니다.");
+    NOT_FOUND_CLIP_BOARD("CB0001", NOT_FOUND, "존재하지 않는 ClipBoard아이디입니다."),
+    NOT_USER_OF_CLIPBOARD("CB0002", HttpStatus.BAD_REQUEST, "요청한 유저가 클립보드의 호스트가 아닙니다.");
 
     private final String CODE;
     private final HttpStatus HTTPSTATUS;

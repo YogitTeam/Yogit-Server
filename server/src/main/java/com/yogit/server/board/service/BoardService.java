@@ -16,7 +16,9 @@ public interface BoardService {
 
     ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq deleteBoardReq);
 
-    ApplicationResponse<List<BoardRes>> findAllBoards(GetAllBoardsReq getAllBoardsReq);
+    ApplicationResponse<List<List<BoardRes>>> findAllBoards(GetAllBoardsReq getAllBoardsReq);
+
+    ApplicationResponse<List<BoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq getAllBoardsByCategoryReq);
 
     ApplicationResponse<BoardRes> findBoard(GetBoardReq getBoardReq);
 

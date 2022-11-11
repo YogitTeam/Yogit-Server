@@ -16,6 +16,8 @@ public class AddUserAdditionalProfileReq {
     float latitude;
     float longitude;
     String aboutMe;
+    String job;
+    String administrativeArea;
 
     Long cityId;
     List<String> interests;

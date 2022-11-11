@@ -36,4 +36,9 @@ public class City extends BaseEntity {
         this.users.add(user);
         user.addCity(this);
     }
+
+    public void addUser(User user){
+        this.users.add(user);
+        user.addCity(this);
+    }
 }

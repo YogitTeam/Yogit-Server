@@ -97,7 +97,7 @@ public class UserController {
             @ApiImplicitParam(name = "latitude", dataTypeClass = Float.class, example = "10.23"),
             @ApiImplicitParam(name = "longitude", dataTypeClass = Float.class, example = "10.23"),
             @ApiImplicitParam(name = "aboutMe", dataTypeClass = String.class, example = "캠핑 모임에 관심이 많습니다."),
-            @ApiImplicitParam(name = "city", dataTypeClass = Nationality.class, example = "SEOUL")
+            @ApiImplicitParam(name = "cityId", dataTypeClass = Long.class, example = "1")
     })
     @PatchMapping("/additional-profile")
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){

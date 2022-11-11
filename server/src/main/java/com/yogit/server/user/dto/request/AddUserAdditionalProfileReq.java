@@ -1,6 +1,5 @@
 package com.yogit.server.user.dto.request;
 
-import com.yogit.server.user.entity.CityName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,6 @@ public class AddUserAdditionalProfileReq {
     float longitude;
     String aboutMe;
 
-    CityName city;
+    Long cityId;
     List<String> interests;
 }

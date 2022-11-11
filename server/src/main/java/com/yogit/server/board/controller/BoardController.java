@@ -5,18 +5,13 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
-import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.entity.Gender;
-import com.yogit.server.user.entity.Nationality;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;

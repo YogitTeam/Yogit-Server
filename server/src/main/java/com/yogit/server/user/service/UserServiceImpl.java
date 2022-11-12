@@ -14,6 +14,8 @@ import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.exception.NotFoundUserProfileImg;
 import com.yogit.server.user.exception.UserDuplicationLoginId;
+import com.yogit.server.user.exception.UserGenderException;
+import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
+
+        if(!createUserEssentialProfileReq.getGender().equals("Prefer not to say") && !createUserEssentialProfileReq.getGender().equals("Male") && !createUserEssentialProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
         User user = userRepository.findById(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserInfo(createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
@@ -153,19 +157,14 @@ public class UserServiceImpl implements UserService {
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq){
         User user = userRepository.findById(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
-        user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe());
+        user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getAdministrativeArea(), addUserAdditionalProfileReq.getJob());
 
         UserAdditionalProfileRes userAdditionalProfileRes = UserAdditionalProfileRes.create(user);
 
-        if(addUserAdditionalProfileReq.getCity() != null){
-            City city = City.builder()
-                    .user(user)
-                    .name(addUserAdditionalProfileReq.getCity())
-                    .build();
-            cityRepository.save(city);
+        City city = cityRepository.findById(addUserAdditionalProfileReq.getCityId()).orElseThrow(() -> new NotFoundCityException());
+        city.addUser(user);
 
-            userAdditionalProfileRes.setCity(city.getName());
-        }
+        userAdditionalProfileRes.setCity(city.getName());
 
         for(String interestName : addUserAdditionalProfileReq.getInterests()){
             Interest interest = Interest.builder()

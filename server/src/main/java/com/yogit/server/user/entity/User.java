@@ -48,18 +48,15 @@ public class User extends BaseEntity {
     private float latitude;
     private String administrativeArea;
 
+    private String job;
     private Integer age;
     private float memberTemp;
     private String phoneNum;
+    private String gender;
+    private String nationality;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Enumerated(EnumType.STRING)
-    private Nationality nationality;
 
     @OneToMany(mappedBy = "user")
     private List<BookMark> bookMarks = new ArrayList<>();
@@ -83,7 +80,7 @@ public class User extends BaseEntity {
         this.languages.add(language);
     }
 
-    public void changeUserInfo(String userName, Integer userAge, Gender gender, Nationality nationality){
+    public void changeUserInfo(String userName, Integer userAge, String gender, String nationality){
         if(userName != null) this.name = userName;
         if(userAge != 0) this.age = userAge;
         if(gender != null) this.gender = gender;
@@ -108,10 +105,12 @@ public class User extends BaseEntity {
         this.userInterests.add(userInterest);
     }
 
-    public void addAdditionalProfile(float latitude, float longitude, String aboutMe){
+    public void addAdditionalProfile(float latitude, float longitude, String aboutMe, String administrativeArea, String job){
         this.latitude = latitude;
         this.longtitude = longitude;
         this.aboutMe = aboutMe;
+        this.administrativeArea = administrativeArea;
+        this.job = job;
     }
 
     public void addCity(City city){

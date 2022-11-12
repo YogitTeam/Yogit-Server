@@ -13,7 +13,8 @@ public enum UserExceptionList {
 
     NOT_FOUND_ID("U0001", NOT_FOUND,"존재하지 않는 아이디입니다."),
     DUPLICATE_LOGIN_ID("U0002", CONFLICT,"이미 존재하는 아이디입니다."),
-    NOT_FOUND_PROFILE_IMG("U0003", NOT_FOUND, "프로필 사진은 필수 값 입니다.");
+    NOT_FOUND_PROFILE_IMG("U0003", NOT_FOUND, "프로필 사진은 필수 값 입니다."),
+    NOT_UNSUITABLE_GENDER("U0004", BAD_REQUEST, "올바르지 않은 성별 값 입니다.");
 
     private final String CODE;
     private final HttpStatus HTTPSTATUS;

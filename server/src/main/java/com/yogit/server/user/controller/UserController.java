@@ -9,8 +9,6 @@ import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
-import com.yogit.server.user.entity.Gender;
-import com.yogit.server.user.entity.Nationality;
 import com.yogit.server.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,8 +34,8 @@ public class UserController {
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
             @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
-            @ApiImplicitParam(name = "gender", dataTypeClass = Gender.class, example = "FEMALE"),
-            @ApiImplicitParam(name = "nationality", dataTypeClass = Nationality.class, example = "Korea")
+            @ApiImplicitParam(name = "gender", dataTypeClass = String.class, example = "Male"),
+            @ApiImplicitParam(name = "nationality", dataTypeClass = String.class, example = "Korea")
     })
     @PatchMapping("/essential-profile")
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
@@ -98,7 +96,9 @@ public class UserController {
             @ApiImplicitParam(name = "latitude", dataTypeClass = Float.class, example = "10.23"),
             @ApiImplicitParam(name = "longitude", dataTypeClass = Float.class, example = "10.23"),
             @ApiImplicitParam(name = "aboutMe", dataTypeClass = String.class, example = "캠핑 모임에 관심이 많습니다."),
-            @ApiImplicitParam(name = "city", dataTypeClass = Nationality.class, example = "SEOUL")
+            @ApiImplicitParam(name = "cityId", dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "job", dataTypeClass = String.class, example = "학생"),
+            @ApiImplicitParam(name = "administrativeArea", dataTypeClass = String.class, example = "행신동")
     })
     @PatchMapping("/additional-profile")
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){

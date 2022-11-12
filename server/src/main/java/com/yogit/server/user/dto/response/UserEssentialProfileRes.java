@@ -1,6 +1,5 @@
 package com.yogit.server.user.dto.response;
 
-import com.yogit.server.user.entity.Nationality;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,12 +17,12 @@ public class UserEssentialProfileRes {
     String userName;
     Integer userAge;
     String gender;
-    Nationality nationality;
+    String nationality;
 
     List<String> languageNames = new ArrayList<>();
     List<String> languageLevels = new ArrayList<>();
 
-    public static UserEssentialProfileRes create(Long userId, String userName, Integer userAge, String gender, Nationality nationality){
+    public static UserEssentialProfileRes create(Long userId, String userName, Integer userAge, String gender, String nationality){
         UserEssentialProfileRes userEssentialProfileRes = new UserEssentialProfileRes();
 
         userEssentialProfileRes.userId = userId;

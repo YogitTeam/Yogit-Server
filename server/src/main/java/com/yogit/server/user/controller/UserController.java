@@ -1,10 +1,7 @@
 package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
-import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
-import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
-import com.yogit.server.user.dto.request.CreateUserImageReq;
-import com.yogit.server.user.dto.request.CreateUserReq;
+import com.yogit.server.user.dto.request.*;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
@@ -65,10 +62,10 @@ public class UserController {
     }
 
     /**
-     * 유저 Profile + 사진 등록
+     * 유저 Profile + 사진 등록 (새로 추가할 사진만 등록)
      * @author 강신현
      */
-    @ApiOperation(value = "유저 사진 등록", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
+    @ApiOperation(value = "유저 사진 등록 (새로 추가할 사진만 등록)", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
     @PostMapping("/image")
     public ApplicationResponse<UserImagesRes> enterUserImage(@ModelAttribute CreateUserImageReq createUserImageReq){
@@ -118,9 +115,17 @@ public class UserController {
         return userService.createUser(createUserReq);
     }
 
-
     /**
-     * 유저 로그인
+     * 유저 사진 삭제
      */
+    @ApiOperation(value = "유저 사진 삭제")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "userImageId", required = true, dataTypeClass = Long.class, example = "1")
+    })
+    @PatchMapping("/image")
+    public ApplicationResponse<UserImagesRes> deleteUserImage(@ModelAttribute DeleteUserImageReq deleteUserImageReq){
+        return userService.deleteUserImage(deleteUserImageReq);
+    }
 
 }

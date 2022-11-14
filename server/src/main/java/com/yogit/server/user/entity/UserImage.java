@@ -1,6 +1,7 @@
 package com.yogit.server.user.entity;
 
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.config.domain.BaseStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,5 +30,9 @@ public class UserImage extends BaseEntity {
         user.addImage(this);
 
         this.imgUUid = imgUUid;
+    }
+
+    public void deleteUserImage(){
+        this.setStatus(BaseStatus.INACTIVE);
     }
 }

@@ -1,12 +1,16 @@
 package com.yogit.server.applelogin.model;
 
 
+import lombok.Data;
+import net.minidev.json.JSONObject;
+
+@Data
 public class ServicesResponse {
 
     private String state;
     private String code;
     private String id_token;
-    private String user;
+    private JSONObject user;
 
     public String getState() {
         return state;
@@ -32,13 +36,13 @@ public class ServicesResponse {
         this.id_token = id_token;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
+//    public String getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(String user) {
+//        this.user = user;
+//    }
 
     public ServicesResponse() {
     }

@@ -83,7 +83,8 @@ public class AppleUtils {
             }
 
             // NONCE(Test value), ISS, AUD
-            if (!"20B20D-0S8-1K8".equals(payload.getClaim("nonce")) || !ISS.equals(payload.getIssuer()) || !AUD.equals(payload.getAudience().get(0))) {
+            //!"20B20D-0S8-1K8".equals(payload.getClaim("nonce")) ||
+            if (!ISS.equals(payload.getIssuer()) || !AUD.equals(payload.getAudience().get(0))) {
                 System.out.println("NONCE(Test value), ISS, AUD에러");
                 System.out.println("nonce 는 :"+payload.getClaim("nonce"));
                 System.out.println("iss: "+payload.getIssuer());

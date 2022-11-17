@@ -71,6 +71,9 @@ public class AppleController {
     @ResponseBody
     public TokenResponse servicesRedirect(ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
 
+        System.out.println("state 값은 :  "+serviceResponse.getState());
+        System.out.println("user 값은: " + serviceResponse.getUser());
+        System.out.println("id_token ‣ " + serviceResponse.getId_token());
         if (serviceResponse == null) {
             return null;
         }

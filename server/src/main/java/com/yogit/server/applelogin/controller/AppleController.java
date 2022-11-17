@@ -69,7 +69,7 @@ public class AppleController {
      */
     @PostMapping(value = "/redirect")
     @ResponseBody
-    public TokenResponse servicesRedirect(ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
+    public TokenResponse servicesRedirect(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
 
         System.out.println("state 값은 :  "+serviceResponse.getState());
         System.out.println("user 값은: " + serviceResponse.getUser());

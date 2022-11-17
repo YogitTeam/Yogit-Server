@@ -78,16 +78,19 @@ public class AppleUtils {
             // EXP 만료시간 검증
             Date currentTime = new Date(System.currentTimeMillis());
             if (!currentTime.before(payload.getExpirationTime())) {
+                System.out.println("만료시간 검증 에러");
                 return false;
             }
 
             // NONCE(Test value), ISS, AUD
             if (!"20B20D-0S8-1K8".equals(payload.getClaim("nonce")) || !ISS.equals(payload.getIssuer()) || !AUD.equals(payload.getAudience().get(0))) {
+                System.out.println("NONCE(Test value), ISS, AUD에러");
                 return false;
             }
 
             // RSA
             if (verifyPublicKey(signedJWT)) {
+                System.out.println("client_secret 생성 완료");
                 return true;
             }
         } catch (ParseException e) {

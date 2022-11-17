@@ -90,32 +90,32 @@ public class AppleController {
         return appleService.requestCodeValidations(client_secret, code, null);
     }
 
-//    /**
-//     * Apple Login 유저 정보를 받은 후 권한 생성
-//     * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
-//     * @param serviceResponse
-//     * @return
-//     */
-//    @PostMapping(value = "/redirectios")
-//    @ResponseBody
-//    public TokenResponse servicesRedirectIos(ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
-//
-//        if (serviceResponse == null) {
-//            return null;
-//        }
-//
-//        String code = serviceResponse.getCode();
-//        String id_token = serviceResponse.getId_token();
-//        String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
-//
-//        logger.debug("================================");
-//        logger.debug("id_token ‣ " + serviceResponse.getId_token());
-//        logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
-//        logger.debug("client_secret ‣ " + client_secret);
-//        logger.debug("================================");
-//
-//        return appleService.requestCodeValidations(client_secret, code, null);
-//    }
+    /**
+     * Apple Login 유저 정보를 받은 후 권한 생성
+     * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
+     * @param serviceResponse
+     * @return
+     */
+    @PostMapping(value = "/redirectios")
+    @ResponseBody
+    public TokenResponse servicesRedirectIos(ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
+
+        if (serviceResponse == null) {
+            return null;
+        }
+
+        String code = serviceResponse.getCode();
+        String id_token = serviceResponse.getId_token();
+        String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
+
+        logger.debug("================================");
+        logger.debug("id_token ‣ " + serviceResponse.getId_token());
+        logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
+        logger.debug("client_secret ‣ " + client_secret);
+        logger.debug("================================");
+
+        return appleService.requestCodeValidations(client_secret, code, null);
+    }
 
     /**
      * refresh_token 유효성 검사

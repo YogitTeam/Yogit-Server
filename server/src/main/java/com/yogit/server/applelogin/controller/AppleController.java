@@ -114,6 +114,14 @@ public class AppleController {
         logger.debug("client_secret ‣ " + client_secret);
         logger.debug("================================");
 
+        System.out.println("================================");
+        System.out.println("state 값은 :  "+serviceResponse.getState());
+        System.out.println("user 값은: " + serviceResponse.getUser());
+        System.out.println("id_token ‣ " + serviceResponse.getId_token());
+        System.out.println("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
+        System.out.println("client_secret ‣ " + client_secret);
+        System.out.println("================================");
+
         return appleService.requestCodeValidations(client_secret, code, null);
     }
 

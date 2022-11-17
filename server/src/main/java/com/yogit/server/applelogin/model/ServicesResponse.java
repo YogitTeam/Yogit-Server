@@ -1,5 +1,6 @@
 package com.yogit.server.applelogin.model;
 
+
 public class ServicesResponse {
 
     private String state;

@@ -59,7 +59,7 @@ public class AppleController {
     @ResponseBody
     public TokenResponse signUpApple(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
 
-        if (serviceResponse == null) {
+        if (serviceResponse == null) { // TODO 예외처리
             return null;
         }
 

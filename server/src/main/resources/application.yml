@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:mysql://yogit.cgkajadrhiod.ap-northeast-2.rds.amazonaws.com/yogit_db
+    username: yogit
+    password: dyrlt!12
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+
+cloud:
+  aws:
+    s3:
+      bucket: yogit
+    credentials:
+      accesskey: AKIAVQUIVV2UTNLEJSH4
+      secretkey: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
+
+sms:
+  service-id: ncp:sms:kr:285557358037:yogit
+  access-key: mPcyRmD3xO51CI8d4DPE
+  secret-key: i1CzRXqgXVhIiRA9ojOLTWmICBJyzJRB6DbbmTV5
+  phone-num: 01046270562

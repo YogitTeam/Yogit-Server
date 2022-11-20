@@ -16,11 +16,6 @@ public class CreateUserAppleReq {
 
     public static User toEntityUserApple(CreateUserAppleReq createUserAppleReq){
         User user = new User(createUserAppleReq.loginId, createUserAppleReq.refresh_token, createUserAppleReq.name);
-
-        System.out.println(user.getLoginId());
-        System.out.println(user.getRefresh_token());
-        System.out.println(user.getName());
-
         return user;
     }
 }

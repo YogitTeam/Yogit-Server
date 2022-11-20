@@ -1,5 +1,6 @@
 package com.yogit.server.applelogin.service;
 
+import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 
 import java.security.NoSuchAlgorithmException;
@@ -9,7 +10,7 @@ public interface AppleService {
 
     String getAppleClientSecret(String id_token) throws NoSuchAlgorithmException;
 
-    TokenResponse requestCodeValidations(String client_secret, String code, String refresh_token);
+    TokenResponse requestCodeValidations(ServicesResponse serviceResponse, String refresh_token) throws NoSuchAlgorithmException;
 
     Map<String, String> getLoginMetaInfo();
 

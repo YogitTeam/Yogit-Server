@@ -2,10 +2,7 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
-import com.yogit.server.user.dto.request.AddUserAdditionalProfileReq;
-import com.yogit.server.user.dto.request.CreateUserEssentialProfileReq;
-import com.yogit.server.user.dto.request.CreateUserImageReq;
-import com.yogit.server.user.dto.request.CreateUserReq;
+import com.yogit.server.user.dto.request.*;
 import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
@@ -193,5 +190,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(CreateUserReq.toEntityUser(createUserReq));
 
         return ApplicationResponse.ok();
+    }
+
+    @Override
+    @Transactional
+    public User createUserApple(CreateUserAppleReq createUserAppleReq){
+
+        if(userRepository.existsByLoginId(createUserAppleReq.getLoginId())) throw new UserDuplicationLoginId();
+
+        User user = userRepository.save(CreateUserAppleReq.toEntityUserApple(createUserAppleReq));
+
+        return user;
     }
 }

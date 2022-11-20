@@ -1,18 +1,29 @@
 package com.yogit.server.applelogin.service;
 
+import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.util.AppleUtils;
+import com.yogit.server.user.dto.request.CreateUserAppleReq;
+import com.yogit.server.user.entity.User;
+import com.yogit.server.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AppleServiceImpl implements AppleService {
 
     @Autowired
     AppleUtils appleUtils;
+
+    private final UserService userService;
 
     /**
      * 유효한 id_token인 경우 client_secret 생성
@@ -39,15 +50,36 @@ public class AppleServiceImpl implements AppleService {
      * @return
      */
     @Override
-    public TokenResponse requestCodeValidations(String client_secret, String code, String refresh_token) {
+    public TokenResponse requestCodeValidations(ServicesResponse serviceResponse, String refresh_token) throws NoSuchAlgorithmException {
 
         TokenResponse tokenResponse = new TokenResponse();
 
-        // 만약 처음 인증하는 유저여서  refresh토큰 없으면 client_secret, authorization_code로 검증
+        String code = serviceResponse.getCode();
+        String client_secret = getAppleClientSecret(serviceResponse.getId_token());
+
+        JSONObject user = new JSONObject(serviceResponse.getUser());
+
+        // 이메일 추출
+        String email = user.getAsString("email");
+
+        // 이름 추출
+        JSONObject name = (JSONObject) user.get("name");
+        String lastName = name.getAsString("lastName");
+        String firstName = name.getAsString("firstName");
+        String fullName = lastName + firstName;
+
+        // 만약 처음 인증하는 유저여서  refresh 토큰 없으면 client_secret, authorization_code로 검증
         if (client_secret != null && code != null && refresh_token == null) {
             tokenResponse = appleUtils.validateAuthorizationGrantCode(client_secret, code);
+
+            // 유저 엔티티 생성
+            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName);
+            User userEntity = userService.createUserApple(createUserAppleReq);
+
+            tokenResponse.setName(fullName);
+            tokenResponse.setEmail(email);
         }
-        // 이미 refresh토큰잇는 유저면 client_secret, refresh_token로 검증
+        // 이미 refresh 토큰 있는 유저면 client_secret, refresh_token로 검증
         else if (client_secret != null && code == null && refresh_token != null) {
             tokenResponse = appleUtils.validateAnExistingRefreshToken(client_secret, refresh_token);
         }

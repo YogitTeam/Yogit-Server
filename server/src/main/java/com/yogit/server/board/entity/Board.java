@@ -1,7 +1,6 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
-import com.yogit.server.board.dto.request.DeleteBoardReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
@@ -39,9 +38,9 @@ public class Board extends BaseEntity {
 
     private String address;
 
-    private float longitute;
+    private Float longitute;
 
-    private float latitude;
+    private Float latitude;
 
     private LocalDateTime date; // 모임 시각
 
@@ -51,9 +50,9 @@ public class Board extends BaseEntity {
 
     private String kindOfPerson; // 이런 사람을 원합니다 설명 글.
 
-    private int currentMember;
+    private Integer currentMember;
 
-    private int totalMember;
+    private Integer totalMember;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL) // 보드 생성 순간 보드 유저 리스트 생성
     private List<BoardUser> boardUsers = new ArrayList<>();

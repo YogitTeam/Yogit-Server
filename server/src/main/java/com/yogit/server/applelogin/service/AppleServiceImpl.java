@@ -61,12 +61,15 @@ public class AppleServiceImpl implements AppleService {
 
         // 이메일 추출
         String email = user.getAsString("email");
+        System.out.println("email : " + email);
 
         // 이름 추출
-        JSONObject name = (JSONObject) user.get("name");
-        String lastName = name.getAsString("lastName");
-        String firstName = name.getAsString("firstName");
+        //JSONObject name = (JSONObject)user.get("name");
+        Map<String, String> name = (Map<String, String>) user.get("name");
+        String lastName = name.get("lastName");
+        String firstName = name.get("firstName");
         String fullName = lastName + firstName;
+        System.out.println("fullName : " + fullName);
 
         // 만약 처음 인증하는 유저여서  refresh 토큰 없으면 client_secret, authorization_code로 검증
         if (client_secret != null && code != null && refresh_token == null) {

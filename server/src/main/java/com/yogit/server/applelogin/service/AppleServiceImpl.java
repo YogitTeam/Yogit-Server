@@ -45,6 +45,7 @@ public class AppleServiceImpl implements AppleService {
      * @return
      */
     @Override
+    @Transactional
     public TokenResponse requestCodeValidations(ServicesResponse serviceResponse, String refresh_token) throws NoSuchAlgorithmException {
 
         TokenResponse tokenResponse = new TokenResponse();

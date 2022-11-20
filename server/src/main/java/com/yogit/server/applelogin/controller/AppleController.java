@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.NoSuchAlgorithmException;
@@ -29,25 +28,42 @@ public class AppleController {
      * @param serviceResponse
      * @return
      */
-    @PostMapping(value = "/redirect")
+//    @PostMapping(value = "/redirect")
+//    @ResponseBody
+//    public TokenResponse servicesRedirect(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
+//
+//        if (serviceResponse == null) {
+//            return null;
+//        }
+//
+//        String code = serviceResponse.getCode();
+//        String id_token = serviceResponse.getId_token();
+//        String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
+//
+//        logger.debug("================================");
+//        logger.debug("id_token ‣ " + serviceResponse.getId_token());
+//        logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
+//        logger.debug("client_secret ‣ " + client_secret);
+//        logger.debug("================================");
+//
+//        return appleService.requestCodeValidations(client_secret, code, null);
+//    }
+
+    /**
+     * Apple 회원가입
+     * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
+     * @param serviceResponse
+     * @return
+     */
+    @PostMapping(value = "/sign-up/apple")
     @ResponseBody
-    public TokenResponse servicesRedirect(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
+    public TokenResponse signUpApple(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
 
         if (serviceResponse == null) {
             return null;
         }
 
-        String code = serviceResponse.getCode();
-        String id_token = serviceResponse.getId_token();
-        String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
-
-        logger.debug("================================");
-        logger.debug("id_token ‣ " + serviceResponse.getId_token());
-        logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
-        logger.debug("client_secret ‣ " + client_secret);
-        logger.debug("================================");
-
-        return appleService.requestCodeValidations(client_secret, code, null);
+        return appleService.requestCodeValidations(serviceResponse, null);
     }
 
     /**
@@ -57,11 +73,11 @@ public class AppleController {
      * @param refresh_token
      * @return
      */
-    @PostMapping(value = "/refresh")
-    @ResponseBody
-    public TokenResponse refreshRedirect(@RequestParam String client_secret, @RequestParam String refresh_token) {
-        return appleService.requestCodeValidations(client_secret, null, refresh_token);
-    }
+//    @PostMapping(value = "/refresh")
+//    @ResponseBody
+//    public TokenResponse refreshRedirect(@RequestParam String client_secret, @RequestParam String refresh_token) {
+//        return appleService.requestCodeValidations(client_secret, null, refresh_token);
+//    }
 
     /**
      * Apple 유저의 이메일 변경, 서비스 해지, 계정 탈퇴에 대한 Notifications을 받는 Controller (SSL - https (default: 443))

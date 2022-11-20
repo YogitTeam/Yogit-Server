@@ -55,6 +55,8 @@ public class User extends BaseEntity {
     private String gender;
     private String nationality;
 
+    private String refresh_token;
+
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
@@ -74,6 +76,13 @@ public class User extends BaseEntity {
     public User (String loginId, String phoneNum){
         this.loginId = loginId;
         this.phoneNum = phoneNum;
+    }
+
+    @Builder(builderMethodName = "appleBuilder")
+    public User (String loginId, String refresh_token, String name){
+        this.loginId = loginId;
+        this.refresh_token = refresh_token;
+        this.name = name;
     }
 
     public void addLanguage(Language language){

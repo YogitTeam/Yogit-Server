@@ -20,7 +20,7 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -44,13 +44,13 @@ public class User extends BaseEntity {
     private String aboutMe; // 300자 이내
 
     // location
-    private float longtitude;
-    private float latitude;
+    private Float longtitude;
+    private Float latitude;
     private String administrativeArea;
 
     private String job;
     private Integer age;
-    private float memberTemp;
+    private Float memberTemp;
     private String phoneNum;
     private String gender;
     private String nationality;

@@ -60,6 +60,7 @@ public class AppleController {
     public TokenResponse signUpApple(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
 
         if (serviceResponse == null) { // TODO 예외처리
+            System.out.println("요청 값이 없습니다.");
             return null;
         }
 

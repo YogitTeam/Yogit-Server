@@ -7,7 +7,6 @@ import com.yogit.server.user.dto.request.CreateUserAppleReq;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +18,7 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class AppleServiceImpl implements AppleService {
 
-    @Autowired
-    AppleUtils appleUtils;
-
+    private final AppleUtils appleUtils;
     private final UserService userService;
 
     /**
@@ -43,9 +40,8 @@ public class AppleServiceImpl implements AppleService {
     /**
      * code 또는 refresh_token가 유효한지 Apple Server에 검증 요청
      *
-     * @param client_secret
-     * @param code
-     * @param refresh_token
+     *
+     *
      * @return
      */
     @Override
@@ -76,6 +72,12 @@ public class AppleServiceImpl implements AppleService {
 
             // 유저 엔티티 생성
             CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName);
+            System.out.println("========req=======");
+            System.out.println("name : " + createUserAppleReq.getName());
+            System.out.println("loginId : " + createUserAppleReq.getLoginId());
+            System.out.println("refresh_token : " + createUserAppleReq.getRefresh_token());
+            System.out.println("=================");
+
             userService.createUserApple(createUserAppleReq);
 
             tokenResponse.setName(fullName);

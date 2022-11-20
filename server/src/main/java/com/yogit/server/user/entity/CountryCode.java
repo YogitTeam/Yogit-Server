@@ -12,11 +12,11 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CountryCode extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "country_code_id")
     private Long id;
 
-    private int num;
+    private Integer num;
 
     @Enumerated(EnumType.STRING)
     private Country country;

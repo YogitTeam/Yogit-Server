@@ -38,6 +38,8 @@ public class Board extends BaseEntity {
 
     private String address;
 
+    private String addressDetail; // 상세 주소
+
     private Float longitute;
 
     private Float latitude;
@@ -73,12 +75,13 @@ public class Board extends BaseEntity {
 
     // 생성자
     @Builder
-    public Board(Long id, City city, User host, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
+    public Board(Long id, City city, User host, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
         this.id = id;
         this.city = city;
         this.host = host;
         this.title = title;
         this.address = address;
+        this.addressDetail = addressDetail;
         this.longitute = longitute;
         this.latitude = latitude;
         this.date = date;
@@ -101,6 +104,7 @@ public class Board extends BaseEntity {
         this.host = host;
         this.title = dto.getTitle();
         this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
         this.longitute = dto.getLongitute();
         this.latitude = dto.getLatitude();
         this.date = dto.getDate();
@@ -136,6 +140,7 @@ public class Board extends BaseEntity {
         this.city = city;
         this.title = dto.getTitle();
         this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
         this.longitute = dto.getLongitute();
         this.latitude = dto.getLatitude();
         this.date = dto.getDate();

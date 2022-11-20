@@ -44,6 +44,10 @@ public class BoardRes {
     @ApiParam(value = "모임 주소")
     private String address;
 
+    @ApiModelProperty(example = "강남역 3번 출구")
+    @ApiParam(value = "모임 상세 주소")
+    private String addressDetail;
+
     @ApiModelProperty(example = "37.1")
     @ApiParam(value = "위도")
     private float longitute;
@@ -114,6 +118,7 @@ public class BoardRes {
                 .profileImgUrl(profileImgUrl)
                 .title(board.getTitle())
                 .address(board.getAddress())
+                .addressDetail(board.getAddressDetail())
                 .longitute(board.getLongitute())
                 .latitude(board.getLatitude())
                 .date(board.getDate())
@@ -133,7 +138,7 @@ public class BoardRes {
     }
 
     @Builder
-    public BoardRes(Long boardId, Long cityId, Long hostId, String hostName, String profileImgUrl, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, BaseStatus status, String createdAt, String updatedAt) {
+    public BoardRes(Long boardId, Long cityId, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.hostId = hostId;
@@ -141,6 +146,7 @@ public class BoardRes {
         this.profileImgUrl = profileImgUrl;
         this.title = title;
         this.address = address;
+        this.addressDetail = addressDetail;
         this.longitute = longitute;
         this.latitude = latitude;
         this.date = date;

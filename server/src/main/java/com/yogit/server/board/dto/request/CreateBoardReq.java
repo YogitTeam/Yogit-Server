@@ -40,6 +40,10 @@ public class CreateBoardReq {
     @NotBlank
     private String address;
 
+    @ApiModelProperty(example = "강남역 3번 출구")
+    @ApiParam(value = "모임 상세 주소", required = false)
+    private String addressDetail;
+
     @ApiModelProperty(example = "37.1")
     @ApiParam(value = "위도", required = true)
     private float longitute;

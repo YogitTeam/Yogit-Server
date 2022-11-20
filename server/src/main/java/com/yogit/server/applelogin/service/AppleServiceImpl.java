@@ -4,7 +4,6 @@ import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.util.AppleUtils;
 import com.yogit.server.user.dto.request.CreateUserAppleReq;
-import com.yogit.server.user.entity.User;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
@@ -77,7 +76,7 @@ public class AppleServiceImpl implements AppleService {
 
             // 유저 엔티티 생성
             CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName);
-            User userEntity = userService.createUserApple(createUserAppleReq);
+            userService.createUserApple(createUserAppleReq);
 
             tokenResponse.setName(fullName);
             tokenResponse.setEmail(email);

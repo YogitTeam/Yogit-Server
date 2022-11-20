@@ -78,7 +78,6 @@ public class User extends BaseEntity {
         this.phoneNum = phoneNum;
     }
 
-    @Builder(builderMethodName = "appleBuilder")
     public User (String loginId, String refresh_token, String name){
         this.loginId = loginId;
         this.refresh_token = refresh_token;

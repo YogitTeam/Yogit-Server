@@ -15,10 +15,12 @@ public class CreateUserAppleReq {
     String name;
 
     public static User toEntityUserApple(CreateUserAppleReq createUserAppleReq){
-        return User.appleBuilder()
-                .loginId(createUserAppleReq.loginId)
-                .refresh_token(createUserAppleReq.refresh_token)
-                .name(createUserAppleReq.name)
-                .build();
+        User user = new User(createUserAppleReq.loginId, createUserAppleReq.refresh_token, createUserAppleReq.name);
+
+        System.out.println(user.getLoginId());
+        System.out.println(user.getRefresh_token());
+        System.out.println(user.getName());
+
+        return user;
     }
 }

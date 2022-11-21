@@ -34,6 +34,7 @@ public class BoardController {
             @ApiImplicitParam(name = "hostId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "title", dataTypeClass = String.class, example = "경복궁 탐사입니다."),
             @ApiImplicitParam(name = "address", dataTypeClass = String.class, example = "서울특별시 종로구 사직로 130"),
+            @ApiImplicitParam(name = "addressDetail", dataTypeClass = String.class, example = "강남역 3번 출구"),
             @ApiImplicitParam(name = "longitute", dataTypeClass = float.class, example = "37.1"),
             @ApiImplicitParam(name = "latitude", dataTypeClass = float.class, example = "37.1"),
             @ApiImplicitParam(name = "date", dataTypeClass = LocalDateTime.class, example = "2022-07-13 16:29:30"),

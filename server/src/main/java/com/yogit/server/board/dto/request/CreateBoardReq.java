@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
@@ -54,7 +55,7 @@ public class CreateBoardReq {
 
     @ApiModelProperty(example = "2022-07-13 16:29:30")
     @ApiParam(value = "사용자 ID", required = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // form-data 형식으로 보낼 땐 @JsonFormat은 에러 남.
     private LocalDateTime date; // 모임 시각
 
     @ApiModelProperty(example = "시간에 맞춰오시기 바랍니다.")

@@ -1,9 +1,11 @@
 package com.yogit.server.applelogin.service;
 
+import com.yogit.server.applelogin.model.Account;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.util.AppleUtils;
 import com.yogit.server.user.dto.request.CreateUserAppleReq;
+import com.yogit.server.user.entity.UserType;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
@@ -69,7 +71,7 @@ public class AppleServiceImpl implements AppleService {
             tokenResponse = appleUtils.validateAuthorizationGrantCode(client_secret, code);
 
             // 유저 생성
-            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName);
+            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName, UserType.APPLE);
             userService.createUserApple(createUserAppleReq);
 
             tokenResponse.setName(fullName);
@@ -79,6 +81,9 @@ public class AppleServiceImpl implements AppleService {
         else if (client_secret != null && code == null && refresh_token != null) {
             tokenResponse = appleUtils.validateAnExistingRefreshToken(client_secret, refresh_token);
         }
+
+        tokenResponse.setAccount(new Account(serviceResponse.getState(), code, serviceResponse.getId_token(), user, serviceResponse.getIdentifier(), serviceResponse.getHasRequirementInfo()));
+        tokenResponse.setUserType(UserType.APPLE.toString());
 
         return tokenResponse;
     }

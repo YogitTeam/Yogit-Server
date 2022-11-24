@@ -64,6 +64,7 @@ public class AppleController {
     @PostMapping(value = "/apps/to/endpoint")
     @ResponseBody
     public void appsToEndpoint(@RequestBody AppsResponse appsResponse) {
+        System.out.println("애플 계정 탈퇴했습니다.");
         logger.debug("[/path/to/endpoint] RequestBody ‣ " + appsResponse.getPayload());
     }
 

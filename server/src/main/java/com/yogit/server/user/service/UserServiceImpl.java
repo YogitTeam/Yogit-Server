@@ -194,12 +194,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Void createUserApple(CreateUserAppleReq createUserAppleReq){
+    public User createUserApple(CreateUserAppleReq createUserAppleReq){
 
         if(userRepository.existsByLoginId(createUserAppleReq.getLoginId())) throw new UserDuplicationLoginId();
 
-        userRepository.save(CreateUserAppleReq.toEntityUserApple(createUserAppleReq));
+        User user = userRepository.save(CreateUserAppleReq.toEntityUserApple(createUserAppleReq));
 
-        return null;
+        return user;
     }
 }

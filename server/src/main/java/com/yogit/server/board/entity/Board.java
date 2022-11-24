@@ -162,4 +162,8 @@ public class Board extends BaseEntity {
                 .map(boardImage -> boardImage.getImgUUid())
                 .collect(Collectors.toList());
     }
+
+    public void addCurrentMember(){
+        this.currentMember+=1;
+    }
 }

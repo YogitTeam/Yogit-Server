@@ -55,7 +55,7 @@ public class User extends BaseEntity {
     private String gender;
     private String nationality;
 
-    private String refresh_token;
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
@@ -81,15 +81,15 @@ public class User extends BaseEntity {
         this.phoneNum = phoneNum;
     }
 
-    public User (String loginId, String refresh_token, String name){
+    public User (String loginId, String refreshToken, String name){
         this.loginId = loginId;
-        this.refresh_token = refresh_token;
+        this.refreshToken = refreshToken;
         this.name = name;
     }
 
-    public User (String loginId, String refresh_token, String name, UserType userType){
+    public User (String loginId, String refreshToken, String name, UserType userType){
         this.loginId = loginId;
-        this.refresh_token = refresh_token;
+        this.refreshToken = refreshToken;
         this.name = name;
         this.userType = userType;
     }

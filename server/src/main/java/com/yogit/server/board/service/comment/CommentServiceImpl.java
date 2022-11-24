@@ -14,6 +14,7 @@ import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.board.repository.CommentRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.User;
+import com.yogit.server.user.exception.InvalidTokenException;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

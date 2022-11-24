@@ -6,6 +6,7 @@ import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
 import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
+import com.yogit.server.user.entity.User;
 
 public interface UserService {
     ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq);
@@ -22,5 +23,5 @@ public interface UserService {
 
     ApplicationResponse<Void> createUser(CreateUserReq createUserReq);
 
-    Void createUserApple(CreateUserAppleReq createUserAppleReq);
+    User createUserApple(CreateUserAppleReq createUserAppleReq);
 }

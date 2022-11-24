@@ -24,4 +24,5 @@ public class TokenResponse {
     //추가적인 응답 필드
     private String userType; // ex)apple
     private Account account;
+    private Long userId;
 }

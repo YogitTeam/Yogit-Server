@@ -23,4 +23,9 @@ public class CreateCommentReq {
     @ApiParam(value = "클립보드 상세 내용", required = true)
     @NotBlank
     private String content;
+
+    @ApiModelProperty(example = "입력 예정")
+    @ApiParam(value = "애플 refresh token", required = true)
+    @NotBlank
+    private String refreshToken;
 }

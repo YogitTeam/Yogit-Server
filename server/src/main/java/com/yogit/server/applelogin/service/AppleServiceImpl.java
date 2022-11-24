@@ -78,9 +78,6 @@ public class AppleServiceImpl implements AppleService {
             // 유저 생성
             CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName, UserType.APPLE);
             saveduser = userService.createUserApple(createUserAppleReq);
-
-            tokenResponse.setName(fullName);
-            tokenResponse.setEmail(email);
         }
         // 이미 refresh 토큰 있는 유저면 client_secret, refresh_token로 검증
         else if (client_secret != null && code == null && refresh_token != null) {

@@ -17,10 +17,6 @@ public class TokenResponse {
     private String refresh_token;
     private String token_type;
 
-    // 유저 엔티티 생성 후 res
-    private String name;
-    private String email;
-
     //추가적인 응답 필드
     private String userType; // ex)apple
     private Account account;

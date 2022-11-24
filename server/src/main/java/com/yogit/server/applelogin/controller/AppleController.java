@@ -23,48 +23,20 @@ public class AppleController {
     AppleService appleService;
 
     /**
-     * Apple Login 유저 정보를 받은 후 권한 생성
-     * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
-     * @param serviceResponse
-     * @return
-     */
-//    @PostMapping(value = "/redirect")
-//    @ResponseBody
-//    public TokenResponse servicesRedirect(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
-//
-//        if (serviceResponse == null) {
-//            return null;
-//        }
-//
-//        String code = serviceResponse.getCode();
-//        String id_token = serviceResponse.getId_token();
-//        String client_secret = appleService.getAppleClientSecret(serviceResponse.getId_token());
-//
-//        logger.debug("================================");
-//        logger.debug("id_token ‣ " + serviceResponse.getId_token());
-//        logger.debug("payload ‣ " + appleService.getPayload(serviceResponse.getId_token()));
-//        logger.debug("client_secret ‣ " + client_secret);
-//        logger.debug("================================");
-//
-//        return appleService.requestCodeValidations(client_secret, code, null);
-//    }
-
-    /**
      * Apple 회원가입
      * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
-     * @param serviceResponse
      * @return
      */
     @PostMapping(value = "/sign-up/apple")
     @ResponseBody
-    public TokenResponse signUpApple(@RequestBody ServicesResponse serviceResponse) throws NoSuchAlgorithmException {
+    public TokenResponse signUpApple(@RequestBody ServicesResponse servicesResponse) throws NoSuchAlgorithmException {
 
-        if (serviceResponse == null) { // TODO 예외처리
+        if (servicesResponse == null) { // TODO 예외처리
             System.out.println("요청 값이 없습니다.");
             return null;
         }
 
-        return appleService.requestCodeValidations(serviceResponse, null);
+        return appleService.requestCodeValidations(servicesResponse, null);
     }
 
     /**
@@ -73,6 +45,10 @@ public class AppleController {
      * @param client_secret
      * @param refresh_token
      * @return
+     * refresh_token은 만료되지 않기 때문에
+     * 권한이 필요한 요청일 경우 굳이 매번 애플 ID 서버로부터 refresh_token을 통해 access_token을 발급 받기보다는
+     * 유저의 refresh_token을 따로 DB나 기타 저장소에 저장해두고 캐싱해두고 조회해서 검증하는편이 성능면에서 낫다고 함..
+     * 우리도 db에 refresh token을 따로 저장해서 사용하므로 이 메소드는 필요 없지 않을까..
      */
 //    @PostMapping(value = "/refresh")
 //    @ResponseBody
@@ -88,6 +64,7 @@ public class AppleController {
     @PostMapping(value = "/apps/to/endpoint")
     @ResponseBody
     public void appsToEndpoint(@RequestBody AppsResponse appsResponse) {
+        System.out.println("애플 계정 탈퇴했습니다.");
         logger.debug("[/path/to/endpoint] RequestBody ‣ " + appsResponse.getPayload());
     }
 

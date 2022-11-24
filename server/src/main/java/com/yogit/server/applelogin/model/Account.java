@@ -1,13 +1,14 @@
 package com.yogit.server.applelogin.model;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minidev.json.JSONObject;
 
 @Data
 @NoArgsConstructor
-public class ServicesResponse {
+@AllArgsConstructor
+public class Account {
 
     private String state;
     private String code; // authorization_token

@@ -72,6 +72,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<UserImage> userImages = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
     @Builder
     public User (String loginId, String phoneNum){
         this.loginId = loginId;
@@ -82,6 +85,13 @@ public class User extends BaseEntity {
         this.loginId = loginId;
         this.refresh_token = refresh_token;
         this.name = name;
+    }
+
+    public User (String loginId, String refresh_token, String name, UserType userType){
+        this.loginId = loginId;
+        this.refresh_token = refresh_token;
+        this.name = name;
+        this.userType = userType;
     }
 
     public void addLanguage(Language language){

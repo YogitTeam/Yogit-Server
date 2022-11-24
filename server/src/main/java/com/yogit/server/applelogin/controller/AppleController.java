@@ -4,6 +4,7 @@ import com.yogit.server.applelogin.model.AppsResponse;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.service.AppleService;
+import com.yogit.server.global.dto.ApplicationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,14 @@ public class AppleController {
      */
     @PostMapping(value = "/sign-up/apple")
     @ResponseBody
-    public TokenResponse signUpApple(@RequestBody ServicesResponse servicesResponse) throws NoSuchAlgorithmException {
+    public ApplicationResponse<TokenResponse> signUpApple(@RequestBody ServicesResponse servicesResponse) throws NoSuchAlgorithmException {
 
         if (servicesResponse == null) { // TODO 예외처리
             System.out.println("요청 값이 없습니다.");
             return null;
         }
-
-        return appleService.requestCodeValidations(servicesResponse, null);
+        TokenResponse tokenResponse = appleService.requestCodeValidations(servicesResponse, null);
+        return ApplicationResponse.create("애플 로그인에 성공했습니다.",tokenResponse);
     }
 
     /**

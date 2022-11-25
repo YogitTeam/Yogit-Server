@@ -5,6 +5,7 @@ import com.yogit.server.report.dto.req.CreateUserReportReq;
 import com.yogit.server.report.dto.res.UserReportRes;
 import com.yogit.server.report.entity.UserReport;
 import com.yogit.server.report.enums.ReportStatus;
+import com.yogit.server.report.exception.MaxReportingCntException;
 import com.yogit.server.report.repository.UserReportRepository;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
@@ -41,6 +42,13 @@ public class UserReportServiceImpl implements UserReportService{
         reportingUser.changeReportingCnt();
         //신고 당하는 유저 신고 받은 횟수 1증가
         reportedUser.changeReportedCnt();
+
+        //validation: 신고하는 유저의 신고 한 횟수 검증, 일주일에 신고 5번 이하 허용
+        if(reportingUser.getReportingCnt() > 5){
+            throw new MaxReportingCntException();
+        }
+        //validation: 신고 받는 유저가 이미 신고 받은 유저인지 검증
+
 
         UserReportRes res = UserReportRes.toDto(userReport);
         return ApplicationResponse.create("유저 신고 생성 성공했습니다.", res);

@@ -10,7 +10,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequiredArgsConstructor
 public enum ReportExceptionList {
 
-    MAX_REPORTING_CNT("R001",BAD_REQUEST, "신고 횟수를 초과했습니다.");
+    MAX_REPORTING_CNT("R001",BAD_REQUEST, "신고 횟수를 초과했습니다."),
+    ALREADY_REPORT("R0002", BAD_REQUEST, "이미 신고한 유저입니다.");
 
     private final String CODE;
     private final HttpStatus HTTPSTATUS;

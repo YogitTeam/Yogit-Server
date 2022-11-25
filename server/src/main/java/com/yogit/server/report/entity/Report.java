@@ -6,6 +6,7 @@ import com.yogit.server.report.enums.ReportType;
 import com.yogit.server.user.entity.Language;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,7 +14,8 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "report_type")
+@DiscriminatorColumn
+@Getter
 public abstract class Report extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

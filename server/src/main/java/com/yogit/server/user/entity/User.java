@@ -79,6 +79,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "reportedUser")
     private List<UserReport> reportedUsers = new ArrayList<>();
 
+    private Integer reportingCnt;
+    private Integer reportedCnt;
+
     @Builder
     public User (String loginId, String phoneNum){
         this.loginId = loginId;
@@ -89,6 +92,8 @@ public class User extends BaseEntity {
         this.loginId = loginId;
         this.refresh_token = refresh_token;
         this.name = name;
+        this.reportingCnt=0;
+        this.reportedCnt=0;
     }
 
     public void addLanguage(Language language){
@@ -134,5 +139,13 @@ public class User extends BaseEntity {
 
     public void addPhoneNum(String phoneNum){
         this.phoneNum = phoneNum;
+    }
+
+    public void changeReportingCnt(){
+        this.reportingCnt+=1;
+    }
+
+    public void changeReportedCnt(){
+        this.reportedCnt+=1;
     }
 }

@@ -5,6 +5,7 @@ import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.report.entity.UserReport;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,6 +72,12 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<UserImage> userImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reportingUser")
+    private List<UserReport> reportingUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reportedUser")
+    private List<UserReport> reportedUsers = new ArrayList<>();
 
     @Builder
     public User (String loginId, String phoneNum){

@@ -5,6 +5,7 @@ import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.report.entity.UserReport;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -75,6 +76,15 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
+    @OneToMany(mappedBy = "reportingUser")
+    private List<UserReport> reportingUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reportedUser")
+    private List<UserReport> reportedUsers = new ArrayList<>();
+
+    private Integer reportingCnt;
+    private Integer reportedCnt;
+
     @Builder
     public User (String loginId, String phoneNum){
         this.loginId = loginId;
@@ -85,6 +95,8 @@ public class User extends BaseEntity {
         this.loginId = loginId;
         this.refreshToken = refreshToken;
         this.name = name;
+        this.reportingCnt=0;
+        this.reportedCnt=0;
     }
 
     public User (String loginId, String refreshToken, String name, UserType userType){
@@ -92,6 +104,8 @@ public class User extends BaseEntity {
         this.refreshToken = refreshToken;
         this.name = name;
         this.userType = userType;
+        this.reportingCnt=0;
+        this.reportedCnt=0;
     }
 
     public void addLanguage(Language language){
@@ -137,5 +151,13 @@ public class User extends BaseEntity {
 
     public void addPhoneNum(String phoneNum){
         this.phoneNum = phoneNum;
+    }
+
+    public void changeReportingCnt(){
+        this.reportingCnt+=1;
+    }
+
+    public void changeReportedCnt(){
+        this.reportedCnt+=1;
     }
 }

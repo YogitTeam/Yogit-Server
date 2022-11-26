@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class CreateUserAppleReq {
 
     String loginId;
-    String refresh_token;
+    String refreshToken;
     String name;
     UserType userType;
 
     public static User toEntityUserApple(CreateUserAppleReq createUserAppleReq){
-        User user = new User(createUserAppleReq.loginId, createUserAppleReq.refresh_token, createUserAppleReq.name, createUserAppleReq.userType);
+        User user = new User(createUserAppleReq.loginId, createUserAppleReq.refreshToken, createUserAppleReq.name, createUserAppleReq.userType);
         return user;
     }
 }

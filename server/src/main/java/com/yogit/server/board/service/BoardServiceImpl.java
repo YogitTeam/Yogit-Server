@@ -200,7 +200,7 @@ public class BoardServiceImpl implements BoardService{
         Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
         //  보드 res에 이미지uuid -> aws s3 url로 변환
         List<GetAllBoardRes> boardsRes = boards.stream()
-                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0))), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                 .collect(Collectors.toList());
         return ApplicationResponse.ok(boardsRes);
     }

@@ -4,6 +4,7 @@ import com.yogit.server.board.dto.request.CreateBoardReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
+import com.yogit.server.report.entity.BoardReport;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
@@ -72,6 +73,8 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board")
     private List<ClipBoard> clipBoards;
 
+    @OneToMany(mappedBy = "board")
+    private List<BoardReport> boardReports;
 
     // 생성자
     @Builder

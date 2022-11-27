@@ -200,11 +200,45 @@ public class BoardServiceImpl implements BoardService{
         Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
         //  보드 res에 이미지uuid -> aws s3 url로 변환
         List<GetAllBoardRes> boardsRes = boards.stream()
-                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0))), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                 .collect(Collectors.toList());
         return ApplicationResponse.ok(boardsRes);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategories dto) {
+        int cursor = dto.getCursor();
+        List<List<GetAllBoardRes>> boardsByCategories = new ArrayList<>();
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        List<Category> categories = categoryRepository.findAllCategories();
+        if(categories.isEmpty()){
+            System.out.println("카테고리가 없습니다.");
+        }
+
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.desc("currentMember"),
+                Sort.Order.asc("date")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
+
+        // 카테고리 별 리스트 반복문 조회
+        for(Category category: categories){
+            Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, category.getId());
+            //  보드 res에 이미지uuid -> aws s3 url로 변환
+            List<GetAllBoardRes> boardsRes = boards.stream()
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .collect(Collectors.toList());
+
+            boardsByCategories.add(boardsRes);
+        }
+
+        return ApplicationResponse.ok(boardsByCategories);
+    }
 
     @Transactional(readOnly = true)
     @Override

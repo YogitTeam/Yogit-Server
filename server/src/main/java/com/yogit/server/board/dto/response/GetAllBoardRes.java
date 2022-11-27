@@ -9,8 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -48,19 +46,19 @@ public class GetAllBoardRes {
     @ApiParam(value = "모임 카테고리 ID")
     private Long categoryId;
 
-    @ApiModelProperty(example = "['이미지 url','이미지2 url']")
-    @ApiParam(value = "게시글 이미지 url 리스트")
-    private List<String> imageUrls;
+    @ApiModelProperty(example = "이미지 url")
+    @ApiParam(value = "게시글 첫번째 이미지 url")
+    private String imageUrl;
 
-    @ApiModelProperty(example = "[1,2,3]")
-    @ApiParam(value = "게시글 이미지 ID 리스트")
-    private List<Long> imageIds;
+    @ApiModelProperty(example = "1")
+    @ApiParam(value = "게시글 첫번째 이미지 ID")
+    private Long imageId;
 
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
 
-    public static GetAllBoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl){
+    public static GetAllBoardRes toDto(Board board, String imageUrl, String profileImgUrl){
         return GetAllBoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
@@ -70,14 +68,14 @@ public class GetAllBoardRes {
                 .currentMember(board.getCurrentMember())
                 .totalMember(board.getTotalMember())
                 .categoryId(board.getCategory().getId())
-                .imageUrls(imageUrls)
-                .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
+                .imageUrl(imageUrl)
+                .imageId(board.getBoardImages().get(0).getId())
                 .status(board.getStatus())
                 .build();
     }
 
     @Builder
-    public GetAllBoardRes(Long boardId, Long cityId, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, List<String> imageUrls, List<Long> imageIds, BaseStatus status) {
+    public GetAllBoardRes(Long boardId, Long cityId, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.profileImgUrl = profileImgUrl;
@@ -86,8 +84,8 @@ public class GetAllBoardRes {
         this.currentMember = currentMember;
         this.totalMember = totalMember;
         this.categoryId = categoryId;
-        this.imageUrls = imageUrls;
-        this.imageIds = imageIds;
+        this.imageUrl = imageUrl;
+        this.imageId = imageId;
         this.status = status;
     }
 }

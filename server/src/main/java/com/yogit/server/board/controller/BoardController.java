@@ -5,6 +5,7 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
+import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import io.swagger.annotations.*;
@@ -119,7 +120,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get")
-    public ApplicationResponse<List<List<BoardRes>>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
         return boardService.findAllBoards(getAllBoardsReq);
     }
 
@@ -135,7 +136,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/category")
-    public ApplicationResponse<List<BoardRes>> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
+    public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
         return boardService.findAllBoardsByCategory(getAllBoardsByCategoryReq);
     }
 

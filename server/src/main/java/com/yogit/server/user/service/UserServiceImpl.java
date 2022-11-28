@@ -68,8 +68,6 @@ public class UserServiceImpl implements UserService {
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
-        // if(user.getCity())  userProfileRes.addCity(user.getCity().getName()); // TODO administrativeArea 와의 차이 문의중 (활동 지역 필요하면, 지금 city 연관관계로 진행)
-
         List<Language> languages = languageRepository.findAllByUserId(userId);
         if(!languages.isEmpty()){
             for(Language l : languages){
@@ -81,6 +79,8 @@ public class UserServiceImpl implements UserService {
         if(userInterest.isPresent()){
             userProfileRes.addInterest(userInterest.get().getInterest().getName());
         }
+
+        userProfileRes.setProfileImg(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
 
         return ApplicationResponse.ok(userProfileRes);
     }

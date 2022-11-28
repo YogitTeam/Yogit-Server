@@ -1,5 +1,6 @@
 package com.yogit.server.block.entity;
 
+import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Block {
+public class Block extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

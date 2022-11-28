@@ -3,6 +3,7 @@ package com.yogit.server.block.service;
 import com.yogit.server.block.dto.req.CreateBlockReq;
 import com.yogit.server.block.dto.res.BlockRes;
 import com.yogit.server.block.entity.Block;
+import com.yogit.server.block.exception.AlreadyBlockingException;
 import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.User;
@@ -32,6 +33,10 @@ public class BlockServiceImpl implements BlockService{
                 .orElseThrow(() -> new NotFoundUserException());
 
         //Validation: 중복 차단(이미 차단했는지 검증)
+        //TODO: 1.차단 리파지토리로 조회 or 2.유저의 차단 리스트 참조 조회 중 좋은 방법 선택해야 됨.
+        if (!blockRepository.findByBlockingUserIdAndBlockedUserId(dto.getBlockingUserId(), dto.getBlockedUserId()).isEmpty()) {
+            throw new AlreadyBlockingException();
+        }
 
         // 차단 엔티티 새성, 저장
         Block block = new Block(blockingUser, blockedUser);

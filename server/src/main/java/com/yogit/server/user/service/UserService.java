@@ -24,4 +24,6 @@ public interface UserService {
     ApplicationResponse<Void> createUser(CreateUserReq createUserReq);
 
     User createUserApple(CreateUserAppleReq createUserAppleReq);
+
+    ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq);
 }

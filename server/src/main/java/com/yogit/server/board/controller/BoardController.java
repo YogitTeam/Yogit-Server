@@ -5,6 +5,7 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
+import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import io.swagger.annotations.*;
@@ -34,6 +35,7 @@ public class BoardController {
             @ApiImplicitParam(name = "hostId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "title", dataTypeClass = String.class, example = "경복궁 탐사입니다."),
             @ApiImplicitParam(name = "address", dataTypeClass = String.class, example = "서울특별시 종로구 사직로 130"),
+            @ApiImplicitParam(name = "addressDetail", dataTypeClass = String.class, example = "강남역 3번 출구"),
             @ApiImplicitParam(name = "longitute", dataTypeClass = float.class, example = "37.1"),
             @ApiImplicitParam(name = "latitude", dataTypeClass = float.class, example = "37.1"),
             @ApiImplicitParam(name = "date", dataTypeClass = LocalDateTime.class, example = "2022-07-13 16:29:30"),
@@ -118,7 +120,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get")
-    public ApplicationResponse<List<List<BoardRes>>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(@RequestBody @Validated GetAllBoardsReq getAllBoardsReq){
         return boardService.findAllBoards(getAllBoardsReq);
     }
 
@@ -134,8 +136,24 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/category")
-    public ApplicationResponse<List<BoardRes>> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
+    public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
         return boardService.findAllBoardsByCategory(getAllBoardsByCategoryReq);
+    }
+
+
+    /**
+     * 게시글 모든 카테코리 별 리스트 모음 조회
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 모든 카테코리 별 리스트 모음 조회", notes = "그룹 게시글 모든 카테코리 별 리스트 모음 조회")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping("/get/categories")
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(@RequestBody @Validated GetBoardsByCategories dto){
+        return boardService.findBoardsByCategories(dto);
     }
 
 

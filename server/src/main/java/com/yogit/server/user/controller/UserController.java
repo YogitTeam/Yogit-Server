@@ -45,7 +45,7 @@ public class UserController {
      */
     @ApiOperation(value = "유저 Profile 조회")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-    @GetMapping("/prifile/{userId}") // TODO
+    @GetMapping("/profile/{userId}") // TODO
     public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
         return userService.getProfile(userId);
     }
@@ -110,7 +110,7 @@ public class UserController {
             @ApiImplicitParam(name = "loginId", required = true, dataTypeClass = String.class, example = "kang123"),
             @ApiImplicitParam(name = "phoneNum", required = true, dataTypeClass = String.class, example = "01012345678")
     })
-    @PostMapping("/join")
+    @PostMapping("/sign-up")
     public ApplicationResponse<Void> createUser(@ModelAttribute CreateUserReq createUserReq){
         return userService.createUser(createUserReq);
     }

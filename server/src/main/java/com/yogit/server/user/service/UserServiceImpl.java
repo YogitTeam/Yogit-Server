@@ -187,6 +187,17 @@ public class UserServiceImpl implements UserService {
         return ApplicationResponse.ok();
     }
 
+    @Override
+    @Transactional
+    public User createUserApple(CreateUserAppleReq createUserAppleReq){
+
+        if(userRepository.existsByLoginId(createUserAppleReq.getLoginId())) throw new UserDuplicationLoginId();
+
+        User user = userRepository.save(CreateUserAppleReq.toEntityUserApple(createUserAppleReq));
+
+        return user;
+    }
+
     public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
         User user = userRepository.findById(deleteUserImageReq.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());

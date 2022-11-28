@@ -4,6 +4,7 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
+import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.BoardImage;
 import com.yogit.server.board.entity.BoardUser;
@@ -150,7 +151,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<List<BoardRes>>> findAllBoards(GetAllBoardsReq dto){
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(GetAllBoardsReq dto){
         int cursor = dto.getCursor();
 
         User user = userRepository.findById(dto.getUserId())
@@ -166,12 +167,12 @@ public class BoardServiceImpl implements BoardService{
         PageRequest pageRequest = PageRequest.of(cursor, 10, sort); // 페이징 요청 객체
 
         // 사이즈 만큼 반복하면서 각 board category 별 보드 리스트 조회 (10개씩)
-        List<List<BoardRes>> res = new ArrayList<>();
+        List<List<GetAllBoardRes>> res = new ArrayList<>();
         for(int i=0;i< categoryList.size();i++){
             Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, categoryList.get(i).getId());
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            List<BoardRes> boardsRes = boards.stream()
-                    .map(board -> BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+            List<GetAllBoardRes> boardsRes = boards.stream()
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                     .collect(Collectors.toList());
             // 전체 리스트에 카테고리 별 리스트 추가
             res.add(boardsRes);
@@ -183,7 +184,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<BoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
+    public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
         int cursor = dto.getCursor();
 
         User user = userRepository.findById(dto.getUserId())
@@ -198,12 +199,46 @@ public class BoardServiceImpl implements BoardService{
 
         Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
         //  보드 res에 이미지uuid -> aws s3 url로 변환
-        List<BoardRes> boardsRes = boards.stream()
-                .map(board -> BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+        List<GetAllBoardRes> boardsRes = boards.stream()
+                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                 .collect(Collectors.toList());
         return ApplicationResponse.ok(boardsRes);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategories dto) {
+        int cursor = dto.getCursor();
+        List<List<GetAllBoardRes>> boardsByCategories = new ArrayList<>();
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        List<Category> categories = categoryRepository.findAllCategories();
+        if(categories.isEmpty()){
+            System.out.println("카테고리가 없습니다.");
+        }
+
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.desc("currentMember"),
+                Sort.Order.asc("date")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
+
+        // 카테고리 별 리스트 반복문 조회
+        for(Category category: categories){
+            Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, category.getId());
+            //  보드 res에 이미지uuid -> aws s3 url로 변환
+            List<GetAllBoardRes> boardsRes = boards.stream()
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .collect(Collectors.toList());
+
+            boardsByCategories.add(boardsRes);
+        }
+
+        return ApplicationResponse.ok(boardsByCategories);
+    }
 
     @Transactional(readOnly = true)
     @Override

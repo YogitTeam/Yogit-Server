@@ -1,10 +1,10 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.board.dto.request.CreateBoardReq;
-import com.yogit.server.board.dto.request.DeleteBoardReq;
 import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
+import com.yogit.server.report.entity.BoardReport;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
@@ -39,9 +39,11 @@ public class Board extends BaseEntity {
 
     private String address;
 
-    private float longitute;
+    private String addressDetail; // 상세 주소
 
-    private float latitude;
+    private Float longitute;
+
+    private Float latitude;
 
     private LocalDateTime date; // 모임 시각
 
@@ -51,9 +53,9 @@ public class Board extends BaseEntity {
 
     private String kindOfPerson; // 이런 사람을 원합니다 설명 글.
 
-    private int currentMember;
+    private Integer currentMember;
 
-    private int totalMember;
+    private Integer totalMember;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL) // 보드 생성 순간 보드 유저 리스트 생성
     private List<BoardUser> boardUsers = new ArrayList<>();
@@ -71,15 +73,18 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board")
     private List<ClipBoard> clipBoards;
 
+    @OneToMany(mappedBy = "board")
+    private List<BoardReport> boardReports;
 
     // 생성자
     @Builder
-    public Board(Long id, City city, User host, String title, String address, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
+    public Board(Long id, City city, User host, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
         this.id = id;
         this.city = city;
         this.host = host;
         this.title = title;
         this.address = address;
+        this.addressDetail = addressDetail;
         this.longitute = longitute;
         this.latitude = latitude;
         this.date = date;
@@ -102,6 +107,7 @@ public class Board extends BaseEntity {
         this.host = host;
         this.title = dto.getTitle();
         this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
         this.longitute = dto.getLongitute();
         this.latitude = dto.getLatitude();
         this.date = dto.getDate();
@@ -137,6 +143,7 @@ public class Board extends BaseEntity {
         this.city = city;
         this.title = dto.getTitle();
         this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
         this.longitute = dto.getLongitute();
         this.latitude = dto.getLatitude();
         this.date = dto.getDate();
@@ -157,5 +164,9 @@ public class Board extends BaseEntity {
         return this.boardImages.stream()
                 .map(boardImage -> boardImage.getImgUUid())
                 .collect(Collectors.toList());
+    }
+
+    public void addCurrentMember(){
+        this.currentMember+=1;
     }
 }

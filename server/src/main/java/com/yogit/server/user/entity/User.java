@@ -5,6 +5,7 @@ import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.report.entity.UserReport;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -44,16 +45,18 @@ public class User extends BaseEntity {
     private String aboutMe; // 300자 이내
 
     // location
-    private float longtitude;
-    private float latitude;
+    private Float longtitude;
+    private Float latitude;
     private String administrativeArea;
 
     private String job;
     private Integer age;
-    private float memberTemp;
+    private Float memberTemp;
     private String phoneNum;
     private String gender;
     private String nationality;
+
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
@@ -70,10 +73,39 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<UserImage> userImages = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    @OneToMany(mappedBy = "reportingUser")
+    private List<UserReport> reportingUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reportedUser")
+    private List<UserReport> reportedUsers = new ArrayList<>();
+
+    private Integer reportingCnt;
+    private Integer reportedCnt;
+
     @Builder
     public User (String loginId, String phoneNum){
         this.loginId = loginId;
         this.phoneNum = phoneNum;
+    }
+
+    public User (String loginId, String refreshToken, String name){
+        this.loginId = loginId;
+        this.refreshToken = refreshToken;
+        this.name = name;
+        this.reportingCnt=0;
+        this.reportedCnt=0;
+    }
+
+    public User (String loginId, String refreshToken, String name, UserType userType){
+        this.loginId = loginId;
+        this.refreshToken = refreshToken;
+        this.name = name;
+        this.userType = userType;
+        this.reportingCnt=0;
+        this.reportedCnt=0;
     }
 
     public void addLanguage(Language language){
@@ -119,5 +151,13 @@ public class User extends BaseEntity {
 
     public void addPhoneNum(String phoneNum){
         this.phoneNum = phoneNum;
+    }
+
+    public void changeReportingCnt(){
+        this.reportingCnt+=1;
+    }
+
+    public void changeReportedCnt(){
+        this.reportedCnt+=1;
     }
 }

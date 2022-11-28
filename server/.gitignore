@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+AuthKey_QLHFNT37VK.p8
+application.properties
+application.yml

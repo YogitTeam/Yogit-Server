@@ -6,5 +6,5 @@ import com.yogit.server.report.dto.res.BoardReportRes;
 
 public interface BoardReportService {
 
-//    ApplicationResponse<BoardReportRes> createBoardReport(CreateBoardReportReq createBoardReportReq);
+    ApplicationResponse<BoardReportRes> createBoardReport(CreateBoardReportReq createBoardReportReq);
 }

@@ -23,19 +23,19 @@ public class BoardReportController {
 
     private final BoardReportService boardReportService;
 
-//    /**
-//     * 게시글 신고 생성
-//     * @author 토마스
-//     */
-//    @ApiOperation(value = "게시글 신고 생성", notes = "게시글 신고 생성 요청.")
-//    @ApiResponses({
-//            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
-//            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
-//            @ApiResponse(code= 404, message = "존재하지 않는 보드입니다."),
-//            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
-//    })
-//    @PostMapping
-//    public ApplicationResponse<BoardReportRes> createBoardReport(@RequestBody @Validated CreateBoardReportReq dto){
-//        return boardReportService.createBoardReport(dto);
-//    }
+    /**
+     * 게시글 신고 생성
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 신고 생성", notes = "게시글 신고 생성 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 보드입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping
+    public ApplicationResponse<BoardReportRes> createBoardReport(@RequestBody @Validated CreateBoardReportReq dto){
+        return boardReportService.createBoardReport(dto);
+    }
 }

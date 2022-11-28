@@ -4,6 +4,7 @@ import com.yogit.server.board.dto.request.clipboard.CreateClipBoardReq;
 import com.yogit.server.board.dto.request.clipboard.PatchClipBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
+import com.yogit.server.report.entity.ClipBoardReport;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,11 +39,17 @@ public class ClipBoard extends BaseEntity {
 
     private String content;
 
+    @OneToMany(mappedBy = "clipBoard")
+    private List<ClipBoardReport> clipBoardReports = new ArrayList<>();
+
+    private Integer reportedCnt;
+
     public ClipBoard(CreateClipBoardReq dto, User user, Board board) {
         this.user = user;
         this.board = board;
         this.title = dto.getTitle();
         this.content = dto.getContent();
+        this.reportedCnt = 0;
     }
 
     /*
@@ -54,5 +62,9 @@ public class ClipBoard extends BaseEntity {
     public void updateClipBoard(PatchClipBoardReq dto){
         this.title = dto.getTitle();
         this.content = dto.getContent();
+    }
+
+    public void changeReportedCnt(){
+        this.reportedCnt+=1;
     }
 }

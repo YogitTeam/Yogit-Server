@@ -11,7 +11,7 @@ import com.yogit.server.user.entity.User;
 public interface UserService {
     ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq);
 
-    ApplicationResponse<UserProfileRes> getProfile(Long userId);
+    ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq);
 
     ApplicationResponse<Void> delProfile(Long userId);
 

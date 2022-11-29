@@ -16,4 +16,5 @@ public interface AppleService {
 
     String getPayload(String id_token);
 
+    Void validateRefreshToken(Long userId, String refreshToken);
 }

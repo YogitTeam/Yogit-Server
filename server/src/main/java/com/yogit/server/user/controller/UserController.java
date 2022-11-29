@@ -44,10 +44,13 @@ public class UserController {
      * @author 강신현
      */
     @ApiOperation(value = "유저 Profile 조회")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "4hxvgqgr42@privaterelay.appleid.com")
+    })
     @GetMapping("/profile/{userId}") // TODO
-    public ApplicationResponse<UserProfileRes> getProfile(@PathVariable Long userId){
-        return userService.getProfile(userId);
+    public ApplicationResponse<UserProfileRes> getProfile(@ModelAttribute GetUserProfileReq getUserProfileReq){
+        return userService.getProfile(getUserProfileReq);
     }
 
     /**

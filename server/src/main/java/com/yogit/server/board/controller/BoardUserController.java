@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -37,5 +34,21 @@ public class BoardUserController {
     @PostMapping
     public ApplicationResponse<BoardUserRes> joinBoardUser(@RequestBody @Validated CreateBoardUserReq dto){
         return boardUserService.joinBoardUser(dto);
+    }
+
+    /**
+     * 보드 멤버 제거
+     * @author peanut
+     */
+    @ApiOperation(value = "보드 멤버 제거", notes = "보드 모임 탈퇴 요청")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PatchMapping
+    public ApplicationResponse<Void> delBoardUser(@RequestBody @Validated CreateBoardUserReq dto){
+        return boardUserService.delBoardUser(dto);
     }
 }

@@ -7,4 +7,6 @@ import com.yogit.server.global.dto.ApplicationResponse;
 public interface BoardUserService {
 
     ApplicationResponse<BoardUserRes> joinBoardUser(CreateBoardUserReq createBoardUserReq);
+
+    ApplicationResponse<Void> delBoardUser(CreateBoardUserReq createBoardUserReq);
 }

@@ -30,14 +30,16 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "clip_board_id")
     private ClipBoard clipBoard;
 
+    private Integer reportedCnt;
+
     /*
     연관관계 편의 메소드
      */
-
     public Comment(CreateCommentReq dto, User user, ClipBoard clipBoard) {
         this.content = dto.getContent();
         this.user = user;
         this.clipBoard = clipBoard;
+        this.reportedCnt = 0;
     }
 
     public void deleteComment(){
@@ -46,5 +48,9 @@ public class Comment extends BaseEntity {
 
     public void updateComment(PatchCommentReq dto){
         this.content = dto.getContent();
+    }
+
+    public void changeReportedCnt(){
+        this.reportedCnt +=1;
     }
 }

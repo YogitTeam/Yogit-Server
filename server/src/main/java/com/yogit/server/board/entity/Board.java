@@ -76,6 +76,8 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board")
     private List<BoardReport> boardReports;
 
+    private Integer reportedCnt;
+
     // 생성자
     @Builder
     public Board(Long id, City city, User host, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
@@ -121,6 +123,7 @@ public class Board extends BaseEntity {
         this.category = category;
 //        this.bookMarks = bookMarks;
 //        this.clipBoards = clipBoards;
+        this.reportedCnt = 0;
     }
 
     /*
@@ -168,5 +171,9 @@ public class Board extends BaseEntity {
 
     public void addCurrentMember(){
         this.currentMember+=1;
+    }
+
+    public void changeReportedCnt(){
+        this.reportedCnt+=1;
     }
 }

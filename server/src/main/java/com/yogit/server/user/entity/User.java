@@ -1,5 +1,6 @@
 package com.yogit.server.user.entity;
 
+import com.yogit.server.block.entity.Block;
 import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.BookMark;
 import com.yogit.server.board.entity.ClipBoard;
@@ -84,6 +85,12 @@ public class User extends BaseEntity {
 
     private Integer reportingCnt;
     private Integer reportedCnt;
+
+    @OneToMany(mappedBy = "blockingUser")
+    private List<Block> blockingUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "blockedUser")
+    private List<Block> blockedUsers = new ArrayList<>();
 
     @Builder
     public User (String loginId, String phoneNum){

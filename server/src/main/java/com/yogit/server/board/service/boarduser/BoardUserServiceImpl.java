@@ -7,6 +7,7 @@ import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.exception.DuplicatedBoardUserException;
 import com.yogit.server.board.exception.MaxBoardUserException;
 import com.yogit.server.board.exception.NotFoundBoardException;
+import com.yogit.server.board.exception.NotFoundUserBoard;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -16,6 +17,8 @@ import com.yogit.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,5 +57,24 @@ public class BoardUserServiceImpl implements BoardUserService{
 
         BoardUserRes res = BoardUserRes.toDto(boardUser,user, board);
         return ApplicationResponse.create("보드에 유저가 조인되었습니다.", res);
+    }
+
+    @Transactional
+    @Override
+    public ApplicationResponse<Void> delBoardUser(CreateBoardUserReq createBoardUserReq){
+
+        User user = userRepository.findById(createBoardUserReq.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(createBoardUserReq.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        Optional<BoardUser> boardUser =  boardUserRepository.findByUserIdAndBoardId(createBoardUserReq.getUserId(), createBoardUserReq.getBoardId());
+
+        if(!boardUser.isPresent()) throw new NotFoundUserBoard();
+
+        boardUserRepository.deleteById(boardUser.get().getId());
+
+        return ApplicationResponse.ok();
     }
 }

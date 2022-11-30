@@ -1,5 +1,6 @@
 package com.yogit.server.board.service;
 
+import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
@@ -46,6 +47,7 @@ public class BoardServiceImpl implements BoardService{
     private final CategoryRepository categoryRepository;
     private final AwsS3Service awsS3Service;
     private final BoardImageRepository boardImageRepository;
+    private final BlockRepository blockRepository;
 
     private static final int PAGING_SIZE = 10;
     private static final String PAGING_STANDARD = "date";
@@ -219,6 +221,10 @@ public class BoardServiceImpl implements BoardService{
             System.out.println("카테고리가 없습니다.");
         }
 
+        List<User> blockedUsers = blockRepository.findBlocksByBlockingUserId(dto.getUserId()).stream()
+                .map(block -> block.getBlockedUser())
+                .collect(Collectors.toList());
+
         // jpa 다중 정렬 order
         Sort sort = Sort.by(
                 Sort.Order.desc("currentMember"),
@@ -231,6 +237,7 @@ public class BoardServiceImpl implements BoardService{
             Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, category.getId());
             //  보드 res에 이미지uuid -> aws s3 url로 변환
             List<GetAllBoardRes> boardsRes = boards.stream()
+                    .filter(board -> !blockedUsers.contains(board.getHost()))
                     .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                     .collect(Collectors.toList());
 

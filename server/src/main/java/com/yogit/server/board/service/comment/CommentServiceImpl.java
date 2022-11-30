@@ -67,7 +67,7 @@ public class CommentServiceImpl implements CommentService{
                 .collect(Collectors.toList());
 
         List<CommentRes> commentResList = commentRepository.findAllCommentsByClipBoardId(clipBoardId).stream()
-                .filter(comment -> !blockedUsers.contains(comment.getUser()))
+                .filter(comment -> !blockedUsers.contains(comment.getUser()))// 차단당한 유저의 데이터 제외
                 .map(comment -> CommentRes.toDto(comment))
                 .collect(Collectors.toList());
 

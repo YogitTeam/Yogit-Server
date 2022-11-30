@@ -237,7 +237,7 @@ public class BoardServiceImpl implements BoardService{
             Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, category.getId());
             //  보드 res에 이미지uuid -> aws s3 url로 변환
             List<GetAllBoardRes> boardsRes = boards.stream()
-                    .filter(board -> !blockedUsers.contains(board.getHost()))
+                    .filter(board -> !blockedUsers.contains(board.getHost()))// 차단당한 유저의 데이터 제외
                     .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                     .collect(Collectors.toList());
 

@@ -1,5 +1,6 @@
 package com.yogit.server.user.service;
 
+import com.yogit.server.applelogin.service.AppleService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
@@ -8,10 +9,7 @@ import com.yogit.server.user.dto.response.UserEssentialProfileRes;
 import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
-import com.yogit.server.user.exception.NotFoundUserException;
-import com.yogit.server.user.exception.NotFoundUserProfileImg;
-import com.yogit.server.user.exception.UserDuplicationLoginId;
-import com.yogit.server.user.exception.UserGenderException;
+import com.yogit.server.user.exception.*;
 import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
+    private final AppleService appleService;
 
     @Transactional
     @Override
@@ -66,24 +65,26 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApplicationResponse<UserProfileRes> getProfile(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+    public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
+        User user = userRepository.findById(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+
+        appleService.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
-        // if(user.getCity())  userProfileRes.addCity(user.getCity().getName()); // TODO administrativeArea 와의 차이 문의중 (활동 지역 필요하면, 지금 city 연관관계로 진행)
-
-        List<Language> languages = languageRepository.findAllByUserId(userId);
+        List<Language> languages = languageRepository.findAllByUserId(getUserProfileReq.getUserId());
         if(!languages.isEmpty()){
             for(Language l : languages){
                 userProfileRes.addLanguage(l.getName(), l.getLevel());
             }
         }
 
-        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(userId);
+        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(getUserProfileReq.getUserId());
         if(userInterest.isPresent()){
             userProfileRes.addInterest(userInterest.get().getInterest().getName());
         }
+
+        userProfileRes.setProfileImg(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
 
         return ApplicationResponse.ok(userProfileRes);
     }
@@ -118,8 +119,6 @@ public class UserServiceImpl implements UserService {
 
         // 나머지 사진 업로드
         if(createUserImageReq.getImages() != null){
-            userImageRepository.deleteAllByUserId(user.getId());
-
             List<String> imageUUids = awsS3Service.uploadImages(createUserImageReq.getImages());
             for(String i : imageUUids){
                 UserImage userImage = createUserImageReq.toEntityUserImage(user, i);
@@ -201,5 +200,26 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.save(CreateUserAppleReq.toEntityUserApple(createUserAppleReq));
 
         return user;
+    }
+
+    public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
+        User user = userRepository.findById(deleteUserImageReq.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        UserImage userImage = userImageRepository.findById(deleteUserImageReq.getUserImageId()).orElseThrow(() ->new NotFoundUserImageException());
+        userImage.deleteUserImage(); // 삭제 -> BASE_STATUS : INACTIVE로 변경
+
+        UserImagesRes userImagesRes = new UserImagesRes();
+        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+
+        List<UserImage> userImages = userImageRepository.findAllByUserId(user.getId());
+        if (!userImages.isEmpty()){
+            for(UserImage i : userImages){
+                if(i.equals(userImage))continue;
+                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()));
+            }
+        }
+
+        return ApplicationResponse.ok(userImagesRes);
     }
 }

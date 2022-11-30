@@ -11,7 +11,7 @@ import com.yogit.server.user.entity.User;
 public interface UserService {
     ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq);
 
-    ApplicationResponse<UserProfileRes> getProfile(Long userId);
+    ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq);
 
     ApplicationResponse<Void> delProfile(Long userId);
 
@@ -24,4 +24,6 @@ public interface UserService {
     ApplicationResponse<Void> createUser(CreateUserReq createUserReq);
 
     User createUserApple(CreateUserAppleReq createUserAppleReq);
+
+    ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq);
 }

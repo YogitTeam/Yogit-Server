@@ -49,16 +49,15 @@ public class UserProfileRes {
         userProfileRes.name = user.getName();
         userProfileRes.gender = user.getGender();
         userProfileRes.nationality = user.getNationality();
-        userProfileRes.profileImg = user.getProfileImg();
         userProfileRes.aboutMe = user.getAboutMe();
         userProfileRes.login_id = user.getLoginId();
         userProfileRes.userStatus = user.getUserStatus();
         userProfileRes.phone = user.getPhoneNum();
 
         // 유저 추가 정보
-        userProfileRes.administrativeArea = user.getAdministrativeArea();
-        userProfileRes.longtitude = user.getLongtitude();
-        userProfileRes.latitude = user.getLatitude();
+        if(user.getAdministrativeArea() != null) userProfileRes.administrativeArea = user.getAdministrativeArea();
+        if(user.getLongtitude() != null)userProfileRes.longtitude = user.getLongtitude();
+        if(user.getLatitude() != null)userProfileRes.latitude = user.getLatitude();
 
         return userProfileRes;
     }

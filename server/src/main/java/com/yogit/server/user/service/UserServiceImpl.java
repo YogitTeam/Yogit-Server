@@ -1,5 +1,6 @@
 package com.yogit.server.user.service;
 
+import com.yogit.server.applelogin.service.AppleService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
+    private final AppleService appleService;
 
     @Transactional
     @Override
@@ -63,19 +65,21 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApplicationResponse<UserProfileRes> getProfile(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+    public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
+        User user = userRepository.findById(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+
+        appleService.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
-        List<Language> languages = languageRepository.findAllByUserId(userId);
+        List<Language> languages = languageRepository.findAllByUserId(getUserProfileReq.getUserId());
         if(!languages.isEmpty()){
             for(Language l : languages){
                 userProfileRes.addLanguage(l.getName(), l.getLevel());
             }
         }
 
-        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(userId);
+        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(getUserProfileReq.getUserId());
         if(userInterest.isPresent()){
             userProfileRes.addInterest(userInterest.get().getInterest().getName());
         }

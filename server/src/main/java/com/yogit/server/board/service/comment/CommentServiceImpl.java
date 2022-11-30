@@ -1,5 +1,6 @@
 package com.yogit.server.board.service.comment;
 
+import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
 import com.yogit.server.board.dto.request.comment.DeleteCommentReq;
 import com.yogit.server.board.dto.request.comment.PatchCommentReq;
@@ -32,7 +33,7 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ClipBoardRepository clipBoardRepository;
-
+    private final BlockRepository blockRepository;
 
 
     @Transactional(readOnly = false)
@@ -61,7 +62,12 @@ public class CommentServiceImpl implements CommentService{
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(clipBoardId)
                 .orElseThrow(() -> new NotFoundClipBoardException());
 
+        List<User> blockedUsers = blockRepository.findBlocksByBlockingUserId(userId).stream()
+                .map(block -> block.getBlockedUser())
+                .collect(Collectors.toList());
+
         List<CommentRes> commentResList = commentRepository.findAllCommentsByClipBoardId(clipBoardId).stream()
+                .filter(comment -> !blockedUsers.contains(comment.getUser()))// 차단당한 유저의 데이터 제외
                 .map(comment -> CommentRes.toDto(comment))
                 .collect(Collectors.toList());
 

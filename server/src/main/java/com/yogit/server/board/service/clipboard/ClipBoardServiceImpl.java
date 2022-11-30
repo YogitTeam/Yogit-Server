@@ -1,5 +1,6 @@
 package com.yogit.server.board.service.clipboard;
 
+import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
@@ -34,6 +35,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final AwsS3Service awsS3Service;
+    private final BlockRepository blockRepository;
 
     @Transactional(readOnly = false)
     @Override
@@ -88,10 +90,16 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
+        List<User> blockedUsers = blockRepository.findBlocksByBlockingUserId(dto.getUserId()).stream()
+                .map(block -> block.getBlockedUser())
+                .collect(Collectors.toList());
+
         // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
         // 유저 profileImgUrl 또한 img uuid -> s3 url로 변환
         List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+                .filter(clipBoard -> !blockedUsers.contains(clipBoard.getUser())) // 차단당한 유저의 데이터 제외
                 .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+                        .filter(comment -> !blockedUsers.contains(comment.getUser()))
                         .map(comment -> CommentRes.toDto(comment))
                         .collect(Collectors.toList()),
                         awsS3Service.makeUrlOfFilename(clipBoard.getUser().getProfileImg())))

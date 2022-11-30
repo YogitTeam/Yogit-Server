@@ -21,7 +21,7 @@ public interface BoardService {
 
     ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq getAllBoardsByCategoryReq);
 
-    ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategories getBoardsByCategories);
+    ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq getBoardsByCategoriesReq);
 
     ApplicationResponse<BoardRes> findBoard(GetBoardReq getBoardReq);
 

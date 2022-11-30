@@ -1,5 +1,7 @@
 package com.yogit.server.applelogin.service;
 
+import com.yogit.server.applelogin.exception.InvalidRefreshTokenException;
+import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
 import com.yogit.server.applelogin.model.Account;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
@@ -14,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -29,9 +30,6 @@ public class AppleServiceImpl implements AppleService {
 
     /**
      * 유효한 id_token인 경우 client_secret 생성
-     *
-     * @param id_token
-     * @return
      */
     @Override
     public String getAppleClientSecret(String id_token) throws NoSuchAlgorithmException {
@@ -45,10 +43,6 @@ public class AppleServiceImpl implements AppleService {
 
     /**
      * code 또는 refresh_token가 유효한지 Apple Server에 검증 요청
-     *
-     *
-     *
-     * @return
      */
     @Override
     @Transactional
@@ -102,8 +96,6 @@ public class AppleServiceImpl implements AppleService {
 
     /**
      * Apple login page 호출을 위한 Meta 정보 가져오기
-     *
-     * @return
      */
     @Override
     public Map<String, String> getLoginMetaInfo() {
@@ -112,11 +104,28 @@ public class AppleServiceImpl implements AppleService {
 
     /**
      * id_token에서 payload 데이터 가져오기
-     *
-     * @return
      */
     @Override
     public String getPayload(String id_token) {
         return appleUtils.decodeFromIdToken(id_token).toString();
+    }
+
+    /**
+     * 리프레시 토큰 검증
+     *
+     * refresh_token은 만료되지 않기 때문에 권한이 필요한 요청일 경우
+     * 굳이 매번 애플 ID 서버로부터 refresh_token을 통해 access_token을 발급 받기보다는
+     * 유저의 refresh_token을 따로 DB나 기타 저장소에 저장해두고 캐싱해두고 조회해서 검증하는편이 성능면에서 낫다는 자료를 참고
+     * https://hwannny.tistory.com/71
+     */
+    @Override
+    public Void validateRefreshToken(Long userId, String refreshToken){
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException());
+
+        if(user.getRefreshToken() == null) throw new NotFoundRefreshTokenException();
+
+        if(!user.getRefreshToken().equals(refreshToken)) throw new InvalidRefreshTokenException();
+
+        return null;
     }
 }

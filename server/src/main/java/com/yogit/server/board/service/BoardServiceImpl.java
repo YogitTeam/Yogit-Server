@@ -209,7 +209,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategories dto) {
+    public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq dto) {
         int cursor = dto.getCursor();
         List<List<GetAllBoardRes>> boardsByCategories = new ArrayList<>();
 

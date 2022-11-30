@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GetBoardsByCategories {
+public class GetBoardsByCategoriesReq {
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "유저 ID", required = true)

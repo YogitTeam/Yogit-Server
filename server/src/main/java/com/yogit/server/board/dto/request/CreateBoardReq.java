@@ -22,9 +22,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateBoardReq {
 
-    @ApiModelProperty(example = "1")
-    @ApiParam(value = "도시 ID", required = true)
-    private Long cityId;
+    @ApiModelProperty(example = "Seoul")
+    @ApiParam(value = "도시 Name", required = true)
+    private String cityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)

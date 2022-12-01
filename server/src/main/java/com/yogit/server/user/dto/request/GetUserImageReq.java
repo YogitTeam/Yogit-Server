@@ -4,22 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CreateUserEssentialProfileReq {
-
+public class GetUserImageReq {
     Long userId;
-
-    String userName;
-    int userAge;
-    String gender;
-    String nationality;
-
-    List<String> languageNames;
-    List<String> languageLevels;
-
     String refreshToken;
 }

@@ -57,6 +57,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
 
+        validateRefreshToken(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getRefreshToken());
+
         if(!createUserEssentialProfileReq.getGender().equals("Prefer not to say") && !createUserEssentialProfileReq.getGender().equals("Male") && !createUserEssentialProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
         User user = userRepository.findByUserId(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
@@ -86,6 +88,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
+
+        validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
 
         this.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
 
@@ -128,6 +132,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq){
 
+        validateRefreshToken(createUserImageReq.getUserId(), createUserImageReq.getRefreshToken());
+
         User user = userRepository.findByUserId(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
@@ -152,13 +158,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApplicationResponse<UserImagesRes> getUserImage(Long userId){
-        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
+    public ApplicationResponse<UserImagesRes> getUserImage(GetUserImageReq getUserImageReq){
+
+        validateRefreshToken(getUserImageReq.getUserId(), getUserImageReq.getRefreshToken());
+
+        User user = userRepository.findByUserId(getUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
         if(user.getUserImages() != null) userImagesRes.setProfileImageUrl(user.getProfileImg());
 
-        List<UserImage> userImages = userImageRepository.findAllByUserId(userId);
+        List<UserImage> userImages = userImageRepository.findAllByUserId(getUserImageReq.getUserId());
         if (!userImages.isEmpty()){
             for(UserImage i : userImages){
                 userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()));
@@ -172,6 +181,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq){
+
+        validateRefreshToken(addUserAdditionalProfileReq.getUserId(), addUserAdditionalProfileReq.getRefreshToken());
+
         User user = userRepository.findByUserId(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
         user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getAdministrativeArea(), addUserAdditionalProfileReq.getJob());
@@ -224,6 +236,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
+
+        validateRefreshToken(deleteUserImageReq.getUserId(), deleteUserImageReq.getRefreshToken());
+
         User user = userRepository.findByUserId(deleteUserImageReq.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 

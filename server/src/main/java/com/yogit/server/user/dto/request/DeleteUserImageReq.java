@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class DeleteUserImageReq {
     Long userId;
     Long userImageId;
+
+    String refreshToken;
 }

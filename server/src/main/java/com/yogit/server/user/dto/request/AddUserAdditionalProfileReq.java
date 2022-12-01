@@ -21,4 +21,6 @@ public class AddUserAdditionalProfileReq {
 
     Long cityId;
     List<String> interests;
+
+    String refreshToken;
 }

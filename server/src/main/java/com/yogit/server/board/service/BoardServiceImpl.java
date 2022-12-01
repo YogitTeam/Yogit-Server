@@ -20,6 +20,7 @@ import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.City;
+import com.yogit.server.user.entity.CityName;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.exception.city.NotFoundCityException;
@@ -124,7 +125,7 @@ public class BoardServiceImpl implements BoardService{
         board.updateBoard(dto, city, category);
 
         //BoardImages aws s3에 저장 후 리파지토리에도 저장
-        if(!dto.getImages().isEmpty()){
+        if(!(dto.getImages()==null)){
             List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
             for(String i : imageUUids){
                 BoardImage boardImage = new BoardImage(board, i);

@@ -3,6 +3,7 @@ package com.yogit.server.board.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.user.entity.City;
+import com.yogit.server.user.entity.CityName;
 import com.yogit.server.user.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
@@ -24,7 +25,7 @@ public class CreateBoardReq {
 
     @ApiModelProperty(example = "Seoul")
     @ApiParam(value = "도시 Name", required = true)
-    private String cityName;
+    private CityName cityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)

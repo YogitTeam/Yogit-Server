@@ -11,6 +11,7 @@ import com.yogit.server.report.repository.UserReportRepository;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +23,13 @@ public class UserReportServiceImpl implements UserReportService{
 
     private final UserReportRepository userReportRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<UserReportRes> createUserReport(CreateUserReportReq dto) {
+
+        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
 
         User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());

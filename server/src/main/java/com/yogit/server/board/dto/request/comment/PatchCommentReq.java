@@ -23,4 +23,8 @@ public class PatchCommentReq {
     @ApiParam(value = "클립보드 상세 내용", required = true)
     @NotBlank
     private String content;
+
+    @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    @ApiParam(value = "애플 리프레쉬 토큰", required = true)
+    private String refreshToken;
 }

@@ -25,6 +25,7 @@ import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.CityRepository;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -48,6 +49,7 @@ public class BoardServiceImpl implements BoardService{
     private final AwsS3Service awsS3Service;
     private final BoardImageRepository boardImageRepository;
     private final BlockRepository blockRepository;
+    private final UserService userService;
 
     private static final int PAGING_SIZE = 10;
     private static final String PAGING_STANDARD = "date";
@@ -55,6 +57,8 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<BoardRes> createBoard(CreateBoardReq dto){
+
+        userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
         // host 조회
         User host = userRepository.findByUserId(dto.getHostId())
@@ -96,6 +100,8 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
+        userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
+
         List<String> imageUrls = new ArrayList<>();
 
         User user = userRepository.findByUserId(dto.getHostId())
@@ -135,6 +141,8 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq dto){
 
+        userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
+
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
@@ -154,6 +162,9 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(GetAllBoardsReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
         int cursor = dto.getCursor();
 
         User user = userRepository.findByUserId(dto.getUserId())
@@ -187,6 +198,9 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
         int cursor = dto.getCursor();
 
         User user = userRepository.findByUserId(dto.getUserId())
@@ -210,6 +224,9 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq dto) {
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
         int cursor = dto.getCursor();
         List<List<GetAllBoardRes>> boardsByCategories = new ArrayList<>();
 
@@ -250,6 +267,9 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
@@ -264,6 +284,9 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 

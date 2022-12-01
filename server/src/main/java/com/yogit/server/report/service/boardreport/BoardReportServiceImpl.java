@@ -15,6 +15,7 @@ import com.yogit.server.report.repository.BoardReportRepository;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +28,13 @@ public class BoardReportServiceImpl implements BoardReportService {
     private final BoardReportRepository boardReportRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardReport;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<BoardReportRes> createBoardReport(CreateBoardReportReq dto) {
+
+        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
 
         User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());

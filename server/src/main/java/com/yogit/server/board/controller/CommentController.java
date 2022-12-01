@@ -2,6 +2,7 @@ package com.yogit.server.board.controller;
 
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
 import com.yogit.server.board.dto.request.comment.DeleteCommentReq;
+import com.yogit.server.board.dto.request.comment.GetCommentsReq;
 import com.yogit.server.board.dto.request.comment.PatchCommentReq;
 import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
@@ -50,9 +51,9 @@ public class CommentController {
             @ApiResponse(code= 404, message = "존재하지 않는 클립보드입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @GetMapping("/clipboard/{clipBoardId}/user/{userId}")
-    public ApplicationResponse<List<CommentRes>> findAllComments(@PathVariable("clipBoardId") Long clipBoardId, @PathVariable("userId") Long userId){
-        return commentService.findAllComments(clipBoardId, userId);
+    @PostMapping("/clipboard/{clipBoardId}/user/{userId}")
+    public ApplicationResponse<List<CommentRes>> findAllComments(@PathVariable("clipBoardId") Long clipBoardId, @PathVariable("userId") Long userId, @RequestBody @Validated GetCommentsReq dto){
+        return commentService.findAllComments(clipBoardId, userId, dto);
     }
 
 

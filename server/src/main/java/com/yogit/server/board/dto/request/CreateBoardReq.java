@@ -85,6 +85,10 @@ public class CreateBoardReq {
     @ApiParam(value = "게시글 이미지 데이터", required = false)
     private List<MultipartFile> images; // 최대 5개
 
+    @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    @ApiParam(value = "애플 리프레쉬 토큰", required = true)
+    private String refreshToken;
+
 //    public Board toEntity(CreateBoardReq dto, User host){
 //        return Board.builder()
 //                .title(dto.getTitle())

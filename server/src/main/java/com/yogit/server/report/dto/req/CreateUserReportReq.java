@@ -25,4 +25,8 @@ public class CreateUserReportReq {
     @ApiModelProperty(example = "PORNOGRAPHY")
     @ApiParam(value = "신고 이유 타입", required = true)
     private ReportType reportType;
+
+    @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    @ApiParam(value = "애플 리프레쉬 토큰", required = true)
+    private String refreshToken;
 }

@@ -60,7 +60,7 @@ public class BoardServiceImpl implements BoardService{
         User host = userRepository.findById(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
-        City city = cityRepository.findById(dto.getCityId())
+        City city = cityRepository.findByCityName(dto.getCityName())
                 .orElseThrow(() -> new NotFoundCityException());
         // category 조회
         Category category = categoryRepository.findById(dto.getCategoryId())
@@ -101,7 +101,7 @@ public class BoardServiceImpl implements BoardService{
         User user = userRepository.findById(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        City city = cityRepository.findById(dto.getCityId())
+        City city = cityRepository.findByCityName(dto.getCityName())
                 .orElseThrow(() -> new NotFoundCityException());
 
         Category category = categoryRepository.findById(dto.getCategoryId())

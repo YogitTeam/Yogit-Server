@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
-    private final AppleService appleService;
+//    private final AppleService appleService;
 
     @Transactional
     @Override
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
         User user = userRepository.findById(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
-        appleService.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
+//        appleService.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 

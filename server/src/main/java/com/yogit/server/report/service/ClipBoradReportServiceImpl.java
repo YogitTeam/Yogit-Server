@@ -32,9 +32,9 @@ public class ClipBoradReportServiceImpl implements ClipBoradReportService{
     @Transactional(readOnly = false)
     public ApplicationResponse<ClipBoardReportRes> createClipBoardReport(CreateClipBoardReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         ClipBoard reportedClipBoard = clipBoardRepository.findClipBoardById(dto.getReportedClipBoardId())
                 .orElseThrow(() -> new NotFoundClipBoardException());

@@ -120,7 +120,7 @@ public class AppleServiceImpl implements AppleService {
      */
     @Override
     public Void validateRefreshToken(Long userId, String refreshToken){
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException());
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new NotFoundUserException());
 
         if(user.getRefreshToken() == null) throw new NotFoundRefreshTokenException();
 

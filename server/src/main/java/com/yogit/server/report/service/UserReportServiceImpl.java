@@ -27,9 +27,9 @@ public class UserReportServiceImpl implements UserReportService{
     @Transactional(readOnly = false)
     public ApplicationResponse<UserReportRes> createUserReport(CreateUserReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         //validation: 신고하는 유저의 신고 한 횟수 검증, 일주일에 신고 5번 이하 허용

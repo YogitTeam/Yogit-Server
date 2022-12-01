@@ -57,7 +57,7 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<BoardRes> createBoard(CreateBoardReq dto){
 
         // host 조회
-        User host = userRepository.findById(dto.getHostId())
+        User host = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
         City city = cityRepository.findByCityName(dto.getCityName())
@@ -98,7 +98,7 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
         List<String> imageUrls = new ArrayList<>();
 
-        User user = userRepository.findById(dto.getHostId())
+        User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         City city = cityRepository.findByCityName(dto.getCityName())
@@ -138,7 +138,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        User user = userRepository.findById(dto.getHostId())
+        User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
         //validation: 요청자와 host 비교
         if (!board.getHost().equals(user)) {
@@ -156,7 +156,7 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(GetAllBoardsReq dto){
         int cursor = dto.getCursor();
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         List<Category> categoryList = categoryRepository.findAllCategories();
@@ -189,7 +189,7 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
         int cursor = dto.getCursor();
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         // jpa 다중 정렬 order
@@ -213,7 +213,7 @@ public class BoardServiceImpl implements BoardService{
         int cursor = dto.getCursor();
         List<List<GetAllBoardRes>> boardsByCategories = new ArrayList<>();
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         List<Category> categories = categoryRepository.findAllCategories();
@@ -250,7 +250,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
@@ -264,7 +264,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq dto){
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())

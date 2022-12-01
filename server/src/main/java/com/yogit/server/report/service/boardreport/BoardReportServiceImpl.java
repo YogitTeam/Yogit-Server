@@ -32,9 +32,9 @@ public class BoardReportServiceImpl implements BoardReportService {
     @Transactional(readOnly = false)
     public ApplicationResponse<BoardReportRes> createBoardReport(CreateBoardReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         Board reportedBoard = boardReport.findBoardById(dto.getReportedBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());

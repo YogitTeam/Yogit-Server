@@ -26,10 +26,10 @@ public class BlockServiceImpl implements BlockService{
     public ApplicationResponse<BlockRes> createBlock(CreateBlockReq dto){
 
         // 차단 생성하는 유저 조회
-        User blockingUser = userRepository.findById(dto.getBlockingUserId())
+        User blockingUser = userRepository.findByUserId(dto.getBlockingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         // 차단 받는 유저 조회
-        User blockedUser = userRepository.findById(dto.getBlockedUserId())
+        User blockedUser = userRepository.findByUserId(dto.getBlockedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         //Validation: 중복 차단(이미 차단했는지 검증)

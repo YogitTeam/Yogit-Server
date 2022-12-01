@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
         if(!createUserEssentialProfileReq.getGender().equals("Prefer not to say") && !createUserEssentialProfileReq.getGender().equals("Male") && !createUserEssentialProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
-        User user = userRepository.findById(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserInfo(createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
 
         UserEssentialProfileRes userEssentialProfileRes = UserEssentialProfileRes.create(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
-        User user = userRepository.findById(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
 //        appleService.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
 
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ApplicationResponse<Void> delProfile(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
 
         // 유저 탈퇴시 이름, 대표 사진 null 처리
         user.delUser();
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq){
 
-        User user = userRepository.findById(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
         if(createUserImageReq.getProfileImage().isEmpty()) throw new NotFoundUserProfileImg();
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApplicationResponse<UserImagesRes> getUserImage(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
         if(user.getUserImages() != null) userImagesRes.setProfileImageUrl(user.getProfileImg());
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq){
-        User user = userRepository.findById(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
         user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getAdministrativeArea(), addUserAdditionalProfileReq.getJob());
 
@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
-        User user = userRepository.findById(deleteUserImageReq.getUserId())
+        User user = userRepository.findByUserId(deleteUserImageReq.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         UserImage userImage = userImageRepository.findById(deleteUserImageReq.getUserImageId()).orElseThrow(() ->new NotFoundUserImageException());

@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<CommentRes> createComment(CreateCommentReq dto){
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(dto.getClipBoardId())
@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<List<CommentRes>> findAllComments(Long clipBoardId, Long userId){
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundUserException());
 
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(clipBoardId)
@@ -79,7 +79,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<DeleteCommentRes> deleteComment(DeleteCommentReq dto, Long commentId){
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Comment comment = commentRepository.findCommentById(commentId)
@@ -100,7 +100,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<CommentRes> updateComment(PatchCommentReq dto, Long commentId){
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Comment comment = commentRepository.findCommentById(dto.getCommentId())

@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.reportingCnt = 0")
     void resetUserReportingCnt();
+
+    @Query("select u from User u where u.id = :userId and u.status = 'ACTIVE'")
+    Optional<User> findByUserId(@Param("userId") Long userId);
 }

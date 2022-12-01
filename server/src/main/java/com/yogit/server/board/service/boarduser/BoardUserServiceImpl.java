@@ -33,7 +33,7 @@ public class BoardUserServiceImpl implements BoardUserService{
     @Override
     public ApplicationResponse<BoardUserRes> joinBoardUser(CreateBoardUserReq dto) {
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
@@ -63,7 +63,7 @@ public class BoardUserServiceImpl implements BoardUserService{
     @Override
     public ApplicationResponse<Void> delBoardUser(CreateBoardUserReq createBoardUserReq){
 
-        User user = userRepository.findById(createBoardUserReq.getUserId())
+        User user = userRepository.findByUserId(createBoardUserReq.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(createBoardUserReq.getBoardId())

@@ -31,9 +31,9 @@ public class CommentReportServiceImpl implements CommentReportService{
     @Transactional(readOnly = false)
     public ApplicationResponse<CommentReportRes> createCommentReport(CreateCommentReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         Comment reportedComment = commentRepository.findCommentById(dto.getReportedCommentId())
                 .orElseThrow(() -> new NotFoundCommentException());

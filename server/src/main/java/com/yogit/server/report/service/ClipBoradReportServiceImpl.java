@@ -14,6 +14,7 @@ import com.yogit.server.report.repository.ClipBoardReportRepository;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +27,18 @@ public class ClipBoradReportServiceImpl implements ClipBoradReportService{
     private final ClipBoardReportRepository clipBoardReportRepository;
     private final UserRepository userRepository;
     private final ClipBoardRepository clipBoardRepository;
+    private final UserService userService;
 
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<ClipBoardReportRes> createClipBoardReport(CreateClipBoardReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         ClipBoard reportedClipBoard = clipBoardRepository.findClipBoardById(dto.getReportedClipBoardId())
                 .orElseThrow(() -> new NotFoundClipBoardException());

@@ -14,6 +14,7 @@ import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +29,15 @@ public class BoardUserServiceImpl implements BoardUserService{
     private final BoardUserRepository boardUserRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final UserService userService;
 
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<BoardUserRes> joinBoardUser(CreateBoardUserReq dto) {
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
@@ -61,15 +65,17 @@ public class BoardUserServiceImpl implements BoardUserService{
 
     @Transactional
     @Override
-    public ApplicationResponse<Void> delBoardUser(CreateBoardUserReq createBoardUserReq){
+    public ApplicationResponse<Void> delBoardUser(CreateBoardUserReq dto){
 
-        User user = userRepository.findById(createBoardUserReq.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        Board board = boardRepository.findBoardById(createBoardUserReq.getBoardId())
+        Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        Optional<BoardUser> boardUser =  boardUserRepository.findByUserIdAndBoardId(createBoardUserReq.getUserId(), createBoardUserReq.getBoardId());
+        Optional<BoardUser> boardUser =  boardUserRepository.findByUserIdAndBoardId(dto.getUserId(), dto.getBoardId());
 
         if(!boardUser.isPresent()) throw new NotFoundUserBoard();
 

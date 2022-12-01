@@ -14,6 +14,7 @@ import com.yogit.server.report.repository.CommentReportRepository;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,14 +27,17 @@ public class CommentReportServiceImpl implements CommentReportService{
     private final CommentReportRepository commentReportRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<CommentReportRes> createCommentReport(CreateCommentReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         Comment reportedComment = commentRepository.findCommentById(dto.getReportedCommentId())
                 .orElseThrow(() -> new NotFoundCommentException());

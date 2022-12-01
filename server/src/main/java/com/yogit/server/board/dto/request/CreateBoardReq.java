@@ -3,6 +3,7 @@ package com.yogit.server.board.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.user.entity.City;
+import com.yogit.server.user.entity.CityName;
 import com.yogit.server.user.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
@@ -24,7 +25,7 @@ public class CreateBoardReq {
 
     @ApiModelProperty(example = "Seoul")
     @ApiParam(value = "도시 Name", required = true)
-    private String cityName;
+    private CityName cityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)
@@ -84,6 +85,10 @@ public class CreateBoardReq {
     @ApiModelProperty(example = "\"https://yogit.s3.ap-northeast-2.amazonaws.com/boardimguuid2\"")
     @ApiParam(value = "게시글 이미지 데이터", required = false)
     private List<MultipartFile> images; // 최대 5개
+
+    @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    @ApiParam(value = "애플 리프레쉬 토큰", required = true)
+    private String refreshToken;
 
 //    public Board toEntity(CreateBoardReq dto, User host){
 //        return Board.builder()

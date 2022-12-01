@@ -1,10 +1,12 @@
 package com.yogit.server.board.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.yogit.server.user.entity.CityName;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
@@ -22,7 +24,7 @@ public class PatchBoardReq {
 
     @ApiModelProperty(example = "Seoul")
     @ApiParam(value = "도시 Name", required = true)
-    private String cityName;
+    private CityName cityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)
@@ -53,7 +55,7 @@ public class PatchBoardReq {
 
     @ApiModelProperty(example = "2022-07-13 16:29:30")
     @ApiParam(value = "사용자 ID", required = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // form-data 형식으로 보낼 땐 @JsonFormat은 에러 남.
     private LocalDateTime date; // 모임 시각
 
     @ApiModelProperty(example = "시간에 맞춰오시기 바랍니다.")
@@ -82,4 +84,8 @@ public class PatchBoardReq {
     @ApiModelProperty(example = "\"https://yogit.s3.ap-northeast-2.amazonaws.com/boardimguuid2\"")
     @ApiParam(value = "게시글 이미지 데이터", required = false)
     private List<MultipartFile> images; // 최대 5개
+
+    @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    @ApiParam(value = "애플 리프레쉬 토큰", required = true)
+    private String refreshToken;
 }

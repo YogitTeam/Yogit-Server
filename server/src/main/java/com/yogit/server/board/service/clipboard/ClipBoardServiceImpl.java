@@ -18,6 +18,7 @@ import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +37,15 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     private final CommentRepository commentRepository;
     private final AwsS3Service awsS3Service;
     private final BlockRepository blockRepository;
+    private final UserService userService;
 
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<ClipBoardRes> createClipBoard(CreateClipBoardReq dto){
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
@@ -59,7 +63,9 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Override
     public ApplicationResponse<GetClipBoardRes> findClipBoard(GetClipBoardReq dto){
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
@@ -84,7 +90,9 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Override
     public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
@@ -112,8 +120,11 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<ClipBoardRes> updateClipBoard(PatchClipBoardReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
         //필요 객체 조회
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(dto.getClipBoardId())
@@ -132,7 +143,10 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<ClipBoardRes> deleteClipBoard(DeleteClipBoardReq dto){
-        User user = userRepository.findById(dto.getUserId())
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(dto.getClipBoardId())

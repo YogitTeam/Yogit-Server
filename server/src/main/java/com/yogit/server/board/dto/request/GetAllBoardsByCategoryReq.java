@@ -20,4 +20,8 @@ public class GetAllBoardsByCategoryReq {
     @ApiModelProperty(example = "1")
     @ApiParam(value = "그룹 카테고리 ID", required = true)
     private Long categoryId;
+
+    @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    @ApiParam(value = "애플 리프레쉬 토큰", required = true)
+    private String refreshToken;
 }

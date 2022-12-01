@@ -9,6 +9,7 @@ import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +21,19 @@ public class BlockServiceImpl implements BlockService{
 
     private final BlockRepository blockRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<BlockRes> createBlock(CreateBlockReq dto){
 
+        userService.validateRefreshToken(dto.getBlockingUserId(), dto.getRefreshToken());
+
         // 차단 생성하는 유저 조회
-        User blockingUser = userRepository.findById(dto.getBlockingUserId())
+        User blockingUser = userRepository.findByUserId(dto.getBlockingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
         // 차단 받는 유저 조회
-        User blockedUser = userRepository.findById(dto.getBlockedUserId())
+        User blockedUser = userRepository.findByUserId(dto.getBlockedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         //Validation: 중복 차단(이미 차단했는지 검증)

@@ -11,6 +11,7 @@ import com.yogit.server.report.repository.UserReportRepository;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,17 @@ public class UserReportServiceImpl implements UserReportService{
 
     private final UserReportRepository userReportRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<UserReportRes> createUserReport(CreateUserReportReq dto) {
 
-        User reportingUser = userRepository.findById(dto.getReportingUserId())
+        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+
+        User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());
-        User reportedUser = userRepository.findById(dto.getReportedUserId())
+        User reportedUser = userRepository.findByUserId(dto.getReportedUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         //validation: 신고하는 유저의 신고 한 횟수 검증, 일주일에 신고 5번 이하 허용

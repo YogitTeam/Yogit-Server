@@ -1,6 +1,7 @@
 package com.yogit.server.user.service;
 
-import com.yogit.server.applelogin.service.AppleService;
+import com.yogit.server.applelogin.exception.InvalidRefreshTokenException;
+import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
@@ -31,7 +32,26 @@ public class UserServiceImpl implements UserService {
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
-//    private final AppleService appleService;
+
+    /**
+     * 리프레시 토큰 검증
+     *
+     * refresh_token은 만료되지 않기 때문에 권한이 필요한 요청일 경우
+     * 굳이 매번 애플 ID 서버로부터 refresh_token을 통해 access_token을 발급 받기보다는
+     * 유저의 refresh_token을 따로 DB나 기타 저장소에 저장해두고 캐싱해두고 조회해서 검증하는편이 성능면에서 낫다는 자료를 참고
+     * https://hwannny.tistory.com/71
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Void validateRefreshToken(Long userId, String refreshToken){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new NotFoundUserException());
+
+        if(user.getRefreshToken() == null) throw new NotFoundRefreshTokenException();
+
+        if(!user.getRefreshToken().equals(refreshToken)) throw new InvalidRefreshTokenException();
+
+        return null;
+    }
 
     @Transactional
     @Override
@@ -39,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
         if(!createUserEssentialProfileReq.getGender().equals("Prefer not to say") && !createUserEssentialProfileReq.getGender().equals("Male") && !createUserEssentialProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
-        User user = userRepository.findById(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserInfo(createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
 
         UserEssentialProfileRes userEssentialProfileRes = UserEssentialProfileRes.create(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
@@ -66,9 +86,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
-        User user = userRepository.findById(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
-//        appleService.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
+        this.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
+
+        User user = userRepository.findByUserId(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
@@ -92,7 +113,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ApplicationResponse<Void> delProfile(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
 
         // 유저 탈퇴시 이름, 대표 사진 null 처리
         user.delUser();
@@ -107,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq){
 
-        User user = userRepository.findById(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
         if(createUserImageReq.getProfileImage().isEmpty()) throw new NotFoundUserProfileImg();
@@ -132,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApplicationResponse<UserImagesRes> getUserImage(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
 
         if(user.getUserImages() != null) userImagesRes.setProfileImageUrl(user.getProfileImg());
@@ -151,7 +172,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq){
-        User user = userRepository.findById(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        User user = userRepository.findByUserId(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
         user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getAdministrativeArea(), addUserAdditionalProfileReq.getJob());
 
@@ -203,7 +224,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
-        User user = userRepository.findById(deleteUserImageReq.getUserId())
+        User user = userRepository.findByUserId(deleteUserImageReq.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         UserImage userImage = userImageRepository.findById(deleteUserImageReq.getUserImageId()).orElseThrow(() ->new NotFoundUserImageException());

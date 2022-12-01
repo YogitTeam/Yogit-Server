@@ -3,6 +3,7 @@ package com.yogit.server.board.service.comment;
 import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.comment.CreateCommentReq;
 import com.yogit.server.board.dto.request.comment.DeleteCommentReq;
+import com.yogit.server.board.dto.request.comment.GetCommentsReq;
 import com.yogit.server.board.dto.request.comment.PatchCommentReq;
 import com.yogit.server.board.dto.response.comment.DeleteCommentRes;
 import com.yogit.server.board.dto.response.comment.CommentRes;
@@ -18,6 +19,7 @@ import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.InvalidTokenException;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
+import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,13 +36,16 @@ public class CommentServiceImpl implements CommentService{
     private final UserRepository userRepository;
     private final ClipBoardRepository clipBoardRepository;
     private final BlockRepository blockRepository;
+    private final UserService userService;
 
 
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<CommentRes> createComment(CreateCommentReq dto){
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(dto.getClipBoardId())
@@ -54,9 +59,11 @@ public class CommentServiceImpl implements CommentService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<CommentRes>> findAllComments(Long clipBoardId, Long userId){
+    public ApplicationResponse<List<CommentRes>> findAllComments(Long clipBoardId, Long userId, GetCommentsReq dto){
 
-        User user = userRepository.findById(userId)
+        userService.validateRefreshToken(userId, dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundUserException());
 
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(clipBoardId)
@@ -79,7 +86,9 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<DeleteCommentRes> deleteComment(DeleteCommentReq dto, Long commentId){
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Comment comment = commentRepository.findCommentById(commentId)
@@ -100,7 +109,9 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<CommentRes> updateComment(PatchCommentReq dto, Long commentId){
 
-        User user = userRepository.findById(dto.getUserId())
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
         Comment comment = commentRepository.findCommentById(dto.getCommentId())

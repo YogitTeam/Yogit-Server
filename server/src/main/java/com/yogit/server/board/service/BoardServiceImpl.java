@@ -15,6 +15,7 @@ import com.yogit.server.board.exception.NotHostOfBoardExcepion;
 import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
 import com.yogit.server.board.exception.boardimage.NotFoundBoardImageException;
 import com.yogit.server.board.repository.BoardImageRepository;
+import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -51,6 +52,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardImageRepository boardImageRepository;
     private final BlockRepository blockRepository;
     private final UserService userService;
+    private final BoardUserRepository boardUserRepository;
 
     private static final int PAGING_SIZE = 10;
     private static final String PAGING_STANDARD = "date";
@@ -192,6 +194,52 @@ public class BoardServiceImpl implements BoardService{
             res.add(boardsRes);
         }
 
+        return ApplicationResponse.ok(res);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        int cursor = dto.getCursor();
+
+        User user = userRepository.findByUserId(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.desc("currentMember"),
+                Sort.Order.asc("date")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
+
+        Slice<Board> boards = null;
+        Slice<BoardUser> boardUsers = null;
+        List<GetAllBoardRes> res = null;
+        /*
+        1.생성한 보드: Opened Club
+        2.참여한 보드 : Applied Club
+         */
+        if(dto.getMyClubType().equals("Opened Club")){
+            boards = boardRepository.findMyClubBoardsByUserId(pageRequest, dto.getUserId());
+
+            //  보드 res에 이미지uuid -> aws s3 url로 변환
+            res = boards.stream()
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .collect(Collectors.toList());
+        }
+        else if(dto.getMyClubType().equals("Applied Club")){
+            boardUsers = boardUserRepository.findByUserId(dto.getUserId());
+
+            //  보드 res에 이미지uuid -> aws s3 url로 변환
+            res = boardUsers.stream()
+                    .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
+                    .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .collect(Collectors.toList());
+        }
         return ApplicationResponse.ok(res);
     }
 

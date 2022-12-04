@@ -47,7 +47,7 @@ public class ClipBoard extends BaseEntity {
     public ClipBoard(CreateClipBoardReq dto, User user, Board board) {
         this.user = user;
         this.board = board;
-        this.title = dto.getTitle();
+//        this.title = dto.getTitle();
         this.content = dto.getContent();
         this.reportedCnt = 0;
     }
@@ -60,7 +60,7 @@ public class ClipBoard extends BaseEntity {
     }
 
     public void updateClipBoard(PatchClipBoardReq dto){
-        this.title = dto.getTitle();
+//        this.title = dto.getTitle();
         this.content = dto.getContent();
     }
 

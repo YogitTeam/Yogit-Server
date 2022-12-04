@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
         List<UserImage> userImages = userImageRepository.findAllByUserId(getUserImageReq.getUserId());
         if (!userImages.isEmpty()){
             for(UserImage i : userImages){
-                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()));
+                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()), i.getId());
             }
         }
 
@@ -245,6 +245,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    @Transactional
     public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
 
         validateRefreshToken(deleteUserImageReq.getUserId(), deleteUserImageReq.getRefreshToken());
@@ -253,7 +255,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundUserException());
 
         UserImage userImage = userImageRepository.findById(deleteUserImageReq.getUserImageId()).orElseThrow(() ->new NotFoundUserImageException());
-        userImage.deleteUserImage(); // 삭제 -> BASE_STATUS : INACTIVE로 변경
+        //userImage.deleteUserImage(); // 삭제 -> BASE_STATUS : INACTIVE로 변경
+        userImageRepository.delete(userImage);
 
         UserImagesRes userImagesRes = new UserImagesRes();
         userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
@@ -262,7 +265,7 @@ public class UserServiceImpl implements UserService {
         if (!userImages.isEmpty()){
             for(UserImage i : userImages){
                 if(i.equals(userImage))continue;
-                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()));
+                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()), i.getId());
             }
         }
 

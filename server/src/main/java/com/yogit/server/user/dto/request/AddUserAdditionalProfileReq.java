@@ -19,7 +19,7 @@ public class AddUserAdditionalProfileReq {
     String job;
     String administrativeArea;
 
-    Long cityId;
+    String cityName;
     List<String> interests;
 
     String refreshToken;

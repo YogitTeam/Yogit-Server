@@ -11,7 +11,6 @@ import com.yogit.server.user.dto.response.UserImagesRes;
 import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.*;
-import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -186,14 +185,25 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByUserId(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
-        user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getAdministrativeArea(), addUserAdditionalProfileReq.getJob());
+        user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getJob());
 
         UserAdditionalProfileRes userAdditionalProfileRes = UserAdditionalProfileRes.create(user);
 
-        City city = cityRepository.findById(addUserAdditionalProfileReq.getCityId()).orElseThrow(() -> new NotFoundCityException());
-        city.addUser(user);
+        // 기존에 존재하는 city인 경우
+        if(cityRepository.existsByCityName(addUserAdditionalProfileReq.getCityName())){
+            City city = cityRepository.findByCityName(addUserAdditionalProfileReq.getCityName());
+            city.addUser(user);
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            City city = City.builder()
+                    .user(user)
+                    .cityName(addUserAdditionalProfileReq.getCityName())
+                    .build();
+            cityRepository.save(city);
+            city.addUser(user);
+        }
 
-        userAdditionalProfileRes.setCity(city.getName());
+        userAdditionalProfileRes.setCityName(addUserAdditionalProfileReq.getCityName());
 
         for(String interestName : addUserAdditionalProfileReq.getInterests()){
             Interest interest = Interest.builder()

@@ -4,22 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AddUserAdditionalProfileReq {
-
+public class GetUserImageReq {
     Long userId;
-
-    float latitude;
-    float longitude;
-    String aboutMe;
-    String job;
-
-    String cityName;
-    List<String> interests;
-
     String refreshToken;
 }

@@ -20,4 +20,6 @@ public class EditUserEssentialProfileReq {
 
     List<String> languageNames;
     List<String> languageLevels;
+
+    String refreshToken;
 }

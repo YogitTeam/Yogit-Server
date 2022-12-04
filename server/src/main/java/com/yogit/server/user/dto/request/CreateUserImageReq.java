@@ -24,5 +24,7 @@ public class CreateUserImageReq {
                 .imgUUid(imgUUid)
                 .build();
     }
+
+    String refreshToken;
 }
 

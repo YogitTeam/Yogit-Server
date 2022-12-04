@@ -20,4 +20,6 @@ public class CreateUserEssentialProfileReq {
 
     List<String> languageNames;
     List<String> languageLevels;
+
+    String refreshToken;
 }

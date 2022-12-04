@@ -55,7 +55,6 @@ public class UserProfileRes {
         userProfileRes.phone = user.getPhoneNum();
 
         // 유저 추가 정보
-        if(user.getAdministrativeArea() != null) userProfileRes.administrativeArea = user.getAdministrativeArea();
         if(user.getLongtitude() != null)userProfileRes.longtitude = user.getLongtitude();
         if(user.getLatitude() != null)userProfileRes.latitude = user.getLatitude();
 

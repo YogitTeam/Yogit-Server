@@ -48,7 +48,6 @@ public class User extends BaseEntity {
     // location
     private Float longtitude;
     private Float latitude;
-    private String administrativeArea;
 
     private String job;
     private Integer age;
@@ -144,11 +143,10 @@ public class User extends BaseEntity {
         this.userInterests.add(userInterest);
     }
 
-    public void addAdditionalProfile(float latitude, float longitude, String aboutMe, String administrativeArea, String job){
+    public void addAdditionalProfile(float latitude, float longitude, String aboutMe, String job){
         this.latitude = latitude;
         this.longtitude = longitude;
         this.aboutMe = aboutMe;
-        this.administrativeArea = administrativeArea;
         this.job = job;
     }
 

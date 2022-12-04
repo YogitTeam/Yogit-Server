@@ -20,7 +20,7 @@ public class PatchClipBoardReq {
     private Long clipBoardId;
 
     @ApiModelProperty(example = "질문이 있습니다.")
-    @ApiParam(value = "클립보드 제목", required = true)
+    @ApiParam(value = "클립보드 제목", required = false)
     @NotBlank
     private String title;
 

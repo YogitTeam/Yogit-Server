@@ -176,4 +176,8 @@ public class Board extends BaseEntity {
     public void changeReportedCnt(){
         this.reportedCnt+=1;
     }
+
+    public void addCity(City city){
+        this.city = city;
+    }
 }

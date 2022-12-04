@@ -23,6 +23,8 @@ public interface BoardService {
 
     ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq getBoardsByCategoriesReq);
 
+    ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq getAllBoardsReq);
+
     ApplicationResponse<BoardRes> findBoard(GetBoardReq getBoardReq);
 
     ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq deleteBoardImageReq);

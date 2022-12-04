@@ -112,36 +112,9 @@ public class BoardRes {
     @ApiParam(value = "마지막 업데이트 시각")
     private String updatedAt;
 
-
-    public static BoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl){
-        return BoardRes.builder()
-                .boardId(board.getId())
-                .cityId(board.getCity().getId())
-                .cityName(board.getCity().getName().toString())
-                .hostId(board.getHost().getId())
-                .hostName(board.getHost().getName())
-                .profileImgUrl(profileImgUrl)
-                .title(board.getTitle())
-                .address(board.getAddress())
-                .addressDetail(board.getAddressDetail())
-                .longitute(board.getLongitute())
-                .latitude(board.getLatitude())
-                .date(board.getDate())
-                .notice(board.getNotice())
-                .introduction(board.getIntroduction())
-                .kindOfPerson(board.getKindOfPerson())
-                .currentMember(board.getCurrentMember())
-                .totalMember(board.getTotalMember())
-                .categoryId(board.getCategory().getId())
-                .categoryName(board.getCategory().getName())
-                .imageUrls(imageUrls)
-                .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
-                .status(board.getStatus())
-                .createdAt(board.getCreatedAt())
-                .updatedAt(board.getUpdatedAt())
-                .build();
-    }
-
+/*
+연관관계 편의 메서드
+ */
     @Builder
     public BoardRes(Long boardId, Long cityId, String cityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
@@ -169,4 +142,35 @@ public class BoardRes {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+
+    public static BoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl){
+        return BoardRes.builder()
+                .boardId(board.getId())
+                .cityId(board.getCity().getId())
+                .cityName(board.getCity().getCityName())
+                .hostId(board.getHost().getId())
+                .hostName(board.getHost().getName())
+                .profileImgUrl(profileImgUrl)
+                .title(board.getTitle())
+                .address(board.getAddress())
+                .addressDetail(board.getAddressDetail())
+                .longitute(board.getLongitute())
+                .latitude(board.getLatitude())
+                .date(board.getDate())
+                .notice(board.getNotice())
+                .introduction(board.getIntroduction())
+                .kindOfPerson(board.getKindOfPerson())
+                .currentMember(board.getCurrentMember())
+                .totalMember(board.getTotalMember())
+                .categoryId(board.getCategory().getId())
+                .categoryName(board.getCategory().getName())
+                .imageUrls(imageUrls)
+                .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
+                .status(board.getStatus())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
+                .build();
+    }
+
 }

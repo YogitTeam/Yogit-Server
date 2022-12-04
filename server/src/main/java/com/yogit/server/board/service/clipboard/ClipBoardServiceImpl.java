@@ -20,6 +20,8 @@ import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,12 +88,43 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     }
 
 
+//    @Transactional(readOnly = true)
+//    @Override
+//    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
+//
+//        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+//
+//        User user = userRepository.findByUserId(dto.getUserId())
+//                .orElseThrow(() -> new NotFoundUserException());
+//
+//        Board board = boardRepository.findBoardById(dto.getBoardId())
+//                .orElseThrow(() -> new NotFoundBoardException());
+//
+//        List<User> blockedUsers = blockRepository.findBlocksByBlockingUserId(dto.getUserId()).stream()
+//                .map(block -> block.getBlockedUser())
+//                .collect(Collectors.toList());
+//
+//        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
+//        // 유저 profileImgUrl 또한 img uuid -> s3 url로 변환
+//        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+//                .filter(clipBoard -> !blockedUsers.contains(clipBoard.getUser())) // 차단당한 유저의 데이터 제외
+//                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+//                        .filter(comment -> !blockedUsers.contains(comment.getUser()))
+//                        .map(comment -> CommentRes.toDto(comment))
+//                        .collect(Collectors.toList()),
+//                        awsS3Service.makeUrlOfFilename(clipBoard.getUser().getProfileImg())))
+//                .collect(Collectors.toList());
+//
+//        return ApplicationResponse.ok(getClipBoardResList);
+//    }
+
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
+        int cursor = dto.getCursor();
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
@@ -102,14 +135,20 @@ public class ClipBoardServiceImpl implements ClipBoardService{
                 .map(block -> block.getBlockedUser())
                 .collect(Collectors.toList());
 
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.asc("createdAt")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, 10, sort); // 페이징 요청 객체
+
         // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
         // 유저 profileImgUrl 또한 img uuid -> s3 url로 변환
-        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
+        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findClipBoardsByBoardId(pageRequest, dto.getBoardId()).stream()
                 .filter(clipBoard -> !blockedUsers.contains(clipBoard.getUser())) // 차단당한 유저의 데이터 제외
                 .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
-                        .filter(comment -> !blockedUsers.contains(comment.getUser()))
-                        .map(comment -> CommentRes.toDto(comment))
-                        .collect(Collectors.toList()),
+                                .filter(comment -> !blockedUsers.contains(comment.getUser()))
+                                .map(comment -> CommentRes.toDto(comment))
+                                .collect(Collectors.toList()),
                         awsS3Service.makeUrlOfFilename(clipBoard.getUser().getProfileImg())))
                 .collect(Collectors.toList());
 

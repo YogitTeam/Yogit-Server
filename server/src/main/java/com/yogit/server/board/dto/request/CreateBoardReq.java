@@ -23,9 +23,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateBoardReq {
 
-    @ApiModelProperty(example = "Seoul")
+    @ApiModelProperty(example = "SEOUL")
     @ApiParam(value = "도시 Name", required = true)
-    private CityName cityName;
+    private String cityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)

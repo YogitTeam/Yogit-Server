@@ -19,7 +19,7 @@ public interface UserService {
 
     ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq);
 
-    ApplicationResponse<UserImagesRes> getUserImage(Long userId);
+    ApplicationResponse<UserImagesRes> getUserImage(GetUserImageReq getUserImageReq);
 
     ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq);
 

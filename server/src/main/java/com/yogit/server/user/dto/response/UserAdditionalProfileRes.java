@@ -1,6 +1,5 @@
 package com.yogit.server.user.dto.response;
 
-import com.yogit.server.user.entity.CityName;
 import com.yogit.server.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +18,7 @@ public class UserAdditionalProfileRes {
     float longitude;
     String aboutMe;
 
-    CityName city;
+    String cityName;
     List<String> interests = new ArrayList<>();
 
     public static UserAdditionalProfileRes create(User user){

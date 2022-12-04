@@ -27,12 +27,15 @@ public class City extends BaseEntity {
     @OneToMany(mappedBy = "city")
     private List<Board> boards = new ArrayList<>();
 
+    // TODO board쪽 변경 이후 삭제할 컬럼
     @Enumerated(EnumType.STRING)
     private CityName name;
 
+    private String cityName;
+
     @Builder
-    public City(User user, CityName name){
-        this.name = name;
+    public City(User user, String cityName){
+        this.cityName = cityName;
         this.users.add(user);
         user.addCity(this);
     }

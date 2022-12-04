@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetBoardReq {
 
-    @ApiModelProperty(example = "1")
+    @ApiModelProperty(example = "43")
     @ApiParam(value = "Board ID", required = true)
     private Long boardId;
 

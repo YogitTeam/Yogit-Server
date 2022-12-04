@@ -32,7 +32,7 @@ public class BoardController {
      */
     @ApiOperation(value = "게시글 등록", notes = "그룹 게시글에 필요한 정보를 입력받아 게시글 생성. , swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/Yogit~3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/23528495-7fcef771-fae5-486b-a423-b47daf2d0514")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "cityName", required = true, dataTypeClass = CityName.class, example = "SEOUL"),
+            @ApiImplicitParam(name = "cityName", required = true, dataTypeClass = String.class, example = "SEOUL"),
             @ApiImplicitParam(name = "hostId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "title", dataTypeClass = String.class, example = "경복궁 탐사입니다."),
             @ApiImplicitParam(name = "address", dataTypeClass = String.class, example = "서울특별시 종로구 사직로 130"),

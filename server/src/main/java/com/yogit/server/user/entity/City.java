@@ -27,10 +27,6 @@ public class City extends BaseEntity {
     @OneToMany(mappedBy = "city")
     private List<Board> boards = new ArrayList<>();
 
-    // TODO board쪽 변경 이후 삭제할 컬럼
-    @Enumerated(EnumType.STRING)
-    private CityName name;
-
     private String cityName;
 
     @Builder
@@ -43,5 +39,10 @@ public class City extends BaseEntity {
     public void addUser(User user){
         this.users.add(user);
         user.addCity(this);
+    }
+
+    public void addBoard(Board board){
+        this.boards.add(board);
+        board.addCity(this);
     }
 }

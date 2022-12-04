@@ -67,8 +67,18 @@ public class BoardServiceImpl implements BoardService{
         User host = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
-        City city = cityRepository.findByCityName(dto.getCityName())
-                .orElseThrow(() -> new NotFoundCityException());
+        // 기존에 존재하는 city인 경우
+        City city = null;
+        if(cityRepository.existsByCityName(dto.getCityName())){
+            city = cityRepository.findByCityName(dto.getCityName());
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            city = City.builder()
+                    .cityName(dto.getCityName())
+                    .build();
+            cityRepository.save(city);
+        }
+
         // category 조회
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new NotFoundCategoryException());
@@ -110,8 +120,18 @@ public class BoardServiceImpl implements BoardService{
         User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        City city = cityRepository.findByCityName(dto.getCityName())
-                .orElseThrow(() -> new NotFoundCityException());
+        // city조회
+        // 기존에 존재하는 city인 경우
+        City city = null;
+        if(cityRepository.existsByCityName(dto.getCityName())){
+            city = cityRepository.findByCityName(dto.getCityName());
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            city = City.builder()
+                    .cityName(dto.getCityName())
+                    .build();
+            cityRepository.save(city);
+        }
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new NotFoundCategoryException());

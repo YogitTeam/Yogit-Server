@@ -22,9 +22,9 @@ public class PatchBoardReq {
     @ApiParam(value = "Board ID", required = true)
     private Long boardId;
 
-    @ApiModelProperty(example = "Seoul")
+    @ApiModelProperty(example = "SEOUL")
     @ApiParam(value = "도시 Name", required = true)
-    private CityName cityName;
+    private String cityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)

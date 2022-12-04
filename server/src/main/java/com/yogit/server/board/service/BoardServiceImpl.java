@@ -6,6 +6,7 @@ import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
+import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.BoardImage;
 import com.yogit.server.board.entity.BoardUser;
@@ -335,7 +336,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
+    public ApplicationResponse<GetBoardRes> findBoard(GetBoardReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
@@ -345,8 +346,18 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
-        return ApplicationResponse.ok(boardRes);
+        List<User> participants = board.getBoardUsers().stream()
+                .filter(boardUser -> !boardUser.getUser().equals(board.getHost()))
+                .map(boardUser -> boardUser.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .filter(boardUser -> !boardUser.getUser().equals(board.getHost()))
+                .map(boardUser -> boardUser.getUser().getProfileImg())
+                .collect(Collectors.toList());
+
+        GetBoardRes res = GetBoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
+        return ApplicationResponse.ok(res);
     }
 
 

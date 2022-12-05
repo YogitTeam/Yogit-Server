@@ -22,6 +22,10 @@ public class GetAllBoardRes {
     @ApiParam(value = "도시 ID")
     private Long cityId;
 
+    @ApiModelProperty(example = "SEOUL")
+    @ApiParam(value = "도시 Name")
+    private String cityName;
+
     @ApiModelProperty(example = "추가 예정")
     @ApiParam(value = "유저 프로필 이미지 url")
     private String profileImgUrl;
@@ -62,6 +66,7 @@ public class GetAllBoardRes {
         return GetAllBoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
+                .cityName(board.getCity().getCityName())
                 .profileImgUrl(profileImgUrl)
                 .title(board.getTitle())
                 .date(board.getDate())
@@ -75,9 +80,10 @@ public class GetAllBoardRes {
     }
 
     @Builder
-    public GetAllBoardRes(Long boardId, Long cityId, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
+    public GetAllBoardRes(Long boardId, Long cityId, String cityName, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
         this.boardId = boardId;
         this.cityId = cityId;
+        this.cityName = cityName;
         this.profileImgUrl = profileImgUrl;
         this.title = title;
         this.date = date;

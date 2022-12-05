@@ -50,7 +50,7 @@ public class ClipBoardRes {
                 .clipBoardId(clipBoard.getId())
                 .userId(clipBoard.getUser().getId())
                 .boardId(clipBoard.getBoard().getId())
-                .title(clipBoard.getTitle())
+//                .title(clipBoard.getTitle())
                 .content(clipBoard.getContent())
                 .status(clipBoard.getStatus())
                 .createdAt(clipBoard.getCreatedAt())

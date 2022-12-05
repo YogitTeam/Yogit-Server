@@ -5,6 +5,7 @@ import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
+import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.global.dto.ApplicationResponse;
 
 import java.util.List;
@@ -23,7 +24,9 @@ public interface BoardService {
 
     ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq getBoardsByCategoriesReq);
 
-    ApplicationResponse<BoardRes> findBoard(GetBoardReq getBoardReq);
+    ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq getAllBoardsReq);
+
+    ApplicationResponse<GetBoardRes> findBoard(GetBoardReq getBoardReq);
 
     ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq deleteBoardImageReq);
 }

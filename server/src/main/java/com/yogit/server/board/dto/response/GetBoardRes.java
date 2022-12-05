@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class BoardRes {
+public class GetBoardRes {
+
     @ApiModelProperty(example = "1")
     @ApiParam(value = "생성된 Board ID")
     private Long boardId;
@@ -100,6 +101,14 @@ public class BoardRes {
     @ApiParam(value = "게시글 이미지 ID 리스트")
     private List<Long> imageIds;
 
+    @ApiModelProperty(example = "[1,2,3]")
+    @ApiParam(value = "참여 유저 이미지 ID 리스트")
+    private List<Long> userIds;
+
+    @ApiModelProperty(example = "['이미지 url','이미지2 url']")
+    @ApiParam(value = "참여 유저 이미지 url 리스트")
+    private List<String> userImageUrls;
+
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
@@ -112,11 +121,11 @@ public class BoardRes {
     @ApiParam(value = "마지막 업데이트 시각")
     private String updatedAt;
 
-/*
+    /*
 연관관계 편의 메서드
  */
     @Builder
-    public BoardRes(Long boardId, Long cityId, String cityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, BaseStatus status, String createdAt, String updatedAt) {
+    public GetBoardRes(Long boardId, Long cityId, String cityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, List<Long> userIds, List<String> userImageUrls, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.cityName = cityName;
@@ -138,14 +147,16 @@ public class BoardRes {
         this.categoryName = categoryName;
         this.imageUrls = imageUrls;
         this.imageIds = imageIds;
+        this.userIds = userIds;
+        this.userImageUrls = userImageUrls;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
 
-    public static BoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl){
-        return BoardRes.builder()
+    public static GetBoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl, List<User> users, List<String> userImageUrls){
+        return GetBoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
                 .cityName(board.getCity().getCityName())
@@ -167,10 +178,11 @@ public class BoardRes {
                 .categoryName(board.getCategory().getName())
                 .imageUrls(imageUrls)
                 .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
+                .userIds(users.stream().map(User::getId).collect(Collectors.toList()))
+                .userImageUrls(userImageUrls)
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .build();
     }
-
 }

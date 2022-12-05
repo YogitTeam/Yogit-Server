@@ -6,6 +6,7 @@ import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
+import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.BoardImage;
 import com.yogit.server.board.entity.BoardUser;
@@ -15,6 +16,7 @@ import com.yogit.server.board.exception.NotHostOfBoardExcepion;
 import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
 import com.yogit.server.board.exception.boardimage.NotFoundBoardImageException;
 import com.yogit.server.board.repository.BoardImageRepository;
+import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -51,6 +53,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardImageRepository boardImageRepository;
     private final BlockRepository blockRepository;
     private final UserService userService;
+    private final BoardUserRepository boardUserRepository;
 
     private static final int PAGING_SIZE = 10;
     private static final String PAGING_STANDARD = "date";
@@ -65,8 +68,18 @@ public class BoardServiceImpl implements BoardService{
         User host = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
-        City city = cityRepository.findByCityName(dto.getCityName())
-                .orElseThrow(() -> new NotFoundCityException());
+        // 기존에 존재하는 city인 경우
+        City city = null;
+        if(cityRepository.existsByCityName(dto.getCityName())){
+            city = cityRepository.findByCityName(dto.getCityName());
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            city = City.builder()
+                    .cityName(dto.getCityName())
+                    .build();
+            cityRepository.save(city);
+        }
+
         // category 조회
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new NotFoundCategoryException());
@@ -108,8 +121,18 @@ public class BoardServiceImpl implements BoardService{
         User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        City city = cityRepository.findByCityName(dto.getCityName())
-                .orElseThrow(() -> new NotFoundCityException());
+        // city조회
+        // 기존에 존재하는 city인 경우
+        City city = null;
+        if(cityRepository.existsByCityName(dto.getCityName())){
+            city = cityRepository.findByCityName(dto.getCityName());
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            city = City.builder()
+                    .cityName(dto.getCityName())
+                    .build();
+            cityRepository.save(city);
+        }
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new NotFoundCategoryException());
@@ -198,6 +221,52 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        int cursor = dto.getCursor();
+
+        User user = userRepository.findByUserId(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.desc("currentMember"),
+                Sort.Order.asc("date")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
+
+        Slice<Board> boards = null;
+        Slice<BoardUser> boardUsers = null;
+        List<GetAllBoardRes> res = null;
+        /*
+        1.생성한 보드: Opened Club
+        2.참여한 보드 : Applied Club
+         */
+        if(dto.getMyClubType().equals("Opened Club")){
+            boards = boardRepository.findMyClubBoardsByUserId(pageRequest, dto.getUserId());
+
+            //  보드 res에 이미지uuid -> aws s3 url로 변환
+            res = boards.stream()
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .collect(Collectors.toList());
+        }
+        else if(dto.getMyClubType().equals("Applied Club")){
+            boardUsers = boardUserRepository.findByUserId(dto.getUserId());
+
+            //  보드 res에 이미지uuid -> aws s3 url로 변환
+            res = boardUsers.stream()
+                    .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
+                    .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .collect(Collectors.toList());
+        }
+        return ApplicationResponse.ok(res);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
     public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
@@ -267,7 +336,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<BoardRes> findBoard(GetBoardReq dto){
+    public ApplicationResponse<GetBoardRes> findBoard(GetBoardReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
@@ -277,8 +346,18 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
-        return ApplicationResponse.ok(boardRes);
+        List<User> participants = board.getBoardUsers().stream()
+                .filter(boardUser -> !boardUser.getUser().equals(board.getHost()))
+                .map(boardUser -> boardUser.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .filter(boardUser -> !boardUser.getUser().equals(board.getHost()))
+                .map(boardUser -> boardUser.getUser().getProfileImg())
+                .collect(Collectors.toList());
+
+        GetBoardRes res = GetBoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
+        return ApplicationResponse.ok(res);
     }
 
 

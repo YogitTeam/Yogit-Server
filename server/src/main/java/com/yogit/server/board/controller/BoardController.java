@@ -6,6 +6,7 @@ import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
+import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.CityName;
@@ -32,7 +33,7 @@ public class BoardController {
      */
     @ApiOperation(value = "게시글 등록", notes = "그룹 게시글에 필요한 정보를 입력받아 게시글 생성. , swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/Yogit~3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/23528495-7fcef771-fae5-486b-a423-b47daf2d0514")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "cityName", required = true, dataTypeClass = CityName.class, example = "SEOUL"),
+            @ApiImplicitParam(name = "cityName", required = true, dataTypeClass = String.class, example = "SEOUL"),
             @ApiImplicitParam(name = "hostId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "title", dataTypeClass = String.class, example = "경복궁 탐사입니다."),
             @ApiImplicitParam(name = "address", dataTypeClass = String.class, example = "서울특별시 종로구 사직로 130"),
@@ -157,6 +158,22 @@ public class BoardController {
         return boardService.findBoardsByCategories(dto);
     }
 
+    /**
+     * 게시글 My Club 조회: 자신이 생성한 보드들 조회
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 My Club 조회: 자신이 생성한 보드들 조회", notes = "그룹 게시글 전체조회 요청.")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping("/get/myclub")
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(@RequestBody @Validated GetAllBoardsReq dto){
+        return boardService.findMyClubBoards(dto);
+    }
+
+
 
     /**
      * 게시글 상세 조회
@@ -169,7 +186,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/detail")
-    public ApplicationResponse<BoardRes> findBoard(@RequestBody @Validated GetBoardReq getBoardReq){
+    public ApplicationResponse<GetBoardRes> findBoard(@RequestBody @Validated GetBoardReq getBoardReq){
         return boardService.findBoard(getBoardReq);
     }
 

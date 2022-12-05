@@ -89,7 +89,7 @@ public class UserController {
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
-    @GetMapping("/image/{userId}")
+    @PostMapping("/image/{userId}")
     public ApplicationResponse<UserImagesRes> getUserImage(@ModelAttribute GetUserImageReq getUserImageReq){
         return userService.getUserImage(getUserImageReq);
     }

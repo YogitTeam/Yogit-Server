@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -88,9 +87,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
 
-        validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
-
-        this.validateRefreshToken(getUserProfileReq.getUserId(), getUserProfileReq.getRefreshToken());
+        validateRefreshToken(getUserProfileReq.getRefreshTokenUserId(), getUserProfileReq.getRefreshToken());
 
         User user = userRepository.findByUserId(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
@@ -103,12 +100,20 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        Optional<UserInterest> userInterest = userInterestRepository.findByUserId(getUserProfileReq.getUserId());
-        if(userInterest.isPresent()){
-            userProfileRes.addInterest(userInterest.get().getInterest().getName());
+        System.out.println("c5");
+
+        List<UserInterest> userInterests = userInterestRepository.findAllByUserId(getUserProfileReq.getUserId());
+        if(!userInterests.isEmpty()){
+            for(UserInterest ui : userInterests){
+                userProfileRes.addInterest(ui.getInterest().getName());
+            }
         }
 
+        System.out.println("c6");
+
         userProfileRes.setProfileImg(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+
+        System.out.println("c7");
 
         return ApplicationResponse.ok(userProfileRes);
     }

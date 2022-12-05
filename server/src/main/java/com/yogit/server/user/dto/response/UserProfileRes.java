@@ -23,7 +23,6 @@ public class UserProfileRes {
     String nationality;
     String profileImg; // 대표 프로필 이미지
     String aboutMe;
-    String login_id;
     UserStatus userStatus;
     String phone;
 
@@ -50,7 +49,6 @@ public class UserProfileRes {
         userProfileRes.gender = user.getGender();
         userProfileRes.nationality = user.getNationality();
         userProfileRes.aboutMe = user.getAboutMe();
-        userProfileRes.login_id = user.getLoginId();
         userProfileRes.userStatus = user.getUserStatus();
         userProfileRes.phone = user.getPhoneNum();
 

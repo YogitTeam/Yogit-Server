@@ -33,7 +33,7 @@ public class UserController {
             @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
             @ApiImplicitParam(name = "gender", dataTypeClass = String.class, example = "Male"),
             @ApiImplicitParam(name = "nationality", dataTypeClass = String.class, example = "Korea"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
     @PatchMapping("/essential-profile")
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
@@ -47,10 +47,10 @@ public class UserController {
     @ApiOperation(value = "유저 Profile 조회")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "4hxvgqgr42@privaterelay.appleid.com"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+            @ApiImplicitParam(name = "refreshTokenUserId", required = true, dataTypeClass = Long.class, example = "21"),
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
-    @GetMapping("/profile/{userId}") // TODO
+    @GetMapping("/profile")
     public ApplicationResponse<UserProfileRes> getProfile(@ModelAttribute GetUserProfileReq getUserProfileReq){
         return userService.getProfile(getUserProfileReq);
     }
@@ -73,7 +73,7 @@ public class UserController {
     @ApiOperation(value = "유저 사진 등록 (새로 추가할 사진만 등록)", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
     @PostMapping("/image")
     public ApplicationResponse<UserImagesRes> enterUserImage(@ModelAttribute CreateUserImageReq createUserImageReq){
@@ -87,7 +87,7 @@ public class UserController {
     @ApiOperation(value = "유저 사진 조회")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
     @GetMapping("/image/{userId}")
     public ApplicationResponse<UserImagesRes> getUserImage(@ModelAttribute GetUserImageReq getUserImageReq){
@@ -106,7 +106,7 @@ public class UserController {
             @ApiImplicitParam(name = "aboutMe", dataTypeClass = String.class, example = "캠핑 모임에 관심이 많습니다."),
             @ApiImplicitParam(name = "job", dataTypeClass = String.class, example = "학생"),
             @ApiImplicitParam(name = "cityName", dataTypeClass = String.class, example = "SEOUL"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
     @PatchMapping("/additional-profile")
     public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
@@ -133,7 +133,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "userImageId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "refreshToken", dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
     @PatchMapping("/image")
     public ApplicationResponse<UserImagesRes> deleteUserImage(@ModelAttribute DeleteUserImageReq deleteUserImageReq){

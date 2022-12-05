@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 public class GetUserProfileReq {
 
     Long userId;
+
+    Long refreshTokenUserId;
     String refreshToken;
 }

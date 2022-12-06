@@ -60,7 +60,7 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL) // 보드 생성 순간 보드 유저 리스트 생성
     private List<BoardUser> boardUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<BoardImage> boardImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -165,6 +165,7 @@ public class Board extends BaseEntity {
     // BoardImage리스트의 UUID리스트만 String으로 반환
     public List<String> getBoardImagesUUids(){
         return this.boardImages.stream()
+                .filter(boardImage -> boardImage.getStatus().equals(BaseStatus.ACTIVE))
                 .map(boardImage -> boardImage.getImgUUid())
                 .collect(Collectors.toList());
     }

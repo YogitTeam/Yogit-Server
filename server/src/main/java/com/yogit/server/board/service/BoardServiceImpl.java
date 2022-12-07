@@ -145,28 +145,11 @@ public class BoardServiceImpl implements BoardService{
         board.updateBoard(dto, city, category);
 
         //BoardImages aws s3에 저장 후 리파지토리에도 저장
-//        // 새로 업로드 하는 이미지의 id=-1
-//        if(dto.getImageIds() != null){
-//            List<Long> imageIds = dto.getImageIds();
-//            for(int i=0;i<imageIds.size();i++){
-//                if(imageIds.get(i) == -1){
-//                    if(!(dto.getImages()==null)){
-//                        String imageUUid = awsS3Service.uploadImage(dto.getImages().get(i));
-//                        BoardImage boardImage = new BoardImage(board, imageUUid);
-//                        boardImageRepository.save(boardImage);
-////                        imageUrls.add(awsS3Service.makeUrlOfFilename(imageUUid));
-//                    }
-//                }
-//            }
-//        }
-        //BoardImages aws s3에 저장 후 리파지토리에도 저장
         if(dto.getImages() != null){
             List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
             for(String i : imageUUids){
                 BoardImage boardImage = new BoardImage(board, i);
                 boardImageRepository.save(boardImage);
-//                boardRes.addImageUrl(awsS3Service.makeUrlOfFilename(i)); // res에 추가
-//                imageUrls.add(awsS3Service.makeUrlOfFilename(i));
             }
         }
 

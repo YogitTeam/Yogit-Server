@@ -86,6 +86,10 @@ public class PatchBoardReq {
     @ApiParam(value = "게시글 이미지 데이터", required = false)
     private List<MultipartFile> images; // 최대 5개
 
+    @ApiModelProperty(example = "[1,2,3]")
+    @ApiParam(value = "게시글 이미지 ID 리스트")
+    private List<Long> imageIds;
+
     @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     @ApiParam(value = "애플 리프레쉬 토큰", required = true)
     private String refreshToken;

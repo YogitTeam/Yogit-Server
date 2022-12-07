@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,6 +79,8 @@ public class BoardController {
             @ApiImplicitParam(name = "kindOfPerson", dataTypeClass = String.class, example = "활발한 사람이 오면 좋습니다."),
             @ApiImplicitParam(name = "totalMember", dataTypeClass = int.class, example = "5"),
             @ApiImplicitParam(name = "categoryId", dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "images", required = false, dataTypeClass = MultipartFile.class, example = "이미지"),
+            @ApiImplicitParam(name = "deleteImageIds", required = false, dataTypeClass = Long.class, example = "List<Long> 자료형")
     })
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
@@ -86,6 +89,7 @@ public class BoardController {
             @ApiResponse(code= 404, message = "존재하지 않는 Category아이디입니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
             @ApiResponse(code= 404, message = "요청한 유저가 호스트가 아닙니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 BoardImage아이디입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("")

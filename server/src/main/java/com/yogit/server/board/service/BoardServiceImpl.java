@@ -106,7 +106,7 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
-        BoardRes boardRes = BoardRes.toDto(savedBoard, imageUrls, awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
+        BoardRes boardRes = BoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
         return ApplicationResponse.create("요청에 성공하였습니다.", boardRes);
     }
 
@@ -116,12 +116,9 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
         userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
-        List<String> imageUrls = new ArrayList<>();
-
         User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        // city조회
         // 기존에 존재하는 city인 경우
         City city = null;
         if(cityRepository.existsByCityName(dto.getCityName())){
@@ -148,18 +145,18 @@ public class BoardServiceImpl implements BoardService{
         board.updateBoard(dto, city, category);
 
         //BoardImages aws s3에 저장 후 리파지토리에도 저장
-        // 새로 업로드 하는 이미지의 id=-1
-        if(dto.getImageIds() != null){
-            List<Long> imageIds = dto.getImageIds();
-            for(int i=0;i<imageIds.size();i++){
-                if(imageIds.get(i) == -1){
-                    if(!(dto.getImages()==null)){
-                        String imageUUid = awsS3Service.uploadImage(dto.getImages().get(i));
-                        BoardImage boardImage = new BoardImage(board, imageUUid);
-                        boardImageRepository.save(boardImage);
-//                        imageUrls.add(awsS3Service.makeUrlOfFilename(imageUUid));
-                    }
-                }
+        if(dto.getImages() != null){
+            List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
+            for(String i : imageUUids){
+                BoardImage boardImage = new BoardImage(board, i);
+                boardImageRepository.save(boardImage);
+            }
+        }
+
+        // 게시글 이미지 삭제
+        if(dto.getDeleteImageIds() != null){
+            for(Long id: dto.getDeleteImageIds()){
+                this.deleteBoardImage(new DeleteBoardImageReq(board.getId(), user.getId(), id, user.getRefreshToken()));
             }
         }
 

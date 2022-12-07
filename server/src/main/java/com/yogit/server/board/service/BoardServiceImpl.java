@@ -148,15 +148,22 @@ public class BoardServiceImpl implements BoardService{
         board.updateBoard(dto, city, category);
 
         //BoardImages aws s3에 저장 후 리파지토리에도 저장
-        if(!(dto.getImages()==null)){
-            List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
-            for(String i : imageUUids){
-                BoardImage boardImage = new BoardImage(board, i);
-                boardImageRepository.save(boardImage);
-                imageUrls.add(awsS3Service.makeUrlOfFilename(i));
+        // 새로 업로드 하는 이미지의 id=-1
+        if(dto.getImageIds() != null){
+            List<Long> imageIds = dto.getImageIds();
+            for(int i=0;i<imageIds.size();i++){
+                if(imageIds.get(i) == -1){
+                    if(!(dto.getImages()==null)){
+                        String imageUUid = awsS3Service.uploadImage(dto.getImages().get(i));
+                        BoardImage boardImage = new BoardImage(board, imageUUid);
+                        boardImageRepository.save(boardImage);
+//                        imageUrls.add(awsS3Service.makeUrlOfFilename(imageUUid));
+                    }
+                }
             }
         }
-        BoardRes boardRes = BoardRes.toDto(board, imageUrls, awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+
+        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
         return ApplicationResponse.ok(boardRes);
     }
 
@@ -221,7 +228,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq dto){
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 

@@ -24,7 +24,7 @@ public interface BoardService {
 
     ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq getBoardsByCategoriesReq);
 
-    ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq getAllBoardsReq);
+    ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq getMyClubBoardsReq);
 
     ApplicationResponse<GetBoardRes> findBoard(GetBoardReq getBoardReq);
 

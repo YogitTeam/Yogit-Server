@@ -11,6 +11,7 @@ import com.yogit.server.board.exception.NotFoundUserBoard;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
@@ -19,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,6 +33,7 @@ public class BoardUserServiceImpl implements BoardUserService{
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final AwsS3Service awsS3Service;
 
     @Transactional(readOnly = false)
     @Override
@@ -59,7 +63,17 @@ public class BoardUserServiceImpl implements BoardUserService{
         board.addCurrentMember();// 보드 현재 인원 +1
         board.addBoardUser(boardUser); // 보드에 멤버 추가
 
-        BoardUserRes res = BoardUserRes.toDto(boardUser,user, board);
+        List<User> participants = board.getBoardUsers().stream()
+                .filter(bu -> !bu.getUser().equals(board.getHost()))
+                .map(bu -> bu.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .filter(bu -> !bu.getUser().equals(board.getHost()))
+                .map(bu -> bu.getUser().getProfileImg())
+                .collect(Collectors.toList());
+
+        BoardUserRes res = BoardUserRes.toDto(boardUser,user, board, participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
         return ApplicationResponse.create("보드에 유저가 조인되었습니다.", res);
     }
 

@@ -221,7 +221,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq dto){
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 

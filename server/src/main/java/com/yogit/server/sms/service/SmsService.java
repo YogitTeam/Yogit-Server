@@ -2,10 +2,7 @@ package com.yogit.server.sms.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yogit.server.sms.dto.MessageDTO;
-import com.yogit.server.sms.dto.SmsNaverReq;
-import com.yogit.server.sms.dto.SmsSendReq;
-import com.yogit.server.sms.dto.SmsSendRes;
+import com.yogit.server.sms.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -109,5 +106,45 @@ public class SmsService {
 
         return encodeBase64String;
     }
+//
+//
+//
+//    public String sendBoardJoinAlarm(SmsSendBoardJoinAlarmReq dto) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
+////        if(smsSendReq.getPhoneNum().contains("-")) return "-을 제거해주세요.";
+//
+//        System.out.println(serviceId);
+//        System.out.println(accessKey);
+//        System.out.println(secretKey);
+//        System.out.println(phoneNum);
+//
+//        String certification = Integer.toString((int)(Math.random() * (99999 - 10000 + 1)) + 10000);
+//
+//        Long time = System.currentTimeMillis();
+//
+//        List<MessageDTO> messages = new ArrayList<>();
+//        messages.add(new MessageDTO(dto.getPhoneNum(), dto.getUserName() + " joined in your club"));
+//
+//        SmsNaverReq smsNaverRequest = new SmsNaverReq("SMS", this.phoneNum, certification, messages);
+//
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String jsonBody = objectMapper.writeValueAsString(smsNaverRequest);
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.set("x-ncp-apigw-timestamp", time.toString());
+//        headers.set("x-ncp-iam-access-key", this.accessKey);
+//        String sig = makeSignature(time); // 암호화
+//        headers.set("x-ncp-apigw-signature-v2", sig);
+//
+//        HttpEntity<String> body = new HttpEntity<>(jsonBody, headers);
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+//        SmsSendRes smsSendResponse = restTemplate.postForObject(
+//                new URI("https://sens.apigw.ntruss.com/sms/v2/services/" + this.serviceId + "/messages"), body, SmsSendRes.class);
+//
+//        return certification;
+//    }
 
 }

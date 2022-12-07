@@ -9,6 +9,7 @@ import com.yogit.server.sms.service.SmsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,4 +33,17 @@ public class SmsController {
                 .value(smsService.send(smsSendReq))
                 .build());
     }
+//
+//
+//    /**
+//     * 게시글 참여 알림 문자 발송
+//     * @author 토마스
+//     */
+//    @ApiOperation(value = "게시글 참여 알림 문자 발송", notes = "참여 알림 문자를 발송합니다.")
+//    @PostMapping("/sms/board")
+//    public ApplicationResponse<SmsSendRes> sendBoardJoinAlarm(@RequestBody @Validated SmsSendBoardJoinAlarmReq dto) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException, URISyntaxException {
+//        return ApplicationResponse.ok(SmsSendRes.builder()
+//                .value(smsService.sendBoardJoinAlarm(dto))
+//                .build());
+//    }
 }

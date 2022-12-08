@@ -15,7 +15,7 @@ public interface ClipBoardService {
 
     ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq getAllClipBoardsReq);
 
-    ApplicationResponse<ClipBoardRes> deleteClipBoard(DeleteClipBoardReq deleteClipBoardReq);
+    ApplicationResponse<String> deleteClipBoard(DeleteClipBoardReq deleteClipBoardReq);
 
     ApplicationResponse<ClipBoardRes> updateClipBoard(PatchClipBoardReq patchClipBoardReq);
 }

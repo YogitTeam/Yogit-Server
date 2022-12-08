@@ -47,6 +47,7 @@ public class BoardController {
             @ApiImplicitParam(name = "kindOfPerson", dataTypeClass = String.class, example = "활발한 사람이 오면 좋습니다."),
             @ApiImplicitParam(name = "totalMember", dataTypeClass = int.class, example = "5"),
             @ApiImplicitParam(name = "categoryId", dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "images", required = false, dataType = "list", value = "새로 업로드 할 이미지 MultiPartFile 리스트(List(MultiPartFile))"),
     })
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
@@ -79,8 +80,9 @@ public class BoardController {
             @ApiImplicitParam(name = "kindOfPerson", dataTypeClass = String.class, example = "활발한 사람이 오면 좋습니다."),
             @ApiImplicitParam(name = "totalMember", dataTypeClass = int.class, example = "5"),
             @ApiImplicitParam(name = "categoryId", dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "images", required = false, dataTypeClass = MultipartFile.class, example = "이미지"),
-            @ApiImplicitParam(name = "deleteImageIds", required = false, dataTypeClass = Long.class, example = "List<Long> 자료형")
+//            @ApiImplicitParam(name = "images", required = false, dataTypeClass = MultipartFile.class, example = "이미지"),
+            @ApiImplicitParam(name = "images", required = false, dataType = "list", value = "새로 업로드 할 이미지 MultiPartFile 리스트(List(MultiPartFile))"),
+            @ApiImplicitParam(name = "deleteImageIds", required = false, dataType = "list", value = "삭제 할 보드 이미지 id 리스트(List(Long))")
     })
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),

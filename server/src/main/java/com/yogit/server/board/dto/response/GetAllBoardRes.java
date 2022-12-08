@@ -1,5 +1,6 @@
 package com.yogit.server.board.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.config.domain.BaseStatus;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,10 @@ public class GetAllBoardRes {
     @ApiParam(value = "도시 ID")
     private Long cityId;
 
+    @ApiModelProperty(example = "SEOUL")
+    @ApiParam(value = "도시 Name")
+    private String cityName;
+
     @ApiModelProperty(example = "추가 예정")
     @ApiParam(value = "유저 프로필 이미지 url")
     private String profileImgUrl;
@@ -32,6 +38,7 @@ public class GetAllBoardRes {
 
     @ApiModelProperty(example = "2022-07-13 16:29:30")
     @ApiParam(value = "사용자 ID")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime date; // 모임 시각
 
     @ApiModelProperty(example = "2")
@@ -62,6 +69,7 @@ public class GetAllBoardRes {
         return GetAllBoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
+                .cityName(board.getCity().getCityName())
                 .profileImgUrl(profileImgUrl)
                 .title(board.getTitle())
                 .date(board.getDate())
@@ -75,9 +83,10 @@ public class GetAllBoardRes {
     }
 
     @Builder
-    public GetAllBoardRes(Long boardId, Long cityId, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
+    public GetAllBoardRes(Long boardId, Long cityId, String cityName, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
         this.boardId = boardId;
         this.cityId = cityId;
+        this.cityName = cityName;
         this.profileImgUrl = profileImgUrl;
         this.title = title;
         this.date = date;

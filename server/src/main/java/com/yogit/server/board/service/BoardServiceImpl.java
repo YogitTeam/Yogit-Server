@@ -106,7 +106,7 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
-        BoardRes boardRes = BoardRes.toDto(savedBoard, imageUrls, awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
+        BoardRes boardRes = BoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
         return ApplicationResponse.create("요청에 성공하였습니다.", boardRes);
     }
 
@@ -116,12 +116,9 @@ public class BoardServiceImpl implements BoardService{
     public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
         userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
-        List<String> imageUrls = new ArrayList<>();
-
         User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        // city조회
         // 기존에 존재하는 city인 경우
         City city = null;
         if(cityRepository.existsByCityName(dto.getCityName())){
@@ -148,15 +145,22 @@ public class BoardServiceImpl implements BoardService{
         board.updateBoard(dto, city, category);
 
         //BoardImages aws s3에 저장 후 리파지토리에도 저장
-        if(!(dto.getImages()==null)){
+        if(dto.getImages() != null){
             List<String> imageUUids = awsS3Service.uploadImages(dto.getImages());
             for(String i : imageUUids){
                 BoardImage boardImage = new BoardImage(board, i);
                 boardImageRepository.save(boardImage);
-                imageUrls.add(awsS3Service.makeUrlOfFilename(i));
             }
         }
-        BoardRes boardRes = BoardRes.toDto(board, imageUrls, awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+
+        // 게시글 이미지 삭제
+        if(dto.getDeleteImageIds() != null){
+            for(Long id: dto.getDeleteImageIds()){
+                this.deleteBoardImage(new DeleteBoardImageReq(board.getId(), user.getId(), id, user.getRefreshToken()));
+            }
+        }
+
+        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
         return ApplicationResponse.ok(boardRes);
     }
 
@@ -221,7 +225,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetAllBoardsReq dto){
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 

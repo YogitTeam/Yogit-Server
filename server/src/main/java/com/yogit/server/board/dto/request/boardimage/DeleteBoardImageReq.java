@@ -2,11 +2,13 @@ package com.yogit.server.board.dto.request.boardimage;
 
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class DeleteBoardImageReq {
 
     @ApiModelProperty(example = "1")

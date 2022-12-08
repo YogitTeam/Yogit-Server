@@ -1,5 +1,6 @@
 package com.yogit.server.board.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.User;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,6 +64,7 @@ public class BoardRes {
 
     @ApiModelProperty(example = "2022-07-13 16:29:30")
     @ApiParam(value = "사용자 ID")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime date; // 모임 시각
 
     @ApiModelProperty(example = "시간에 맞춰오시기 바랍니다.")
@@ -166,7 +169,9 @@ public class BoardRes {
                 .categoryId(board.getCategory().getId())
                 .categoryName(board.getCategory().getName())
                 .imageUrls(imageUrls)
-                .imageIds(board.getBoardImages().stream().map(image -> image.getId()).collect(Collectors.toList()))
+                .imageIds(board.getBoardImages().stream()
+                        .filter(image -> image.getStatus().equals(BaseStatus.ACTIVE))
+                        .map(image -> image.getId()).collect(Collectors.toList()))
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())

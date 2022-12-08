@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,6 +47,7 @@ public class BoardController {
             @ApiImplicitParam(name = "kindOfPerson", dataTypeClass = String.class, example = "활발한 사람이 오면 좋습니다."),
             @ApiImplicitParam(name = "totalMember", dataTypeClass = int.class, example = "5"),
             @ApiImplicitParam(name = "categoryId", dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "images", required = false, dataType = "list", value = "새로 업로드 할 이미지 MultiPartFile 리스트(List(MultiPartFile))"),
     })
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
@@ -78,6 +80,9 @@ public class BoardController {
             @ApiImplicitParam(name = "kindOfPerson", dataTypeClass = String.class, example = "활발한 사람이 오면 좋습니다."),
             @ApiImplicitParam(name = "totalMember", dataTypeClass = int.class, example = "5"),
             @ApiImplicitParam(name = "categoryId", dataTypeClass = Long.class, example = "1"),
+//            @ApiImplicitParam(name = "images", required = false, dataTypeClass = MultipartFile.class, example = "이미지"),
+            @ApiImplicitParam(name = "images", required = false, dataType = "list", value = "새로 업로드 할 이미지 MultiPartFile 리스트(List(MultiPartFile))"),
+            @ApiImplicitParam(name = "deleteImageIds", required = false, dataType = "list", value = "삭제 할 보드 이미지 id 리스트(List(Long))")
     })
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
@@ -86,6 +91,7 @@ public class BoardController {
             @ApiResponse(code= 404, message = "존재하지 않는 Category아이디입니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
             @ApiResponse(code= 404, message = "요청한 유저가 호스트가 아닙니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 BoardImage아이디입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("")
@@ -162,14 +168,14 @@ public class BoardController {
      * 게시글 My Club 조회: 자신이 생성한 보드들 조회
      * @author 토마스
      */
-    @ApiOperation(value = "게시글 My Club 조회: 자신이 생성한 보드들 조회", notes = "그룹 게시글 전체조회 요청.")
+    @ApiOperation(value = "게시글 My Club 조회: 자신이 생성/ 참여한 보드들 조회", notes = "자신이 생성/ 참여한 보드들 조회 요청.")
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/myclub")
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(@RequestBody @Validated GetAllBoardsReq dto){
+    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(@RequestBody @Validated GetMyClubBoardsReq dto){
         return boardService.findMyClubBoards(dto);
     }
 

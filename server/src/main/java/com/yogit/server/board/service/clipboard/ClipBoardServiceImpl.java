@@ -56,8 +56,15 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         // ClipBoard객체 생성
         ClipBoard clipBoard = new ClipBoard(dto, user, board);
         ClipBoard savedClipBoard = clipBoardRepository.save(clipBoard); // 생성 요청
-        ClipBoardRes clipBoardRes = ClipBoardRes.toDto(savedClipBoard);// resDto로 변환
-        return ApplicationResponse.create("클립보드 생성에 성공하였습니다.", clipBoardRes);
+
+        List<CommentRes> comments = commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+                .map(comment -> CommentRes.toDto(comment))
+                .collect(Collectors.toList());
+
+        String profileImgUrl = awsS3Service.makeUrlOfFilename(user.getProfileImg());// 유저 프로필 사진 multipart -> url 로 변환
+
+        ClipBoardRes res = ClipBoardRes.toDto(savedClipBoard, comments, profileImgUrl);// resDto로 변환
+        return ApplicationResponse.create("클립보드 생성에 성공하였습니다.", res);
     }
 
 
@@ -175,13 +182,20 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         }
 
         clipBoard.updateClipBoard(dto); // 업데이트
-        ClipBoardRes clipBoardRes = ClipBoardRes.toDto(clipBoard);
+
+        List<CommentRes> comments = commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
+                .map(comment -> CommentRes.toDto(comment))
+                .collect(Collectors.toList());
+
+        String profileImgUrl = awsS3Service.makeUrlOfFilename(user.getProfileImg());// 유저 프로필 사진 multipart -> url 로 변환
+
+        ClipBoardRes clipBoardRes = ClipBoardRes.toDto(clipBoard, comments, profileImgUrl);
         return ApplicationResponse.ok(clipBoardRes);
     }
 
     @Transactional(readOnly = false)
     @Override
-    public ApplicationResponse<ClipBoardRes> deleteClipBoard(DeleteClipBoardReq dto){
+    public ApplicationResponse<String> deleteClipBoard(DeleteClipBoardReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
@@ -197,7 +211,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         }
 
         clipBoard.deleteClipBoard();// 삭제
-        ClipBoardRes clipBoardRes = ClipBoardRes.toDto(clipBoard);
-        return ApplicationResponse.ok(clipBoardRes);
+//        ClipBoardRes clipBoardRes = ClipBoardRes.toDto(clipBoard);
+        return ApplicationResponse.ok("클립 보드가 삭제되었습니다.");
     }
 }

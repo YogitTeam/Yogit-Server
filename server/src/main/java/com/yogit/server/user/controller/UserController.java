@@ -2,17 +2,23 @@ package com.yogit.server.user.controller;
 
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.dto.request.*;
-import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
-import com.yogit.server.user.dto.response.UserEssentialProfileRes;
-import com.yogit.server.user.dto.response.UserImagesRes;
-import com.yogit.server.user.dto.response.UserProfileRes;
+import com.yogit.server.user.dto.response.*;
 import com.yogit.server.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -115,6 +121,7 @@ public class UserController {
 
     /**
      * 유저 회원가입 (일반)
+     * @author 강신현
      */
     @ApiOperation(value = "유저 회원가입", notes = "sms 인증이 완료되어야 회원가입이 가능합니다.")
     @ApiImplicitParams({
@@ -128,6 +135,7 @@ public class UserController {
 
     /**
      * 유저 사진 삭제
+     * @author 강신현
      */
     @ApiOperation(value = "유저 사진 삭제")
     @ApiImplicitParams({
@@ -140,4 +148,91 @@ public class UserController {
         return userService.deleteUserImage(deleteUserImageReq);
     }
 
+    /**
+     * 국가 리스트 조회
+     * @author 강신현
+     */
+    @ApiOperation(value = "국가 리스트 조회")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "numOfRows", required = true, dataTypeClass = String.class, example = "10"),
+            @ApiImplicitParam(name = "pageNo", required = true, dataTypeClass = String.class, example = "1")
+    })
+    @GetMapping("/nation/list")
+    public ApplicationResponse<List<NationRes>> getNationList(@ModelAttribute GetNationListReq getNationListReq) {
+
+        List<NationRes> nationListResList = null;
+        try {
+
+            URL url = new URL("http://apis.data.go.kr/1262000/CountryFlagService2/getCountryFlagList2?ServiceKey=Os%2B%2Fa%2BWGJPptb5Rf1U850JQo11XO0fCA5cL3YND%2BxoxUm8B38IDZjHKlrpV0gj496%2Br53Rg61EdzI9KDuILDrg%3D%3D&numOfRows=" + getNationListReq.getNumOfRows() + "&pageNo=" + getNationListReq.getPageNo());
+
+            BufferedReader bf;
+
+            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+
+            String result = bf.readLine();
+
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+
+            JSONArray data = (JSONArray) jsonObject.get("data");
+
+            nationListResList = new ArrayList<>();
+
+            for (int i = 0; i < data.size(); i++) {
+                JSONObject nation = (JSONObject) data.get(i);
+
+                String country_iso_alp2 = nation.get("country_iso_alp2").toString();
+                String country_eng_nm = nation.get("country_eng_nm").toString();
+                String download_url = nation.get("download_url").toString();
+
+                NationRes nationRes = NationRes.create(country_iso_alp2, country_eng_nm, download_url);
+                nationListResList.add(nationRes);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ApplicationResponse.ok(nationListResList);
+    }
+
+    /**
+     * 단일 국가 조회
+     */
+    @ApiOperation(value = "단일 국가 조회 (유저 프로필 조회용)")
+    @ApiImplicitParam(name = "country_iso_alp2", required = true, dataTypeClass = String.class, example = "GH")
+    @GetMapping("/nation")
+    public ApplicationResponse<NationRes> getNation(@ModelAttribute GetNationReq getNationReq) {
+
+        NationRes nationRes = null;
+        try {
+
+            URL url = new URL("http://apis.data.go.kr/1262000/CountryFlagService2/getCountryFlagList2?ServiceKey=Os%2B%2Fa%2BWGJPptb5Rf1U850JQo11XO0fCA5cL3YND%2BxoxUm8B38IDZjHKlrpV0gj496%2Br53Rg61EdzI9KDuILDrg%3D%3D" + "&cond[country_iso_alp2::EQ]=" + getNationReq.getCountry_iso_alp2());
+
+            BufferedReader bf;
+
+            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+
+            String result = bf.readLine();
+
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+
+            JSONArray data = (JSONArray) jsonObject.get("data");
+
+
+            JSONObject nation = (JSONObject) data.get(0);
+
+            String country_iso_alp2 = nation.get("country_iso_alp2").toString();
+            String country_eng_nm = nation.get("country_eng_nm").toString();
+            String download_url = nation.get("download_url").toString();
+
+            nationRes = NationRes.create(country_iso_alp2, country_eng_nm, download_url);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ApplicationResponse.ok(nationRes);
+    }
 }

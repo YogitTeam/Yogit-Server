@@ -20,7 +20,11 @@ public class UserProfileRes {
     String name;
     String gender;
     float memberTemp;
+
     String nationality;
+    String country_eng_nm;
+    String download_url;
+
     String profileImg; // 대표 프로필 이미지
     String aboutMe;
     UserStatus userStatus;

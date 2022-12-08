@@ -5,17 +5,20 @@ import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
-import com.yogit.server.user.dto.response.UserAdditionalProfileRes;
-import com.yogit.server.user.dto.response.UserEssentialProfileRes;
-import com.yogit.server.user.dto.response.UserImagesRes;
-import com.yogit.server.user.dto.response.UserProfileRes;
+import com.yogit.server.user.dto.response.*;
 import com.yogit.server.user.entity.*;
 import com.yogit.server.user.exception.*;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
 
 @Service
@@ -100,8 +103,6 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        System.out.println("c5");
-
         List<UserInterest> userInterests = userInterestRepository.findAllByUserId(getUserProfileReq.getUserId());
         if(!userInterests.isEmpty()){
             for(UserInterest ui : userInterests){
@@ -109,11 +110,35 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        System.out.println("c6");
-
         userProfileRes.setProfileImg(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
 
-        System.out.println("c7");
+        try {
+
+            URL url = new URL("http://apis.data.go.kr/1262000/CountryFlagService2/getCountryFlagList2?ServiceKey=Os%2B%2Fa%2BWGJPptb5Rf1U850JQo11XO0fCA5cL3YND%2BxoxUm8B38IDZjHKlrpV0gj496%2Br53Rg61EdzI9KDuILDrg%3D%3D" + "&cond[country_iso_alp2::EQ]=" + user.getNationality());
+
+            BufferedReader bf;
+
+            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+
+            String result = bf.readLine();
+
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+
+            JSONArray data = (JSONArray) jsonObject.get("data");
+
+
+            JSONObject nation = (JSONObject) data.get(0);
+
+            String country_eng_nm = nation.get("country_eng_nm").toString();
+            String download_url = nation.get("download_url").toString();
+
+            userProfileRes.setCountry_eng_nm(country_eng_nm);
+            userProfileRes.setDownload_url(download_url);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return ApplicationResponse.ok(userProfileRes);
     }

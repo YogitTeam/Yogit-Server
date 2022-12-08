@@ -1,5 +1,6 @@
 package com.yogit.server.board.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.config.domain.BaseStatus;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +38,7 @@ public class GetAllBoardRes {
 
     @ApiModelProperty(example = "2022-07-13 16:29:30")
     @ApiParam(value = "사용자 ID")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime date; // 모임 시각
 
     @ApiModelProperty(example = "2")

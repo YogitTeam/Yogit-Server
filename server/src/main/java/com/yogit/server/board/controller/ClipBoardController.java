@@ -104,7 +104,7 @@ public class ClipBoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("/{clipBoardId}/status")
-    public ApplicationResponse<ClipBoardRes> deleteClipBoard(@PathVariable("clipBoardId") Long clipBoardId, @RequestBody @Validated DeleteClipBoardReq deleteClipBoardReq){
+    public ApplicationResponse<String> deleteClipBoard(@PathVariable("clipBoardId") Long clipBoardId, @RequestBody @Validated DeleteClipBoardReq deleteClipBoardReq){
         return clipBoardService.deleteClipBoard(deleteClipBoardReq);
     }
 }

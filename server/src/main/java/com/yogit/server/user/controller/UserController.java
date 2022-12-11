@@ -56,7 +56,7 @@ public class UserController {
             @ApiImplicitParam(name = "refreshTokenUserId", required = true, dataTypeClass = Long.class, example = "21"),
             @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
-    @GetMapping("/profile")
+    @PostMapping("/profile") // iOS에서 GET 요청에 body 값을 넣을 수 없다고 하여 기존 GET 요청을 POST 요청으로 변경
     public ApplicationResponse<UserProfileRes> getProfile(@ModelAttribute GetUserProfileReq getUserProfileReq){
         return userService.getProfile(getUserProfileReq);
     }
@@ -157,7 +157,7 @@ public class UserController {
             @ApiImplicitParam(name = "numOfRows", required = true, dataTypeClass = String.class, example = "10"),
             @ApiImplicitParam(name = "pageNo", required = true, dataTypeClass = String.class, example = "1")
     })
-    @GetMapping("/nation/list")
+    @PostMapping("/nation/list") // iOS에서 GET 요청에 body 값을 넣을 수 없다고 하여 기존 GET 요청을 POST 요청으로 변경
     public ApplicationResponse<List<NationRes>> getNationList(@ModelAttribute GetNationListReq getNationListReq) {
 
         List<NationRes> nationListResList = null;
@@ -201,7 +201,7 @@ public class UserController {
      */
     @ApiOperation(value = "단일 국가 조회 (유저 프로필 조회용)")
     @ApiImplicitParam(name = "country_iso_alp2", required = true, dataTypeClass = String.class, example = "GH")
-    @GetMapping("/nation")
+    @PostMapping("/nation") // iOS에서 GET 요청에 body 값을 넣을 수 없다고 하여 기존 GET 요청을 POST 요청으로 변경
     public ApplicationResponse<NationRes> getNation(@ModelAttribute GetNationReq getNationReq) {
 
         NationRes nationRes = null;

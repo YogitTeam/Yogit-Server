@@ -49,7 +49,7 @@ dependencies {
 	implementation fileTree(dir: 'libs', include: '*.jar')
 
 	// APN(Apple Push Notification)
-//	implementation group: 'com.turo', name: 'pushy', version: '0.13.9'
+	implementation group: 'com.turo', name: 'pushy', version: '0.13.9'
 }
 
 tasks.named('test') {

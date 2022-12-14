@@ -3,6 +3,7 @@ package com.yogit.server.board.controller;
 import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
+import com.yogit.server.board.dto.response.clipboard.GetClipBoardsRes;
 import com.yogit.server.board.service.clipboard.ClipBoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import io.swagger.annotations.ApiOperation;
@@ -69,7 +70,7 @@ public class ClipBoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/all/board/{boardId}/user/{userId}")
-    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq, @PathVariable Long boardId, @PathVariable Long userId){
+    public ApplicationResponse<GetClipBoardsRes> findAllClipBoards(@RequestBody @Validated GetAllClipBoardsReq getAllClipBoardsReq, @PathVariable Long boardId, @PathVariable Long userId){
         return clipBoardService.findAllClipBoards(getAllClipBoardsReq);
     }
 

@@ -4,6 +4,7 @@ import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
+import com.yogit.server.board.dto.response.clipboard.GetClipBoardsRes;
 import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.ClipBoard;
@@ -20,6 +21,7 @@ import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -127,11 +129,12 @@ public class ClipBoardServiceImpl implements ClipBoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
+    public ApplicationResponse<GetClipBoardsRes> findAllClipBoards(GetAllClipBoardsReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         int cursor = dto.getCursor();
+        int totalPage=0;
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
@@ -159,7 +162,11 @@ public class ClipBoardServiceImpl implements ClipBoardService{
                         awsS3Service.makeUrlOfFilename(clipBoard.getUser().getProfileImg())))
                 .collect(Collectors.toList());
 
-        return ApplicationResponse.ok(getClipBoardResList);
+        // totalPage 구하기
+        Page<ClipBoard> getClipBoardReses = clipBoardRepository.findClipBoardsByBoardIdWithTotalPage(pageRequest, dto.getBoardId());
+        totalPage = getClipBoardReses.getTotalPages();
+
+        return ApplicationResponse.ok(GetClipBoardsRes.toDto(getClipBoardResList, totalPage));
     }
 
 

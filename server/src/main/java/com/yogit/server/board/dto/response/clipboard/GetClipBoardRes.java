@@ -20,8 +20,7 @@ public class GetClipBoardRes {
     @ApiParam(value = "ClipBoard ID")
     private Long clipBoardId;
 
-    @ApiModelProperty(example = "1")
-    @ApiParam(value = "유저 ID")
+    @ApiModelProperty(example = "1", value = "유저 ID")
     private Long userId;
 
     @ApiModelProperty(example = "Park jun")

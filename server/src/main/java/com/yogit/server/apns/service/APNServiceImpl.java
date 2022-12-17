@@ -76,7 +76,9 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createBoardUserJoinAPN(CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle(dto.getJoinUserName()+"님이 "+dto.getBoardName()+"을 신청하였습니다.");
+        payloadBuilder.setAlertTitle("모임 참여 알림");
+        payloadBuilder.setAlertBody(dto.getJoinUserName()+"님이 "+dto.getBoardName()+"을 신청하였습니다.");
+        payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
 
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());

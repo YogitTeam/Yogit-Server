@@ -198,6 +198,7 @@ public class UserController {
 
     /**
      * 단일 국가 조회
+     * @author 강신현
      */
     @ApiOperation(value = "단일 국가 조회 (유저 프로필 조회용)")
     @ApiImplicitParam(name = "country_iso_alp2", required = true, dataTypeClass = String.class, example = "GH")
@@ -234,5 +235,20 @@ public class UserController {
         }
 
         return ApplicationResponse.ok(nationRes);
+    }
+
+    /**
+     * 디바이스 토큰 저장
+     * @author 강신현
+     */
+    @ApiOperation(value = "디바이스 토큰 저장")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA"),
+            @ApiImplicitParam(name = "deviceToken", required = true, dataTypeClass = String.class, example = "73681e32ac3f49484fca766b8e16730a6dd6534218731619c5a1f491bedaf8df")
+    })
+    @PostMapping("/device-token")
+    public ApplicationResponse<UserDeviceTokenRes> addDeviceToken(@ModelAttribute AddUserDeviceTokenReq addUserDeviceTokenReq){
+        return userService.addDeviceToken(addUserDeviceTokenReq);
     }
 }

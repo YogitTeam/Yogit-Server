@@ -167,4 +167,8 @@ public class User extends BaseEntity {
     public void changeReportedCnt(){
         this.reportedCnt+=1;
     }
+
+    public void addDeviceToken(String deviceToken){
+        this.deviceToken = deviceToken;
+    }
 }

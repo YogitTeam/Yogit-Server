@@ -301,4 +301,18 @@ public class UserServiceImpl implements UserService {
 
         return ApplicationResponse.ok(userImagesRes);
     }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<UserDeviceTokenRes> addDeviceToken(AddUserDeviceTokenReq addUserDeviceTokenReq){
+
+        validateRefreshToken(addUserDeviceTokenReq.getUserId(), addUserDeviceTokenReq.getRefreshToken());
+
+        User user = userRepository.findByUserId(addUserDeviceTokenReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        user.addDeviceToken(addUserDeviceTokenReq.getDeviceToken());
+
+        UserDeviceTokenRes userDeviceTokenRes = new UserDeviceTokenRes(user.getId(), user.getDeviceToken());
+        
+        return ApplicationResponse.ok(userDeviceTokenRes);
+    }
 }

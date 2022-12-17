@@ -80,7 +80,7 @@ public class BoardUserServiceImpl implements BoardUserService{
         // 호스트에게 참여 APN 푸쉬 알림
 
         try {
-            apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName()));
+            apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

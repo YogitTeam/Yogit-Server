@@ -19,10 +19,10 @@ public class CreateBoardUserJoinAPNReq {
     private String boardName;
 
     @Builder
-    public CreateBoardUserJoinAPNReq(String destinationDeviceToken, String joinUserName) {
+    public CreateBoardUserJoinAPNReq(String destinationDeviceToken, String joinUserName, Long boardId, String boardName) {
         this.destinationDeviceToken = destinationDeviceToken;
         this.joinUserName = joinUserName;
-//        this.boardId = boardId;
-//        this.boardName = boardName;
+        this.boardId = boardId;
+        this.boardName = boardName;
     }
 }

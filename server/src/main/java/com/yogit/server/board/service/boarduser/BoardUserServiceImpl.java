@@ -1,5 +1,7 @@
 package com.yogit.server.board.service.boarduser;
 
+import com.yogit.server.apns.dto.req.CreateBoardUserJoinAPNReq;
+import com.yogit.server.apns.service.APNService;
 import com.yogit.server.board.dto.request.boarduser.CreateBoardUserReq;
 import com.yogit.server.board.dto.response.boarduser.BoardUserRes;
 import com.yogit.server.board.entity.Board;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +37,7 @@ public class BoardUserServiceImpl implements BoardUserService{
     private final BoardRepository boardRepository;
     private final UserService userService;
     private final AwsS3Service awsS3Service;
+    private final APNService apnService;
 
     @Transactional(readOnly = false)
     @Override
@@ -72,6 +76,16 @@ public class BoardUserServiceImpl implements BoardUserService{
                 .filter(bu -> !bu.getUser().equals(board.getHost()))
                 .map(bu -> bu.getUser().getProfileImg())
                 .collect(Collectors.toList());
+
+        // 호스트에게 참여 APN 푸쉬 알림
+
+        try {
+            apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName()));
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         BoardUserRes res = BoardUserRes.toDto(boardUser,user, board, participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
         return ApplicationResponse.create("보드에 유저가 조인되었습니다.", res);

@@ -91,6 +91,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "blockedUser")
     private List<Block> blockedUsers = new ArrayList<>();
 
+    private String deviceToken;
+
     @Builder
     public User (String loginId, String phoneNum){
         this.loginId = loginId;

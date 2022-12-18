@@ -54,7 +54,7 @@ public class APNController {
 //            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
 //    })
 //    @PostMapping("/boarduser-join")
-//    public ApplicationResponse<String> createBoardUserJoinAPN(@RequestBody @Validated CreateBoardUserJoinAPNReq dto){
-//
+//    public ApplicationResponse<String> createBoardUserJoinAPN(@RequestBody @Validated CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
+//        return apnService.createBoardUserJoinAPN(dto);
 //    }
 }

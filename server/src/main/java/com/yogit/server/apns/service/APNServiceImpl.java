@@ -7,6 +7,7 @@ import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import com.turo.pushy.apns.util.TokenUtil;
 import com.turo.pushy.apns.util.concurrent.PushNotificationFuture;
 import com.yogit.server.apns.dto.req.CreateBoardUserJoinAPNReq;
+import com.yogit.server.apns.entity.PushType;
 import com.yogit.server.global.dto.ApplicationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -79,6 +80,7 @@ public class APNServiceImpl implements APNService{
         payloadBuilder.setAlertTitle("모임 참여 알림");
         payloadBuilder.setAlertBody(dto.getJoinUserName()+"님이 "+dto.getBoardName()+"을 신청하였습니다.");
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
+        payloadBuilder.addCustomProperty("pushType", PushType.JOINAPPLY.toString());
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
 
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());

@@ -7,10 +7,8 @@ import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.dto.response.GetBoardRes;
-import com.yogit.server.board.entity.Board;
-import com.yogit.server.board.entity.BoardImage;
-import com.yogit.server.board.entity.BoardUser;
-import com.yogit.server.board.entity.Category;
+import com.yogit.server.board.entity.*;
+import com.yogit.server.board.exception.InvalidMyClubTypeException;
 import com.yogit.server.board.exception.NotFoundBoardException;
 import com.yogit.server.board.exception.NotHostOfBoardExcepion;
 import com.yogit.server.board.exception.boardCategory.NotFoundCategoryException;
@@ -248,7 +246,7 @@ public class BoardServiceImpl implements BoardService{
         1.생성한 보드: Opened Club
         2.참여한 보드 : Applied Club
          */
-        if(dto.getMyClubType().equals("Opened Club")){
+        if(dto.getMyClubType().equals(MyClubType.OPENED_CLUB.toString())){
             boards = boardRepository.findMyClubBoardsByUserId(pageRequest, dto.getUserId());
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
@@ -256,7 +254,7 @@ public class BoardServiceImpl implements BoardService{
                     .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                     .collect(Collectors.toList());
         }
-        else if(dto.getMyClubType().equals("Applied Club")){
+        else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())){
             boardUsers = boardUserRepository.findByUserId(dto.getUserId());
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
@@ -265,6 +263,8 @@ public class BoardServiceImpl implements BoardService{
                     .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                     .collect(Collectors.toList());
         }
+        else{ throw new InvalidMyClubTypeException();}
+
         return ApplicationResponse.ok(res);
     }
 

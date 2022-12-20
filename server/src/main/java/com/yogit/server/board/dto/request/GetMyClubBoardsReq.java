@@ -17,8 +17,8 @@ public class GetMyClubBoardsReq {
     @ApiParam(value = "페이징 조회 페이지", required = true)
     private int cursor;
 
-    @ApiModelProperty(example = "Applied Club")
-    @ApiParam(value = "My Club의 속성(Opened Club, Applied Club)", required = true)
+    @ApiModelProperty(example = "APPLIED_CLUB",value = "My Club의 속성(Opened Club, Applied Club)")
+    @ApiParam(required = true)
     private String myClubType;
 
     @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")

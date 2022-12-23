@@ -1,5 +1,8 @@
 package com.yogit.server.board.service.clipboard;
 
+import com.yogit.server.apns.dto.req.CreateBoardUserJoinAPNReq;
+import com.yogit.server.apns.dto.req.CreateClipBoardAPNReq;
+import com.yogit.server.apns.service.APNService;
 import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.clipboard.*;
 import com.yogit.server.board.dto.response.clipboard.ClipBoardRes;
@@ -7,6 +10,7 @@ import com.yogit.server.board.dto.response.clipboard.GetClipBoardRes;
 import com.yogit.server.board.dto.response.clipboard.GetClipBoardsRes;
 import com.yogit.server.board.dto.response.comment.CommentRes;
 import com.yogit.server.board.entity.Board;
+import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.exception.NotFoundBoardException;
 import com.yogit.server.board.exception.clipboard.NotFoundClipBoardException;
@@ -14,6 +18,7 @@ import com.yogit.server.board.exception.clipboard.NotUserOfClipBoardException;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.board.repository.CommentRepository;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
@@ -28,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +48,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     private final AwsS3Service awsS3Service;
     private final BlockRepository blockRepository;
     private final UserService userService;
+    private final APNService apnService;
 
     @Transactional(readOnly = false)
     @Override
@@ -64,6 +71,22 @@ public class ClipBoardServiceImpl implements ClipBoardService{
                 .collect(Collectors.toList());
 
         String profileImgUrl = awsS3Service.makeUrlOfFilename(user.getProfileImg());// 유저 프로필 사진 multipart -> url 로 변환
+
+        //Board멤버들에게 ClipBOard 푸쉬 알림
+        List<BoardUser> boardUsers = board.getBoardUsers().stream()
+                .filter(boardUser -> boardUser.getUser().getStatus().equals(BaseStatus.ACTIVE))
+                .collect(Collectors.toList());
+        if(boardUsers!=null){
+            for(BoardUser bu: boardUsers){
+                try {
+                    apnService.createClipBoardAPN(new CreateClipBoardAPNReq(bu.getUser().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         ClipBoardRes res = ClipBoardRes.toDto(savedClipBoard, comments, profileImgUrl);// resDto로 변환
         return ApplicationResponse.create("클립보드 생성에 성공하였습니다.", res);

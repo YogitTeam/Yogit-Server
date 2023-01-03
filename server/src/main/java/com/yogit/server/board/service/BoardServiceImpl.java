@@ -250,18 +250,23 @@ public class BoardServiceImpl implements BoardService{
             boards = boardRepository.findMyClubBoardsByUserId(pageRequest, dto.getUserId());
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            res = boards.stream()
-                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
-                    .collect(Collectors.toList());
+            if(boards != null){
+                res = boards.stream()
+                        .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                        .collect(Collectors.toList());
+            }
         }
         else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())){
             boardUsers = boardUserRepository.findByUserId(dto.getUserId());
+//            System.out.println("보드 유저는?: "+ boardUsers);
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            res = boardUsers.stream()
-                    .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
-                    .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
-                    .collect(Collectors.toList());
+            if(boardUsers!= null && !boardUsers.isEmpty()){
+                res = boardUsers.stream()
+                        .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
+                        .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                        .collect(Collectors.toList());
+            }
         }
         else{ throw new InvalidMyClubTypeException();}
 

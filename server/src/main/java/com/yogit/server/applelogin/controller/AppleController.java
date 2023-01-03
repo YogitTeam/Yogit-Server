@@ -1,5 +1,6 @@
 package com.yogit.server.applelogin.controller;
 
+import com.yogit.server.applelogin.model.AppleLoginReq;
 import com.yogit.server.applelogin.model.AppsResponse;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
@@ -37,6 +38,23 @@ public class AppleController {
             return null;
         }
         TokenResponse tokenResponse = appleService.requestCodeValidations(servicesResponse, null);
+        return ApplicationResponse.create("애플 회원가입에 성공했습니다.",tokenResponse);
+    }
+
+    /**
+     * Apple 로그인
+     *
+     * @return
+     */
+    @PostMapping(value = "/sign-in/apple")
+    @ResponseBody
+    public ApplicationResponse<TokenResponse> signInApple(@RequestBody AppleLoginReq appleLoginReq) throws NoSuchAlgorithmException {
+
+        if (appleLoginReq == null) { // TODO 예외처리
+            System.out.println("요청 값이 없습니다.");
+            return null;
+        }
+        TokenResponse tokenResponse = appleService.requestCodeValidations(appleLoginReq.getServicesResponse(), appleLoginReq.getRefreshToken());
         return ApplicationResponse.create("애플 로그인에 성공했습니다.",tokenResponse);
     }
 

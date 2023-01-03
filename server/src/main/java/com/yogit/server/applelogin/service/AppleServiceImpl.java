@@ -1,7 +1,5 @@
 package com.yogit.server.applelogin.service;
 
-import com.yogit.server.applelogin.exception.InvalidRefreshTokenException;
-import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
 import com.yogit.server.applelogin.model.Account;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
@@ -16,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -80,6 +79,7 @@ public class AppleServiceImpl implements AppleService {
 
         tokenResponse.setAccount(new Account(serviceResponse.getState(), code, serviceResponse.getId_token(), user, serviceResponse.getIdentifier(), serviceResponse.getHasRequirementInfo()));
         tokenResponse.setUserType(UserType.APPLE.toString());
+
         // userId 설정
         if(refresh_token == null){
             tokenResponse.setUserId(saveduser.getId());
@@ -88,6 +88,7 @@ public class AppleServiceImpl implements AppleService {
             User findUser = userRepository.findByAppleRefreshToken(refresh_token)
                     .orElseThrow(() -> new NotFoundUserException());
             tokenResponse.setUserId(findUser.getId());
+            tokenResponse.setUserName(findUser.getName());
         }
 
 

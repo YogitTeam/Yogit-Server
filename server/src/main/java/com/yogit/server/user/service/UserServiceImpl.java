@@ -318,12 +318,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void logout(LogoutReq logoutReq){
+    public ApplicationResponse<LogoutRes> logout(LogoutReq logoutReq){
 
         validateRefreshToken(logoutReq.getUserId(), logoutReq.getRefreshToken());
 
         User user = userRepository.findByUserId(logoutReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserStatus(UserStatus.LOGOUT);
+
+        LogoutRes logoutRes = new LogoutRes(UserStatus.LOGOUT.toString());
+
+        return ApplicationResponse.ok(logoutRes);
     }
 
 }

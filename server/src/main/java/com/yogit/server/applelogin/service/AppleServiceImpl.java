@@ -1,6 +1,7 @@
 package com.yogit.server.applelogin.service;
 
 import com.yogit.server.applelogin.model.Account;
+import com.yogit.server.applelogin.model.DeleteUserReq;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.util.AppleUtils;
@@ -13,10 +14,19 @@ import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -27,6 +37,9 @@ public class AppleServiceImpl implements AppleService {
     private final AppleUtils appleUtils;
     private final UserService userService;
     private final UserRepository userRepository;
+
+    @Value("${APPLE.AUD}")
+    String client_id;
 
     /**
      * 유효한 id_token인 경우 client_secret 생성
@@ -132,4 +145,21 @@ public class AppleServiceImpl implements AppleService {
 //
 //        return null;
 //    }
+
+    public void deleteUser(DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException {
+        RestTemplate restTemplate = new RestTemplateBuilder().build();
+        String revokeUrl = "https://appleid.apple.com/auth/revoke";
+
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", client_id);
+        params.add("client_secret", getAppleClientSecret(deleteUserReq.getIdentityToken()));
+        params.add("token", deleteUserReq.getRefreshToken());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
+
+        restTemplate.postForEntity(revokeUrl, httpEntity, String.class);
+    }
 }

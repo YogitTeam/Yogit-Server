@@ -1,5 +1,6 @@
 package com.yogit.server.applelogin.service;
 
+import com.yogit.server.applelogin.model.DeleteUserReq;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 
@@ -15,6 +16,8 @@ public interface AppleService {
     Map<String, String> getLoginMetaInfo();
 
     String getPayload(String id_token);
+
+    void deleteUser(DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException;
 
 //    Void validateRefreshToken(Long userId, String refreshToken);
 }

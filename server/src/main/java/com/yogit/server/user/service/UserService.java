@@ -28,5 +28,5 @@ public interface UserService {
 
     ApplicationResponse<UserDeviceTokenRes> addDeviceToken(AddUserDeviceTokenReq addUserDeviceTokenReq);
 
-    void logout(LogoutReq logoutReq);
+    ApplicationResponse<LogoutRes> logout(LogoutReq logoutReq);
 }

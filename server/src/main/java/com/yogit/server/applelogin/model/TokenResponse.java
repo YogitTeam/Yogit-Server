@@ -21,4 +21,5 @@ public class TokenResponse {
     private String userType; // ex)apple
     private Account account;
     private Long userId;
+    private String userName;
 }

@@ -251,4 +251,23 @@ public class UserController {
     public ApplicationResponse<UserDeviceTokenRes> addDeviceToken(@ModelAttribute AddUserDeviceTokenReq addUserDeviceTokenReq){
         return userService.addDeviceToken(addUserDeviceTokenReq);
     }
+
+    /**
+     * 로그아웃
+     *
+     * @return
+     */
+    @ApiOperation(value = "로그아웃")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    })
+    @PostMapping(value = "/log-out")
+    @ResponseBody
+    public ApplicationResponse<String> logInApple(@ModelAttribute LogoutReq logoutReq) {
+
+        userService.logout(logoutReq);
+
+        return ApplicationResponse.ok("로그아웃에 성공했습니다.");
+    }
 }

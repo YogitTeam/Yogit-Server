@@ -46,9 +46,9 @@ public class AppleController {
      *
      * @return
      */
-    @PostMapping(value = "/sign-in/apple")
+    @PostMapping(value = "/log-in/apple")
     @ResponseBody
-    public ApplicationResponse<TokenResponse> signInApple(@RequestBody AppleLoginReq appleLoginReq) throws NoSuchAlgorithmException {
+    public ApplicationResponse<TokenResponse> logInApple(@RequestBody AppleLoginReq appleLoginReq) throws NoSuchAlgorithmException {
 
         if (appleLoginReq == null) { // TODO 예외처리
             System.out.println("요청 값이 없습니다.");

@@ -27,4 +27,6 @@ public interface UserService {
     ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq);
 
     ApplicationResponse<UserDeviceTokenRes> addDeviceToken(AddUserDeviceTokenReq addUserDeviceTokenReq);
+
+    void logout(LogoutReq logoutReq);
 }

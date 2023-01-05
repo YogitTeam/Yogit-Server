@@ -171,4 +171,8 @@ public class User extends BaseEntity {
     public void addDeviceToken(String deviceToken){
         this.deviceToken = deviceToken;
     }
+
+    public void changeUserStatus(UserStatus userStatus){
+        this.userStatus = userStatus;
+    }
 }

@@ -6,6 +6,7 @@ import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.util.AppleUtils;
 import com.yogit.server.user.dto.request.CreateUserAppleReq;
 import com.yogit.server.user.entity.User;
+import com.yogit.server.user.entity.UserStatus;
 import com.yogit.server.user.entity.UserType;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
@@ -83,12 +84,14 @@ public class AppleServiceImpl implements AppleService {
         // userId 설정
         if(refresh_token == null){
             tokenResponse.setUserId(saveduser.getId());
+            saveduser.changeUserStatus(UserStatus.LOGIN);
         }
         else{
             User findUser = userRepository.findByAppleRefreshToken(refresh_token)
                     .orElseThrow(() -> new NotFoundUserException());
             tokenResponse.setUserId(findUser.getId());
             tokenResponse.setUserName(findUser.getName());
+            findUser.changeUserStatus(UserStatus.LOGIN);
         }
 
 

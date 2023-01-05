@@ -3,6 +3,7 @@ package com.yogit.server.applelogin.controller;
 import com.yogit.server.applelogin.model.*;
 import com.yogit.server.applelogin.service.AppleService;
 import com.yogit.server.global.dto.ApplicationResponse;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class AppleController {
      * privateKey 로 사용자 개인 정보와 refreshToken 발급받기
      * @return
      */
+    @ApiOperation(value = "회원가입")
     @PostMapping(value = "/sign-up/apple")
     @ResponseBody
     public ApplicationResponse<TokenResponse> signUpApple(@RequestBody ServicesResponse servicesResponse) throws NoSuchAlgorithmException {
@@ -43,6 +45,7 @@ public class AppleController {
      *
      * @return
      */
+    @ApiOperation(value = "로그인")
     @PostMapping(value = "/log-in/apple")
     @ResponseBody
     public ApplicationResponse<TokenResponse> logInApple(@RequestBody AppleLoginReq appleLoginReq) throws NoSuchAlgorithmException {
@@ -60,6 +63,7 @@ public class AppleController {
      *
      * @return
      */
+    @ApiOperation(value = "회원탈퇴")
     @PostMapping(value = "/delete/apple")
     @ResponseBody
     public ApplicationResponse<String> logInApple(@RequestBody DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException {

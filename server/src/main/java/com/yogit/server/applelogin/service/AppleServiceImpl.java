@@ -152,7 +152,7 @@ public class AppleServiceImpl implements AppleService {
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("client_id", client_id);
-        params.add("client_secret", getAppleClientSecret(deleteUserReq.getIdentityToken()));
+        params.add("client_secret", appleUtils.createClientSecret());
         params.add("token", deleteUserReq.getRefreshToken());
 
         HttpHeaders headers = new HttpHeaders();

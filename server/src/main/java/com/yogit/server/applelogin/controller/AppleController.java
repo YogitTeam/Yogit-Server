@@ -1,9 +1,6 @@
 package com.yogit.server.applelogin.controller;
 
-import com.yogit.server.applelogin.model.AppleLoginReq;
-import com.yogit.server.applelogin.model.AppsResponse;
-import com.yogit.server.applelogin.model.ServicesResponse;
-import com.yogit.server.applelogin.model.TokenResponse;
+import com.yogit.server.applelogin.model.*;
 import com.yogit.server.applelogin.service.AppleService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import org.slf4j.Logger;
@@ -56,6 +53,20 @@ public class AppleController {
         }
         TokenResponse tokenResponse = appleService.requestCodeValidations(appleLoginReq.getServicesResponse(), appleLoginReq.getRefreshToken());
         return ApplicationResponse.create("애플 로그인에 성공했습니다.",tokenResponse);
+    }
+
+    /**
+     * Apple 계정 탈퇴
+     *
+     * @return
+     */
+    @PostMapping(value = "/delete/apple")
+    @ResponseBody
+    public ApplicationResponse<String> logInApple(@RequestBody DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException {
+
+        appleService.deleteUser(deleteUserReq);
+
+        return ApplicationResponse.ok("애플 탈퇴를 성공했습니다.");
     }
 
     /**

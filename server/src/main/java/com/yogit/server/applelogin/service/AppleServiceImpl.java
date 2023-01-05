@@ -91,7 +91,7 @@ public class AppleServiceImpl implements AppleService {
             tokenResponse = appleUtils.validateAnExistingRefreshToken(client_secret, refresh_token);
         }
 
-        tokenResponse.setAccount(new Account(serviceResponse.getState(), code, serviceResponse.getId_token(), user, serviceResponse.getIdentifier(), serviceResponse.getHasRequirementInfo()));
+        tokenResponse.setAccount(new Account(serviceResponse.getState(), code, user, serviceResponse.getIdentifier(), serviceResponse.getHasRequirementInfo()));
         tokenResponse.setUserType(UserType.APPLE.toString());
 
         // userId 설정

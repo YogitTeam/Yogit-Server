@@ -161,5 +161,7 @@ public class AppleServiceImpl implements AppleService {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
 
         restTemplate.postForEntity(revokeUrl, httpEntity, String.class);
+
+        // TODO 유저 정보 삭제 (개인정보 삭제 및 status -> DELETE 로 변경)
     }
 }

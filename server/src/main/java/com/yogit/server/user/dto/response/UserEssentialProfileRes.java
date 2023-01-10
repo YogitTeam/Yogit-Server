@@ -22,6 +22,9 @@ public class UserEssentialProfileRes {
     List<String> languageNames = new ArrayList<>();
     List<String> languageLevels = new ArrayList<>();
 
+    String profileImageUrl;
+    List<String> imageUrls = new ArrayList<>();
+
     public static UserEssentialProfileRes create(Long userId, String userName, Integer userAge, String gender, String nationality){
         UserEssentialProfileRes userEssentialProfileRes = new UserEssentialProfileRes();
 
@@ -37,5 +40,9 @@ public class UserEssentialProfileRes {
     public void addLanguage(String languageName, String languageLevel){
         this.languageNames.add(languageName);
         this.languageLevels.add(languageLevel);
+    }
+
+    public void addImage(String url){
+        this.imageUrls.add(url);
     }
 }

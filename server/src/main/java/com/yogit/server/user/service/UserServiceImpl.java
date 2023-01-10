@@ -2,6 +2,7 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.applelogin.exception.InvalidRefreshTokenException;
 import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
@@ -15,6 +16,7 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
         UserEssentialProfileRes userEssentialProfileRes = UserEssentialProfileRes.create(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
 
-        if(!createUserEssentialProfileReq.getLanguageNames().isEmpty()) {
+        if(createUserEssentialProfileReq.getLanguageNames() != null) {
             // 기존 languages 삭제
             languageRepository.deleteAllByUserId(createUserEssentialProfileReq.getUserId());
             // 새로운 languages 추가
@@ -83,7 +85,57 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        // 프로필 이미지 삭제
+        deleteUserImage(createUserEssentialProfileReq.getDeleteUserImageIds());
+
+        // 대표 프로필 이미지 맟 이외 프로필 이미지들 등록
+        enterUserImage(user, createUserEssentialProfileReq.getUploadProfileImage(), createUserEssentialProfileReq.getUploadImages());
+
+        userEssentialProfileRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+        List<UserImage> userImageList = userImageRepository.findAllByUserId(user.getId());
+        for (UserImage userImage : userImageList){
+            if(userImage.getStatus().equals(BaseStatus.INACTIVE)) continue;
+            userEssentialProfileRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
+        }
+
         return ApplicationResponse.ok(userEssentialProfileRes);
+    }
+
+    @Override
+    @Transactional
+    public Void enterUserImage(User user, MultipartFile uploadProfileImage, List<MultipartFile> uploadImages){
+
+        if(uploadProfileImage.isEmpty()) throw new NotFoundUserProfileImg();
+
+        // 메인 프로필 사진 업로드
+        String mainImageUUid = awsS3Service.uploadImage(uploadProfileImage);
+        user.changeMainImgUUid(mainImageUUid);
+
+        // 나머지 사진 업로드
+        if(uploadImages != null){
+            List<String> imageUUids = awsS3Service.uploadImages(uploadImages);
+            for(String i : imageUUids){
+                UserImage userImage = UserImage.builder()
+                                            .user(user)
+                                            .imgUUid(i)
+                                            .build();
+                userImageRepository.save(userImage);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public Void deleteUserImage(List<Long> deleteUserImageIds){
+
+        for (Long deleteUserImageId : deleteUserImageIds){
+            UserImage userImage = userImageRepository.findById(deleteUserImageId).orElseThrow(() ->new NotFoundUserImageException());
+            userImage.deleteUserImage(); // BASE_STATUS : INACTIVE로 변경
+        }
+
+        return null;
     }
 
 
@@ -96,6 +148,7 @@ public class UserServiceImpl implements UserService {
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
+        // 언어
         List<Language> languages = languageRepository.findAllByUserId(getUserProfileReq.getUserId());
         if(!languages.isEmpty()){
             for(Language l : languages){
@@ -103,6 +156,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        // 관심사
         List<UserInterest> userInterests = userInterestRepository.findAllByUserId(getUserProfileReq.getUserId());
         if(!userInterests.isEmpty()){
             for(UserInterest ui : userInterests){
@@ -110,7 +164,13 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        // 프로필 사진
         userProfileRes.setProfileImg(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+        List<UserImage> userImageList = userImageRepository.findAllByUserId(user.getId());
+        for (UserImage userImage : userImageList){
+            if(userImage.getStatus().equals(BaseStatus.INACTIVE)) continue;
+            userProfileRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
+        }
 
         try {
 
@@ -155,35 +215,6 @@ public class UserServiceImpl implements UserService {
         userImageRepository.deleteAllByUserId(user.getId());
 
         return ApplicationResponse.ok();
-    }
-
-    @Override
-    @Transactional
-    public ApplicationResponse<UserImagesRes> enterUserImage(CreateUserImageReq createUserImageReq){
-
-        validateRefreshToken(createUserImageReq.getUserId(), createUserImageReq.getRefreshToken());
-
-        User user = userRepository.findByUserId(createUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
-        UserImagesRes userImagesRes = new UserImagesRes();
-
-        if(createUserImageReq.getProfileImage().isEmpty()) throw new NotFoundUserProfileImg();
-
-        // 메인 프로필 사진 업로드
-        String mainImageUUid = awsS3Service.uploadImage(createUserImageReq.getProfileImage());
-        user.changeMainImgUUid(mainImageUUid);
-        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(mainImageUUid));
-
-        // 나머지 사진 업로드
-        if(createUserImageReq.getImages() != null){
-            List<String> imageUUids = awsS3Service.uploadImages(createUserImageReq.getImages());
-            for(String i : imageUUids){
-                UserImage userImage = createUserImageReq.toEntityUserImage(user, i);
-                userImageRepository.save(userImage);
-                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
-            }
-        }
-
-        return ApplicationResponse.ok(userImagesRes);
     }
 
     @Override
@@ -273,33 +304,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.save(CreateUserAppleReq.toEntityUserApple(createUserAppleReq));
 
         return user;
-    }
-
-    @Override
-    @Transactional
-    public ApplicationResponse<UserImagesRes> deleteUserImage(DeleteUserImageReq deleteUserImageReq){
-
-        validateRefreshToken(deleteUserImageReq.getUserId(), deleteUserImageReq.getRefreshToken());
-
-        User user = userRepository.findByUserId(deleteUserImageReq.getUserId())
-                .orElseThrow(() -> new NotFoundUserException());
-
-        UserImage userImage = userImageRepository.findById(deleteUserImageReq.getUserImageId()).orElseThrow(() ->new NotFoundUserImageException());
-        //userImage.deleteUserImage(); // 삭제 -> BASE_STATUS : INACTIVE로 변경
-        userImageRepository.delete(userImage);
-
-        UserImagesRes userImagesRes = new UserImagesRes();
-        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
-
-        List<UserImage> userImages = userImageRepository.findAllByUserId(user.getId());
-        if (!userImages.isEmpty()){
-            for(UserImage i : userImages){
-                if(i.equals(userImage))continue;
-                userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()), i.getId());
-            }
-        }
-
-        return ApplicationResponse.ok(userImagesRes);
     }
 
     @Override

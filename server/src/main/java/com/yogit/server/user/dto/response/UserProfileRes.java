@@ -26,6 +26,8 @@ public class UserProfileRes {
     String download_url;
 
     String profileImg; // 대표 프로필 이미지
+    List<String> imageUrls = new ArrayList<>();
+
     String aboutMe;
     UserStatus userStatus;
     String phone;
@@ -74,5 +76,9 @@ public class UserProfileRes {
 
     public void addInterest(String interest){
         this.interests.add(interest);
+    }
+
+    public void addImage(String url){
+        this.imageUrls.add(url);
     }
 }

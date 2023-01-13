@@ -356,16 +356,14 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new NotFoundBoardException());
 
         List<User> participants = board.getBoardUsers().stream()
-                .filter(boardUser -> !boardUser.getUser().equals(board.getHost()))
                 .map(boardUser -> boardUser.getUser())
                 .collect(Collectors.toList());
 
         List<String> participantsImageUUIds = board.getBoardUsers().stream()
-                .filter(boardUser -> !boardUser.getUser().equals(board.getHost()))
                 .map(boardUser -> boardUser.getUser().getProfileImg())
                 .collect(Collectors.toList());
 
-        GetBoardRes res = GetBoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
+        GetBoardRes res = GetBoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds), user);
         return ApplicationResponse.ok(res);
     }
 

@@ -15,10 +15,6 @@ public class UserImagesRes {
     List<String> imageUrls = new ArrayList<>();
     List<Long> userImageIds = new ArrayList<>();
 
-    public void addImage(String url){
-        this.imageUrls.add(url);
-    }
-
     public void addImage(String url, Long userImageId){
         this.imageUrls.add(url);
         this.userImageIds.add(userImageId);

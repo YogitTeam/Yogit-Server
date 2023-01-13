@@ -85,59 +85,8 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        // 프로필 이미지 삭제
-        deleteUserImage(createUserEssentialProfileReq.getDeleteUserImageIds());
-
-        // 대표 프로필 이미지 맟 이외 프로필 이미지들 등록
-        enterUserImage(user, createUserEssentialProfileReq.getUploadProfileImage(), createUserEssentialProfileReq.getUploadImages());
-
-        userEssentialProfileRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
-        List<UserImage> userImageList = userImageRepository.findAllByUserId(user.getId());
-        for (UserImage userImage : userImageList){
-            if(userImage.getStatus().equals(BaseStatus.INACTIVE)) continue;
-            userEssentialProfileRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
-        }
-
         return ApplicationResponse.ok(userEssentialProfileRes);
     }
-
-    @Override
-    @Transactional
-    public Void enterUserImage(User user, MultipartFile uploadProfileImage, List<MultipartFile> uploadImages){
-
-        if(uploadProfileImage.isEmpty()) throw new NotFoundUserProfileImg();
-
-        // 메인 프로필 사진 업로드
-        String mainImageUUid = awsS3Service.uploadImage(uploadProfileImage);
-        user.changeMainImgUUid(mainImageUUid);
-
-        // 나머지 사진 업로드
-        if(uploadImages != null){
-            List<String> imageUUids = awsS3Service.uploadImages(uploadImages);
-            for(String i : imageUUids){
-                UserImage userImage = UserImage.builder()
-                                            .user(user)
-                                            .imgUUid(i)
-                                            .build();
-                userImageRepository.save(userImage);
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public Void deleteUserImage(List<Long> deleteUserImageIds){
-
-        for (Long deleteUserImageId : deleteUserImageIds){
-            UserImage userImage = userImageRepository.findById(deleteUserImageId).orElseThrow(() ->new NotFoundUserImageException());
-            userImage.deleteUserImage(); // BASE_STATUS : INACTIVE로 변경
-        }
-
-        return null;
-    }
-
 
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
@@ -230,11 +179,74 @@ public class UserServiceImpl implements UserService {
         List<UserImage> userImages = userImageRepository.findAllByUserId(getUserImageReq.getUserId());
         if (!userImages.isEmpty()){
             for(UserImage i : userImages){
+                if(i.getStatus().equals(BaseStatus.INACTIVE)) continue;
                 userImagesRes.addImage(awsS3Service.makeUrlOfFilename(i.getImgUUid()), i.getId());
             }
         }
 
         return ApplicationResponse.ok(userImagesRes);
+    }
+
+    @Override
+    @Transactional
+    public ApplicationResponse<UserImagesRes> AddAndDeleteUserImage(AddAndDeleteUserImageReq addAndDeleteUserImageReq){
+
+        validateRefreshToken(addAndDeleteUserImageReq.getUserId(), addAndDeleteUserImageReq.getRefreshToken());
+
+        User user = userRepository.findByUserId(addAndDeleteUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
+
+        // 프로필 이미지 삭제
+        if(addAndDeleteUserImageReq.getDeleteUserImageIds() != null) deleteUserImage(addAndDeleteUserImageReq.getDeleteUserImageIds());
+
+        // 대표 프로필 이미지 업로드
+        if(addAndDeleteUserImageReq.getUploadProfileImage() != null) enterUserProfileImage(user, addAndDeleteUserImageReq.getUploadProfileImage());
+
+        // 이외 프로필 이미지 업로드
+        if(addAndDeleteUserImageReq.getUploadImages() != null) enterUserImages(user, addAndDeleteUserImageReq.getUploadImages());
+
+        UserImagesRes userImagesRes = new UserImagesRes();
+        userImagesRes.setProfileImageUrl(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+        List<UserImage> userImageList = userImageRepository.findAllByUserId(user.getId());
+        for (UserImage userImage : userImageList){
+            if(userImage.getStatus().equals(BaseStatus.INACTIVE)) continue;
+            userImagesRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()), userImage.getId());
+        }
+
+        return ApplicationResponse.ok(userImagesRes);
+    }
+
+    public Void enterUserProfileImage(User user, MultipartFile uploadProfileImage){
+
+        String mainImageUUid = awsS3Service.uploadImage(uploadProfileImage);
+        user.changeMainImgUUid(mainImageUUid);
+
+        return null;
+    }
+
+    public Void enterUserImages(User user, List<MultipartFile> uploadImages){
+
+        if(uploadImages != null){
+            List<String> imageUUids = awsS3Service.uploadImages(uploadImages);
+            for(String i : imageUUids){
+                UserImage userImage = UserImage.builder()
+                        .user(user)
+                        .imgUUid(i)
+                        .build();
+                userImageRepository.save(userImage);
+            }
+        }
+
+        return null;
+    }
+
+    public Void deleteUserImage(List<Long> deleteUserImageIds){
+
+        for (Long deleteUserImageId : deleteUserImageIds){
+            UserImage userImage = userImageRepository.findById(deleteUserImageId).orElseThrow(() ->new NotFoundUserImageException());
+            userImage.deleteUserImage(); // BASE_STATUS : INACTIVE로 변경
+        }
+
+        return null;
     }
 
 

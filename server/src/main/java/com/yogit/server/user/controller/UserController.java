@@ -33,7 +33,7 @@ public class UserController {
      * 유저 필수 정보 입력 및 수정
      * @author 강신현
      */
-    @ApiOperation(value = "유저 필수 정보 입력 및 수정", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/Yogit~3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-4d3deeea-5a19-47ce-99a9-247a9dbb11f1")
+    @ApiOperation(value = "유저 필수 정보 입력 및 수정")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
@@ -42,9 +42,6 @@ public class UserController {
             @ApiImplicitParam(name = "nationality", dataTypeClass = String.class, example = "Korea"),
             @ApiImplicitParam(name = "languageNames", dataType = "list", value = "언어 이름을 순서대로 넣어주세요"),
             @ApiImplicitParam(name = "languageLevels", dataType = "list", value = "언어 레벨을 순서대로 넣어주세요"),
-            @ApiImplicitParam(name = "uploadProfileImage", dataTypeClass = MultipartFile.class, value = "새로 업로드 할 대표 프로필 이미지 - MultiPartFile"),
-            @ApiImplicitParam(name = "uploadImages", dataType = "list", value = "새로 업로드 할 이외 프로필 이미지들 - List(MultiPartFile)"),
-            @ApiImplicitParam(name = "deleteUserImageIds", dataType = "list", value = "삭제 할 프로필 이미지들 id - List(Long)"),
             @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
     })
     @PatchMapping("/essential-profile")
@@ -78,20 +75,6 @@ public class UserController {
         return userService.delProfile(userId);
     }
 
-    /** // TODO 삭제할 api
-     * 유저 Profile + 사진 등록 (새로 추가할 사진만 등록)
-     * @author 강신현
-     */
-//    @ApiOperation(value = "유저 사진 등록 (새로 추가할 사진만 등록)", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-//            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
-//    })
-//    @PostMapping("/image")
-//    public ApplicationResponse<UserImagesRes> enterUserImage(@ModelAttribute CreateUserImageReq createUserImageReq){
-//        return userService.enterUserImage(createUserImageReq);
-//    }
-
     /**
      * 유저 사진 조회
      * @author 강신현
@@ -104,6 +87,23 @@ public class UserController {
     @PostMapping("/image/{userId}")
     public ApplicationResponse<UserImagesRes> getUserImage(@ModelAttribute GetUserImageReq getUserImageReq){
         return userService.getUserImage(getUserImageReq);
+    }
+
+    /**
+     * 유저 사진 등록 및 삭제
+     * @author 강신현
+     */
+    @ApiOperation(value = "유저 사진 등록 및 삭제", notes = "swagger 에서 이미지(multipartfile)처리가 잘 되지 않으므로, postman으로 테스트 바랍니다. https://solar-desert-882435.postman.co/workspace/Yogit~3e0fe8f2-15e0-41c4-9fcd-b614a975c12a/request/18177198-32a7b164-ac0b-417d-951d-46b205ac62aa")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
+            @ApiImplicitParam(name = "uploadProfileImage", dataTypeClass = MultipartFile.class, value = "새로 업로드 할 대표 프로필 이미지 - MultiPartFile"),
+            @ApiImplicitParam(name = "uploadImages", dataType = "list", value = "새로 업로드 할 이외 프로필 이미지들 - List(MultiPartFile)"),
+            @ApiImplicitParam(name = "deleteUserImageIds", dataType = "list", value = "삭제 할 프로필 이미지들 id - List(Long)"),
+            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
+    })
+    @PatchMapping("/image")
+    public ApplicationResponse<UserImagesRes> AddAndDeleteUserImage(@ModelAttribute AddAndDeleteUserImageReq addAndDeleteUserImageReq){
+        return userService.AddAndDeleteUserImage(addAndDeleteUserImageReq);
     }
 
     /**
@@ -138,21 +138,6 @@ public class UserController {
     public ApplicationResponse<Void> createUser(@ModelAttribute CreateUserReq createUserReq){
         return userService.createUser(createUserReq);
     }
-
-    /** // TODO 삭제할 api
-     * 유저 사진 삭제
-     * @author 강신현
-     */
-//    @ApiOperation(value = "유저 사진 삭제")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-//            @ApiImplicitParam(name = "userImageId", required = true, dataTypeClass = Long.class, example = "1"),
-//            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
-//    })
-//    @PatchMapping("/image")
-//    public ApplicationResponse<UserImagesRes> deleteUserImage(@ModelAttribute DeleteUserImageReq deleteUserImageReq){
-//        return userService.deleteUserImage(deleteUserImageReq);
-//    }
 
     /**
      * 국가 리스트 조회

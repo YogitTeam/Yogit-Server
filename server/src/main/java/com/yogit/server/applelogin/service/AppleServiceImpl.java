@@ -93,6 +93,7 @@ public class AppleServiceImpl implements AppleService {
 
         tokenResponse.setAccount(new Account(serviceResponse.getState(), code, tokenResponse.getId_token(), user, serviceResponse.getIdentifier(), serviceResponse.getHasRequirementInfo()));
         tokenResponse.setUserType(UserType.APPLE.toString());
+        tokenResponse.setUserStatus(UserStatus.LOGIN);
 
         // userId 설정
         if(refresh_token == null){
@@ -106,7 +107,6 @@ public class AppleServiceImpl implements AppleService {
             tokenResponse.setUserName(findUser.getName());
             findUser.changeUserStatus(UserStatus.LOGIN);
         }
-
 
         return tokenResponse;
     }

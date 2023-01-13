@@ -1,6 +1,5 @@
 package com.yogit.server.board.service.clipboard;
 
-import com.yogit.server.apns.dto.req.CreateBoardUserJoinAPNReq;
 import com.yogit.server.apns.dto.req.CreateClipBoardAPNReq;
 import com.yogit.server.apns.service.APNService;
 import com.yogit.server.block.repository.BlockRepository;
@@ -22,6 +21,7 @@ import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
+import com.yogit.server.user.entity.UserStatus;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
@@ -79,7 +79,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         if(boardUsers!=null){
             for(BoardUser bu: boardUsers){
                 try {
-                    apnService.createClipBoardAPN(new CreateClipBoardAPNReq(bu.getUser().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
+                    if(user.getUserStatus().equals(UserStatus.LOGIN)) apnService.createClipBoardAPN(new CreateClipBoardAPNReq(bu.getUser().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

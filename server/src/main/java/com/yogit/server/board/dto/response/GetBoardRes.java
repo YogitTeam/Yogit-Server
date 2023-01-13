@@ -112,6 +112,9 @@ public class GetBoardRes {
     @ApiParam(value = "참여 유저 이미지 url 리스트")
     private List<String> userImageUrls;
 
+    @ApiModelProperty(example = "false", value = "요청 유저의 보드 참여 여부")
+    private Boolean isJoinedUser;
+
     @ApiModelProperty(example = "ACTIVE")
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
@@ -128,7 +131,7 @@ public class GetBoardRes {
 연관관계 편의 메서드
  */
     @Builder
-    public GetBoardRes(Long boardId, Long cityId, String cityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, List<Long> userIds, List<String> userImageUrls, BaseStatus status, String createdAt, String updatedAt) {
+    public GetBoardRes(Long boardId, Long cityId, String cityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, List<Long> userIds, List<String> userImageUrls, Boolean isJoinedUser, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.cityName = cityName;
@@ -152,13 +155,14 @@ public class GetBoardRes {
         this.imageIds = imageIds;
         this.userIds = userIds;
         this.userImageUrls = userImageUrls;
+        this.isJoinedUser = isJoinedUser;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
 
-    public static GetBoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl, List<User> users, List<String> userImageUrls){
+    public static GetBoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl, List<User> users, List<String> userImageUrls, User user){
         return GetBoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
@@ -185,6 +189,7 @@ public class GetBoardRes {
                         .map(image -> image.getId()).collect(Collectors.toList()))
                 .userIds(users.stream().map(User::getId).collect(Collectors.toList()))
                 .userImageUrls(userImageUrls)
+                .isJoinedUser(users.contains(user))
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())

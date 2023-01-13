@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class DeleteUserReq {
-    String identityToken;
+    Long userId;
     String refreshToken;
+
+    String identityToken;
 }

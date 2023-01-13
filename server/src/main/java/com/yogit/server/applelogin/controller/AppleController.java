@@ -66,7 +66,7 @@ public class AppleController {
     @ApiOperation(value = "회원탈퇴")
     @PostMapping(value = "/delete/apple")
     @ResponseBody
-    public ApplicationResponse<String> logInApple(@RequestBody DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException {
+    public ApplicationResponse<String> deleteUserApple(@RequestBody DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException {
 
         appleService.deleteUser(deleteUserReq);
 

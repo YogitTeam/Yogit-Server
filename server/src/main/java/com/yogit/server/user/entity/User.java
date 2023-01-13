@@ -175,4 +175,25 @@ public class User extends BaseEntity {
     public void changeUserStatus(UserStatus userStatus){
         this.userStatus = userStatus;
     }
+
+    public void deleteUser(){
+        this.loginId = null;
+        this.name = null;
+        this.profileImg = null;
+        this.aboutMe = null;
+        this.longtitude = null;
+        this.latitude = null;
+        this.job = null;
+        this.age = null;
+        this.memberTemp = null;
+        this.phoneNum = null;
+        this.gender = null;
+        this.nationality = null;
+        this.refreshToken = null;
+        this.reportingCnt = null;
+        this.reportedCnt = null;
+        this.deviceToken = null;
+
+        userStatus = UserStatus.DELETE;
+    }
 }

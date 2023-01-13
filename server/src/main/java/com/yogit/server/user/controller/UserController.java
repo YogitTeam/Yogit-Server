@@ -255,7 +255,7 @@ public class UserController {
     })
     @PostMapping(value = "/log-out")
     @ResponseBody
-    public ApplicationResponse<LogoutRes> logInApple(@ModelAttribute LogoutReq logoutReq) {
+    public ApplicationResponse<LogoutRes> logOut(@ModelAttribute LogoutReq logoutReq) {
 
         return userService.logout(logoutReq);
     }

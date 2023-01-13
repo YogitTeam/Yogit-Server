@@ -15,6 +15,7 @@ import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
+import com.yogit.server.user.entity.UserStatus;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
@@ -80,7 +81,7 @@ public class BoardUserServiceImpl implements BoardUserService{
         // 호스트에게 참여 APN 푸쉬 알림
 
         try {
-            apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
+            if(user.getUserStatus().equals(UserStatus.LOGIN)) apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

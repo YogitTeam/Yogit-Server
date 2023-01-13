@@ -146,7 +146,7 @@ public class AppleServiceImpl implements AppleService {
 //        return null;
 //    }
 
-    public void deleteUser(DeleteUserReq deleteUserReq) throws NoSuchAlgorithmException {
+    public void deleteUser(DeleteUserReq deleteUserReq) {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
         String revokeUrl = "https://appleid.apple.com/auth/revoke";
 
@@ -162,6 +162,9 @@ public class AppleServiceImpl implements AppleService {
 
         restTemplate.postForEntity(revokeUrl, httpEntity, String.class);
 
-        // TODO 유저 정보 삭제 (개인정보 삭제 및 status -> DELETE 로 변경)
+        // 유저 정보 삭제 및 유저 상태 변경 (DELETE)
+        userService.validateRefreshToken(deleteUserReq.getUserId(), deleteUserReq.getRefreshToken());
+        User user = userRepository.findByUserId(deleteUserReq.getUserId()).orElseThrow(() -> new NotFoundUserException());
+        user.deleteUser();
     }
 }

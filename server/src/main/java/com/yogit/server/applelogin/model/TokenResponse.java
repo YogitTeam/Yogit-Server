@@ -1,6 +1,7 @@
 package com.yogit.server.applelogin.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.yogit.server.user.entity.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,5 @@ public class TokenResponse {
     private Account account;
     private Long userId;
     private String userName;
+    private UserStatus userStatus;
 }

@@ -88,6 +88,7 @@ public class BoardServiceImpl implements BoardService{
 
         // 호스트 boardUser 생성 및 board에 추가
         board.addBoardUser(new BoardUser(host, board));
+        board.addCurrentMember();// 보드 현재 인원 +1
 
         // board 저장
         Board savedBoard = boardRepository.save(board);

@@ -95,7 +95,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("")
-    public ApplicationResponse<BoardRes> updateBoard(@ModelAttribute @Validated PatchBoardReq patchBoardReq){
+    public ApplicationResponse<GetBoardRes> updateBoard(@ModelAttribute @Validated PatchBoardReq patchBoardReq){
         return boardService.updateBoard(patchBoardReq);
     }
 

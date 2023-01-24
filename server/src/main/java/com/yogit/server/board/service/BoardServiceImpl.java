@@ -112,7 +112,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = false)
     @Override
-    public ApplicationResponse<BoardRes> updateBoard(PatchBoardReq dto){
+    public ApplicationResponse<GetBoardRes> updateBoard(PatchBoardReq dto){
         userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getHostId())
@@ -159,8 +159,17 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
-        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
-        return ApplicationResponse.ok(boardRes);
+        List<User> participants = board.getBoardUsers().stream()
+                .map(boardUser -> boardUser.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .map(boardUser -> boardUser.getUser().getProfileImg())
+                .collect(Collectors.toList());
+
+        GetBoardRes res = GetBoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds), user);
+        //BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+        return ApplicationResponse.ok(res);
     }
 
 

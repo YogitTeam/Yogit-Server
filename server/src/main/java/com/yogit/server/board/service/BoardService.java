@@ -14,7 +14,7 @@ public interface BoardService {
 
     ApplicationResponse<BoardRes> createBoard(CreateBoardReq createBoardReq);
 
-    ApplicationResponse<BoardRes> updateBoard(PatchBoardReq patchBoardReq);
+    ApplicationResponse<GetBoardRes> updateBoard(PatchBoardReq patchBoardReq);
 
     ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq deleteBoardReq);
 

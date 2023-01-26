@@ -31,16 +31,16 @@ public class UserProfileRes {
     String aboutMe;
     UserStatus userStatus;
     String phone;
+    String job;
 
     List<String> languageNames = new ArrayList<>();
     List<String> languageLevels = new ArrayList<>();
 
     // 유저 추가 정보
-    String administrativeArea;
     float longtitude;
     float latitude;
 
-    CityName city;
+    String city;
 
     List<String> interests = new ArrayList<>();
 
@@ -57,16 +57,13 @@ public class UserProfileRes {
         userProfileRes.aboutMe = user.getAboutMe();
         userProfileRes.userStatus = user.getUserStatus();
         userProfileRes.phone = user.getPhoneNum();
+        userProfileRes.job = user.getJob();
 
         // 유저 추가 정보
         if(user.getLongtitude() != null)userProfileRes.longtitude = user.getLongtitude();
         if(user.getLatitude() != null)userProfileRes.latitude = user.getLatitude();
 
         return userProfileRes;
-    }
-
-    public void addCity(CityName city){
-        this.city = city;
     }
 
     public void addLanguage(String languageName, String languageLevel){

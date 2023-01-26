@@ -57,7 +57,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("")
-    public ApplicationResponse<BoardRes> registerBoard(@ModelAttribute @Validated CreateBoardReq createBoardReq){
+    public ApplicationResponse<GetBoardRes> registerBoard(@ModelAttribute @Validated CreateBoardReq createBoardReq){
         return boardService.createBoard(createBoardReq);
     }
 

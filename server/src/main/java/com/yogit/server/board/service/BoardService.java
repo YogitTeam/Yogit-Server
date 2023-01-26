@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface BoardService {
 
-    ApplicationResponse<BoardRes> createBoard(CreateBoardReq createBoardReq);
+    ApplicationResponse<GetBoardRes> createBoard(CreateBoardReq createBoardReq);
 
     ApplicationResponse<GetBoardRes> updateBoard(PatchBoardReq patchBoardReq);
 

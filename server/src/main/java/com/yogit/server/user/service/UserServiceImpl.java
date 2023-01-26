@@ -56,6 +56,76 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+//    // 국가 정보 조회 Open Api
+//    JSONObject getNation(String ){
+//
+//    }
+
+    @Transactional
+    @Override
+    public ApplicationResponse<UserProfileRes> enterProfile(CreateUserProfileReq createUserProfileReq){
+
+        validateRefreshToken(createUserProfileReq.getUserId(), createUserProfileReq.getRefreshToken());
+
+        if(!createUserProfileReq.getGender().equals("Prefer not to say") && !createUserProfileReq.getGender().equals("Male") && !createUserProfileReq.getGender().equals("Female")) throw new UserGenderException();
+
+        User user = userRepository.findByUserId(createUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        user.changeUserInfo(createUserProfileReq.getUserName(), createUserProfileReq.getUserAge(), createUserProfileReq.getGender(), createUserProfileReq.getNationality());
+
+        UserProfileRes userProfileRes = UserProfileRes.create(user);
+
+        if(createUserProfileReq.getLanguageNames() != null) {
+            // 기존 languages 삭제
+            languageRepository.deleteAllByUserId(createUserProfileReq.getUserId());
+            // 새로운 languages 추가
+            for(int i=0;i < createUserProfileReq.getLanguageNames().size(); i++){
+                Language language = Language.builder()
+                        .user(user)
+                        .name(createUserProfileReq.getLanguageNames().get(i))
+                        .level(createUserProfileReq.getLanguageLevels().get(i))
+                        .build();
+                languageRepository.save(language);
+
+                userProfileRes.addLanguage(createUserProfileReq.getLanguageNames().get(i), createUserProfileReq.getLanguageLevels().get(i));
+            }
+        }
+
+        user.addAdditionalProfile(createUserProfileReq.getLatitude(), createUserProfileReq.getLongitude(), createUserProfileReq.getAboutMe(), createUserProfileReq.getJob());
+
+        // 기존에 존재하는 city인 경우
+        if(cityRepository.existsByCityName(createUserProfileReq.getCityName())){
+            City city = cityRepository.findByCityName(createUserProfileReq.getCityName());
+            city.addUser(user);
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            City city = City.builder()
+                    .user(user)
+                    .cityName(createUserProfileReq.getCityName())
+                    .build();
+            cityRepository.save(city);
+            city.addUser(user);
+        }
+
+        userProfileRes.setCity(createUserProfileReq.getCityName());
+
+        for(String interestName : createUserProfileReq.getInterests()){
+            Interest interest = Interest.builder()
+                    .name(interestName)
+                    .build();
+            interestRepository.save(interest);
+
+            UserInterest userInterest = UserInterest.builder()
+                    .user(user)
+                    .interest(interest)
+                    .build();
+            userInterestRepository.save(userInterest);
+
+            userProfileRes.getInterests().add(interestName);
+        }
+
+        return ApplicationResponse.ok(userProfileRes);
+    }
+
     @Transactional
     @Override
     public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
@@ -126,17 +196,12 @@ public class UserServiceImpl implements UserService {
             URL url = new URL("http://apis.data.go.kr/1262000/CountryFlagService2/getCountryFlagList2?ServiceKey=Os%2B%2Fa%2BWGJPptb5Rf1U850JQo11XO0fCA5cL3YND%2BxoxUm8B38IDZjHKlrpV0gj496%2Br53Rg61EdzI9KDuILDrg%3D%3D" + "&cond[country_iso_alp2::EQ]=" + user.getNationality());
 
             BufferedReader bf;
-
             bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-
             String result = bf.readLine();
 
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
-
             JSONArray data = (JSONArray) jsonObject.get("data");
-
-
             JSONObject nation = (JSONObject) data.get(0);
 
             String country_eng_nm = nation.get("country_eng_nm").toString();

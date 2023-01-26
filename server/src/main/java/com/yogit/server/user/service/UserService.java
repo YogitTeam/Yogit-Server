@@ -8,6 +8,8 @@ import com.yogit.server.user.entity.User;
 public interface UserService {
     Void validateRefreshToken(Long userId, String refreshToken);
 
+    ApplicationResponse<UserProfileRes> enterProfile(CreateUserProfileReq createUserProfileReq);
+
     ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq);
 
     ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq);

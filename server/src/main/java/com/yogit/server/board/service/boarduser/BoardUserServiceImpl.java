@@ -65,16 +65,18 @@ public class BoardUserServiceImpl implements BoardUserService{
         BoardUser boardUser = new BoardUser(user, board);
         BoardUser savedBoardUser = boardUserRepository.save(boardUser);
 
-        board.addCurrentMember();// 보드 현재 인원 +1
+        //board.addCurrentMember();// 보드 현재 인원 +1
         board.addBoardUser(boardUser); // 보드에 멤버 추가
 
         List<User> participants = board.getBoardUsers().stream()
-                .filter(bu -> !bu.getUser().equals(board.getHost()))
+                //.filter(bu -> !bu.getUser().equals(board.getHost()))
+                .filter(bu -> bu.getApplyStatus().equals(1)) // 참여 승인된 사람만 조회
                 .map(bu -> bu.getUser())
                 .collect(Collectors.toList());
 
         List<String> participantsImageUUIds = board.getBoardUsers().stream()
-                .filter(bu -> !bu.getUser().equals(board.getHost()))
+                //.filter(bu -> !bu.getUser().equals(board.getHost()))
+                .filter(bu -> bu.getApplyStatus().equals(1)) // 참여 승인된 사람만 조회
                 .map(bu -> bu.getUser().getProfileImg())
                 .collect(Collectors.toList());
 
@@ -87,6 +89,47 @@ public class BoardUserServiceImpl implements BoardUserService{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        BoardUserRes res = BoardUserRes.toDto(boardUser,user, board, participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
+        return ApplicationResponse.create("보드에 유저가 조인되었습니다.", res);
+    }
+
+
+    @Transactional(readOnly = false)
+    @Override
+    public ApplicationResponse<BoardUserRes> approveBoardUser(CreateBoardUserReq dto){
+
+        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        User user = userRepository.findByUserId(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        Board board = boardRepository.findBoardById(dto.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException());
+
+        BoardUser boardUser = boardUserRepository.findByUserIdAndBoardId(user.getId(), board.getId())
+                .orElseThrow(() -> new NotFoundUserBoard());
+
+        // Validation: 보드 인원 다 차면 신청 불가능 검증
+        if(board.getCurrentMember() >= board.getTotalMember()){
+            throw new MaxBoardUserException();
+        }
+
+        boardUser.changeApplyStatus(); // 참여 승인으로 상태 업데이트
+        board.addCurrentMember();// 보드 현재 인원 +1
+        //board.addBoardUser(boardUser); // 보드에 멤버 추가
+
+        List<User> participants = board.getBoardUsers().stream()
+                //.filter(bu -> !bu.getUser().equals(board.getHost()))
+                .filter(bu -> bu.getApplyStatus().equals(1)) // 참여 승인된 사람만 조회
+                .map(bu -> bu.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                //.filter(bu -> !bu.getUser().equals(board.getHost()))
+                .filter(bu -> bu.getApplyStatus().equals(1)) // 참여 승인된 사람만 조회
+                .map(bu -> bu.getUser().getProfileImg())
+                .collect(Collectors.toList());
 
         BoardUserRes res = BoardUserRes.toDto(boardUser,user, board, participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds));
         return ApplicationResponse.create("보드에 유저가 조인되었습니다.", res);

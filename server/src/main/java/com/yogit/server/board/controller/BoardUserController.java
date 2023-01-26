@@ -36,6 +36,23 @@ public class BoardUserController {
         return boardUserService.joinBoardUser(dto);
     }
 
+
+    /**
+     * 보드 멤버 입장 승인
+     * @author 토마스
+     */
+    @ApiOperation(value = "호스트가 보드 멤버 입장 승인", notes = "호스트가 보드 모임 가입 신청 수락, applyStatus를 변경")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping
+    public ApplicationResponse<BoardUserRes> approveBoardUser(@RequestBody @Validated CreateBoardUserReq dto){
+        return boardUserService.approveBoardUser(dto);
+    }
+
     /**
      * 보드 멤버 제거
      * @author peanut

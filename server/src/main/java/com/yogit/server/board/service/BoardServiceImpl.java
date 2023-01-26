@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = false)
     @Override
-    public ApplicationResponse<BoardRes> createBoard(CreateBoardReq dto){
+    public ApplicationResponse<GetBoardRes> createBoard(CreateBoardReq dto){
 
         userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
@@ -105,8 +105,17 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
-        BoardRes boardRes = BoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
-        return ApplicationResponse.create("요청에 성공하였습니다.", boardRes);
+        List<User> participants = board.getBoardUsers().stream()
+                .map(boardUser -> boardUser.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .map(boardUser -> boardUser.getUser().getProfileImg())
+                .collect(Collectors.toList());
+
+        GetBoardRes res = GetBoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds), host);
+        //BoardRes boardRes = BoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
+        return ApplicationResponse.create("요청에 성공하였습니다.", res);
     }
 
 

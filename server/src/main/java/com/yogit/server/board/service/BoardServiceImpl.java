@@ -5,6 +5,7 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
+import com.yogit.server.board.dto.response.DeleteBoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.board.entity.*;
@@ -58,7 +59,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = false)
     @Override
-    public ApplicationResponse<BoardRes> createBoard(CreateBoardReq dto){
+    public ApplicationResponse<GetBoardRes> createBoard(CreateBoardReq dto){
 
         userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
@@ -105,8 +106,17 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
-        BoardRes boardRes = BoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
-        return ApplicationResponse.create("요청에 성공하였습니다.", boardRes);
+        List<User> participants = board.getBoardUsers().stream()
+                .map(boardUser -> boardUser.getUser())
+                .collect(Collectors.toList());
+
+        List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .map(boardUser -> boardUser.getUser().getProfileImg())
+                .collect(Collectors.toList());
+
+        GetBoardRes res = GetBoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg()), participants, awsS3Service.makeUrlsOfFilenames(participantsImageUUIds), host);
+        //BoardRes boardRes = BoardRes.toDto(savedBoard, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(host.getProfileImg())); // resDto 벼환
+        return ApplicationResponse.create("요청에 성공하였습니다.", res);
     }
 
 
@@ -175,7 +185,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = false)
     @Override
-    public ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq dto){
+    public ApplicationResponse<DeleteBoardRes> deleteBoard(DeleteBoardReq dto){
 
         userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
@@ -190,7 +200,7 @@ public class BoardServiceImpl implements BoardService{
         }
 
         board.deleteBoard();
-        BoardRes boardRes = BoardRes.toDto(board, awsS3Service.makeUrlsOfFilenames(board.getBoardImagesUUids()), awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+        DeleteBoardRes boardRes = DeleteBoardRes.toDto(board);
         return ApplicationResponse.ok(boardRes);
     }
 

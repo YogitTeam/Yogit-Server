@@ -48,7 +48,7 @@ public class BoardUserController {
             @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PostMapping
+    @PatchMapping("/applystatus")
     public ApplicationResponse<BoardUserRes> approveBoardUser(@RequestBody @Validated CreateBoardUserReq dto){
         return boardUserService.approveBoardUser(dto);
     }

@@ -8,5 +8,7 @@ public interface BoardUserService {
 
     ApplicationResponse<BoardUserRes> joinBoardUser(CreateBoardUserReq createBoardUserReq);
 
+    ApplicationResponse<BoardUserRes> approveBoardUser(CreateBoardUserReq createBoardUserReq);
+
     ApplicationResponse<Void> delBoardUser(CreateBoardUserReq createBoardUserReq);
 }

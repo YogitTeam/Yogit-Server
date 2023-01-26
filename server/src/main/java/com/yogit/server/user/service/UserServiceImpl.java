@@ -6,9 +6,15 @@ import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
-import com.yogit.server.user.dto.response.*;
+import com.yogit.server.user.dto.response.LogoutRes;
+import com.yogit.server.user.dto.response.UserDeviceTokenRes;
+import com.yogit.server.user.dto.response.UserImagesRes;
+import com.yogit.server.user.dto.response.UserProfileRes;
 import com.yogit.server.user.entity.*;
-import com.yogit.server.user.exception.*;
+import com.yogit.server.user.exception.NotFoundUserException;
+import com.yogit.server.user.exception.NotFoundUserImageException;
+import com.yogit.server.user.exception.UserDuplicationLoginId;
+import com.yogit.server.user.exception.UserGenderException;
 import com.yogit.server.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
@@ -56,36 +62,99 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    // 국가 정보 조회 Open Api
+    JSONObject getNation(String nationality) {
+
+        JSONObject nation = null;
+        try {
+            URL url = new URL("http://apis.data.go.kr/1262000/CountryFlagService2/getCountryFlagList2?ServiceKey=Os%2B%2Fa%2BWGJPptb5Rf1U850JQo11XO0fCA5cL3YND%2BxoxUm8B38IDZjHKlrpV0gj496%2Br53Rg61EdzI9KDuILDrg%3D%3D" + "&cond[country_iso_alp2::EQ]=" + nationality);
+
+            BufferedReader bf;
+            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            String result = bf.readLine();
+
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+            JSONArray data = (JSONArray) jsonObject.get("data");
+            nation = (JSONObject) data.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return nation;
+    }
+
     @Transactional
     @Override
-    public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq){
+    public ApplicationResponse<UserProfileRes> enterProfile(CreateUserProfileReq createUserProfileReq){
 
-        validateRefreshToken(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getRefreshToken());
+        validateRefreshToken(createUserProfileReq.getUserId(), createUserProfileReq.getRefreshToken());
 
-        if(!createUserEssentialProfileReq.getGender().equals("Prefer not to say") && !createUserEssentialProfileReq.getGender().equals("Male") && !createUserEssentialProfileReq.getGender().equals("Female")) throw new UserGenderException();
+        if(!createUserProfileReq.getGender().equals("Prefer not to say") && !createUserProfileReq.getGender().equals("Male") && !createUserProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
-        User user = userRepository.findByUserId(createUserEssentialProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
-        user.changeUserInfo(createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
+        User user = userRepository.findByUserId(createUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
+        user.changeUserInfo(createUserProfileReq.getUserName(), createUserProfileReq.getUserAge(), createUserProfileReq.getGender(), createUserProfileReq.getNationality());
 
-        UserEssentialProfileRes userEssentialProfileRes = UserEssentialProfileRes.create(createUserEssentialProfileReq.getUserId(), createUserEssentialProfileReq.getUserName(), createUserEssentialProfileReq.getUserAge(), createUserEssentialProfileReq.getGender(), createUserEssentialProfileReq.getNationality());
+        UserProfileRes userProfileRes = UserProfileRes.create(user);
 
-        if(createUserEssentialProfileReq.getLanguageNames() != null) {
+        if(createUserProfileReq.getLanguageNames() != null) {
             // 기존 languages 삭제
-            languageRepository.deleteAllByUserId(createUserEssentialProfileReq.getUserId());
+            languageRepository.deleteAllByUserId(createUserProfileReq.getUserId());
             // 새로운 languages 추가
-            for(int i=0;i < createUserEssentialProfileReq.getLanguageNames().size(); i++){
+            for(int i=0;i < createUserProfileReq.getLanguageNames().size(); i++){
                 Language language = Language.builder()
                         .user(user)
-                        .name(createUserEssentialProfileReq.getLanguageNames().get(i))
-                        .level(createUserEssentialProfileReq.getLanguageLevels().get(i))
+                        .name(createUserProfileReq.getLanguageNames().get(i))
+                        .level(createUserProfileReq.getLanguageLevels().get(i))
                         .build();
                 languageRepository.save(language);
 
-                userEssentialProfileRes.addLanguage(createUserEssentialProfileReq.getLanguageNames().get(i), createUserEssentialProfileReq.getLanguageLevels().get(i));
+                userProfileRes.addLanguage(createUserProfileReq.getLanguageNames().get(i), createUserProfileReq.getLanguageLevels().get(i));
             }
         }
 
-        return ApplicationResponse.ok(userEssentialProfileRes);
+        user.addAdditionalProfile(createUserProfileReq.getLatitude(), createUserProfileReq.getLongitude(), createUserProfileReq.getAboutMe(), createUserProfileReq.getJob());
+
+        // 기존에 존재하는 city인 경우
+        if(cityRepository.existsByCityName(createUserProfileReq.getCityName())){
+            City city = cityRepository.findByCityName(createUserProfileReq.getCityName());
+            city.addUser(user);
+        }
+        else{ // 기존에 존재하지 않는 city인 경우
+            City city = City.builder()
+                    .user(user)
+                    .cityName(createUserProfileReq.getCityName())
+                    .build();
+            cityRepository.save(city);
+            city.addUser(user);
+        }
+
+        userProfileRes.setCity(createUserProfileReq.getCityName());
+
+        for(String interestName : createUserProfileReq.getInterests()){
+            Interest interest = Interest.builder()
+                    .name(interestName)
+                    .build();
+            interestRepository.save(interest);
+
+            UserInterest userInterest = UserInterest.builder()
+                    .user(user)
+                    .interest(interest)
+                    .build();
+            userInterestRepository.save(userInterest);
+
+            userProfileRes.getInterests().add(interestName);
+        }
+
+        // 국가 이름 및 국기 이미지 조회
+        JSONObject nation = getNation(user.getNationality());
+        String country_eng_nm = nation.get("country_eng_nm").toString();
+        String download_url = nation.get("download_url").toString();
+
+        userProfileRes.setCountry_eng_nm(country_eng_nm);
+        userProfileRes.setDownload_url(download_url);
+
+        return ApplicationResponse.ok(userProfileRes);
     }
 
     @Override
@@ -121,33 +190,12 @@ public class UserServiceImpl implements UserService {
             userProfileRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
         }
 
-        try {
+        JSONObject nation = getNation(user.getNationality());
+        String country_eng_nm = nation.get("country_eng_nm").toString();
+        String download_url = nation.get("download_url").toString();
 
-            URL url = new URL("http://apis.data.go.kr/1262000/CountryFlagService2/getCountryFlagList2?ServiceKey=Os%2B%2Fa%2BWGJPptb5Rf1U850JQo11XO0fCA5cL3YND%2BxoxUm8B38IDZjHKlrpV0gj496%2Br53Rg61EdzI9KDuILDrg%3D%3D" + "&cond[country_iso_alp2::EQ]=" + user.getNationality());
-
-            BufferedReader bf;
-
-            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-
-            String result = bf.readLine();
-
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
-
-            JSONArray data = (JSONArray) jsonObject.get("data");
-
-
-            JSONObject nation = (JSONObject) data.get(0);
-
-            String country_eng_nm = nation.get("country_eng_nm").toString();
-            String download_url = nation.get("download_url").toString();
-
-            userProfileRes.setCountry_eng_nm(country_eng_nm);
-            userProfileRes.setDownload_url(download_url);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        userProfileRes.setCountry_eng_nm(country_eng_nm);
+        userProfileRes.setDownload_url(download_url);
 
         return ApplicationResponse.ok(userProfileRes);
     }
@@ -247,53 +295,6 @@ public class UserServiceImpl implements UserService {
         }
 
         return null;
-    }
-
-
-    @Override
-    @Transactional
-    public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq){
-
-        validateRefreshToken(addUserAdditionalProfileReq.getUserId(), addUserAdditionalProfileReq.getRefreshToken());
-
-        User user = userRepository.findByUserId(addUserAdditionalProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
-
-        user.addAdditionalProfile(addUserAdditionalProfileReq.getLatitude(), addUserAdditionalProfileReq.getLongitude(), addUserAdditionalProfileReq.getAboutMe(), addUserAdditionalProfileReq.getJob());
-
-        UserAdditionalProfileRes userAdditionalProfileRes = UserAdditionalProfileRes.create(user);
-
-        // 기존에 존재하는 city인 경우
-        if(cityRepository.existsByCityName(addUserAdditionalProfileReq.getCityName())){
-            City city = cityRepository.findByCityName(addUserAdditionalProfileReq.getCityName());
-            city.addUser(user);
-        }
-        else{ // 기존에 존재하지 않는 city인 경우
-            City city = City.builder()
-                    .user(user)
-                    .cityName(addUserAdditionalProfileReq.getCityName())
-                    .build();
-            cityRepository.save(city);
-            city.addUser(user);
-        }
-
-        userAdditionalProfileRes.setCityName(addUserAdditionalProfileReq.getCityName());
-
-        for(String interestName : addUserAdditionalProfileReq.getInterests()){
-            Interest interest = Interest.builder()
-                    .name(interestName)
-                    .build();
-            interestRepository.save(interest);
-
-            UserInterest userInterest = UserInterest.builder()
-                    .user(user)
-                    .interest(interest)
-                    .build();
-            userInterestRepository.save(userInterest);
-
-            userAdditionalProfileRes.getInterests().add(interestName);
-        }
-
-        return ApplicationResponse.ok(userAdditionalProfileRes);
     }
 
     @Override

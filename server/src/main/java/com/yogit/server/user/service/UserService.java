@@ -10,8 +10,6 @@ public interface UserService {
 
     ApplicationResponse<UserProfileRes> enterProfile(CreateUserProfileReq createUserProfileReq);
 
-    ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(CreateUserEssentialProfileReq createUserEssentialProfileReq);
-
     ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq);
 
     ApplicationResponse<Void> delProfile(Long userId);
@@ -19,8 +17,6 @@ public interface UserService {
     ApplicationResponse<UserImagesRes> getUserImage(GetUserImageReq getUserImageReq);
 
     ApplicationResponse<UserImagesRes> AddAndDeleteUserImage(AddAndDeleteUserImageReq addAndDeleteUserImageReq);
-
-    ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(AddUserAdditionalProfileReq addUserAdditionalProfileReq);
 
     ApplicationResponse<Void> createUser(CreateUserReq createUserReq);
 

@@ -30,10 +30,10 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * 유저 정보 입력 및 수정
+     * 유저 프로필 정보 입력 및 수정
      * @author 강신현
      */
-    @ApiOperation(value = "유저 정보 입력 및 수정")
+    @ApiOperation(value = "유저 프로필 정보 입력 및 수정")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
@@ -55,49 +55,10 @@ public class UserController {
     }
 
     /**
-     * 유저 필수 정보 입력 및 수정
+     * 유저 프로필 조회
      * @author 강신현
      */
-    @ApiOperation(value = "유저 필수 정보 입력 및 수정")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "userName", dataTypeClass = String.class, example = "강신현"),
-            @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
-            @ApiImplicitParam(name = "gender", dataTypeClass = String.class, example = "Male"),
-            @ApiImplicitParam(name = "nationality", dataTypeClass = String.class, example = "Korea"),
-            @ApiImplicitParam(name = "languageNames", dataType = "list", value = "언어 이름을 순서대로 넣어주세요"),
-            @ApiImplicitParam(name = "languageLevels", dataType = "list", value = "언어 레벨을 순서대로 넣어주세요"),
-            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
-    })
-    @PatchMapping("/essential-profile")
-    public ApplicationResponse<UserEssentialProfileRes> enterEssentialProfile(@ModelAttribute CreateUserEssentialProfileReq createUserEssentialProfileReq){
-        return userService.enterEssentialProfile(createUserEssentialProfileReq);
-    }
-
-    /**
-     * 유저 추가 정보 입력 및 수정
-     * @author 강신현
-     */
-    @ApiOperation(value = "유저 추가 정보 입력 및 수정")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
-            @ApiImplicitParam(name = "latitude", dataTypeClass = Float.class, example = "10.23"),
-            @ApiImplicitParam(name = "longitude", dataTypeClass = Float.class, example = "10.23"),
-            @ApiImplicitParam(name = "aboutMe", dataTypeClass = String.class, example = "캠핑 모임에 관심이 많습니다."),
-            @ApiImplicitParam(name = "job", dataTypeClass = String.class, example = "학생"),
-            @ApiImplicitParam(name = "cityName", dataTypeClass = String.class, example = "SEOUL"),
-            @ApiImplicitParam(name = "refreshToken", required = true, dataTypeClass = String.class, example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")
-    })
-    @PatchMapping("/additional-profile")
-    public ApplicationResponse<UserAdditionalProfileRes> enterAdditionalProfile(@ModelAttribute AddUserAdditionalProfileReq addUserAdditionalProfileReq){
-        return userService.enterAdditionalProfile(addUserAdditionalProfileReq);
-    }
-
-    /**
-     * 유저 Profile 조회
-     * @author 강신현
-     */
-    @ApiOperation(value = "유저 Profile 조회")
+    @ApiOperation(value = "유저 프로필 조회")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "1"),
             @ApiImplicitParam(name = "refreshTokenUserId", required = true, dataTypeClass = Long.class, example = "21"),
@@ -109,10 +70,10 @@ public class UserController {
     }
 
     /**
-     * 유저 Profile 삭제
+     * 유저 프로필 삭제
      * @author 강신현
      */
-    @ApiOperation(value = "유저 Profile 삭제")
+    @ApiOperation(value = "유저 프로필 삭제")
     @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
     @PatchMapping("/{userId}")
     public ApplicationResponse<Void> delProfile(@PathVariable Long userId){

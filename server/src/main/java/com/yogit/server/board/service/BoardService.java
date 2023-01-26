@@ -4,6 +4,7 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
+import com.yogit.server.board.dto.response.DeleteBoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.global.dto.ApplicationResponse;
@@ -16,7 +17,7 @@ public interface BoardService {
 
     ApplicationResponse<GetBoardRes> updateBoard(PatchBoardReq patchBoardReq);
 
-    ApplicationResponse<BoardRes> deleteBoard(DeleteBoardReq deleteBoardReq);
+    ApplicationResponse<DeleteBoardRes> deleteBoard(DeleteBoardReq deleteBoardReq);
 
     ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(GetAllBoardsReq getAllBoardsReq);
 

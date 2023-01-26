@@ -5,6 +5,7 @@ import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
 import com.yogit.server.board.dto.response.BoardRes;
+import com.yogit.server.board.dto.response.DeleteBoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.dto.response.GetBoardRes;
 import com.yogit.server.board.service.BoardService;
@@ -112,7 +113,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PatchMapping("/status")
-    public ApplicationResponse<BoardRes> deleteBoard(@RequestBody @Validated DeleteBoardReq deleteBoardReq){
+    public ApplicationResponse<DeleteBoardRes> deleteBoard(@RequestBody @Validated DeleteBoardReq deleteBoardReq){
         return boardService.deleteBoard(deleteBoardReq);
     }
 

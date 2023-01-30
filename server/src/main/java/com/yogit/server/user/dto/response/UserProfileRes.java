@@ -22,8 +22,6 @@ public class UserProfileRes {
     float memberTemp;
 
     String nationality;
-    String country_eng_nm;
-    String download_url;
 
     String profileImg; // 대표 프로필 이미지
     List<String> imageUrls = new ArrayList<>();

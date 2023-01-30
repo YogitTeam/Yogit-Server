@@ -146,14 +146,6 @@ public class UserServiceImpl implements UserService {
             userProfileRes.getInterests().add(interestName);
         }
 
-        // 국가 이름 및 국기 이미지 조회
-        JSONObject nation = getNation(user.getNationality());
-        String country_eng_nm = nation.get("country_eng_nm").toString();
-        String download_url = nation.get("download_url").toString();
-
-        userProfileRes.setCountry_eng_nm(country_eng_nm);
-        userProfileRes.setDownload_url(download_url);
-
         return ApplicationResponse.ok(userProfileRes);
     }
 
@@ -189,13 +181,6 @@ public class UserServiceImpl implements UserService {
             if(userImage.getStatus().equals(BaseStatus.INACTIVE)) continue;
             userProfileRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
         }
-
-        JSONObject nation = getNation(user.getNationality());
-        String country_eng_nm = nation.get("country_eng_nm").toString();
-        String download_url = nation.get("download_url").toString();
-
-        userProfileRes.setCountry_eng_nm(country_eng_nm);
-        userProfileRes.setDownload_url(download_url);
 
         return ApplicationResponse.ok(userProfileRes);
     }

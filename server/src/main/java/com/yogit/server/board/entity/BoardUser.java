@@ -25,6 +25,8 @@ public class BoardUser extends BaseEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    private Integer applyStatus; // 승인 전=0, 승인 됨=1
+
     /*
     연관관계 편의 메서드
      */
@@ -33,5 +35,10 @@ public class BoardUser extends BaseEntity {
         this.user = user;
         this.board = board;
 //        board.addBoardUser(this);
+        this.applyStatus = 0;
+    }
+
+    public void changeApplyStatus(){
+        this.applyStatus = 1;
     }
 }

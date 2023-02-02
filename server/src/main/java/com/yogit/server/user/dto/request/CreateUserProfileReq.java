@@ -17,8 +17,8 @@ public class CreateUserProfileReq {
     String gender;
     String nationality;
 
-    List<String> languageNames;
-    List<String> languageLevels;
+    List<String> languageCodes;
+    List<Integer> languageLevels;
 
     float latitude;
     float longitude;

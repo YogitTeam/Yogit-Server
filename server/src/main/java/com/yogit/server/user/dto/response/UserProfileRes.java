@@ -31,8 +31,8 @@ public class UserProfileRes {
     String phone;
     String job;
 
-    List<String> languageNames = new ArrayList<>();
-    List<String> languageLevels = new ArrayList<>();
+    List<String> languageCodes = new ArrayList<>();
+    List<Integer> languageLevels = new ArrayList<>();
 
     // 유저 추가 정보
     float longtitude;
@@ -64,8 +64,8 @@ public class UserProfileRes {
         return userProfileRes;
     }
 
-    public void addLanguage(String languageName, String languageLevel){
-        this.languageNames.add(languageName);
+    public void addLanguage(String languageCode, Integer languageLevel){
+        this.languageCodes.add(languageCode);
         this.languageLevels.add(languageLevel);
     }
 

@@ -17,13 +17,12 @@ public class Language extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private String name;
-
-    private String level;
+    private String code;
+    private Integer level;
 
     @Builder
-    public Language (User user, String name, String level){
-        this.name = name;
+    public Language (User user, String code, Integer level){
+        this.code = code;
         this.level = level;
 
         this.user = user;

@@ -97,19 +97,19 @@ public class UserServiceImpl implements UserService {
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
 
-        if(createUserProfileReq.getLanguageNames() != null) {
+        if(createUserProfileReq.getLanguageCodes() != null) {
             // 기존 languages 삭제
             languageRepository.deleteAllByUserId(createUserProfileReq.getUserId());
             // 새로운 languages 추가
-            for(int i=0;i < createUserProfileReq.getLanguageNames().size(); i++){
+            for(int i=0;i < createUserProfileReq.getLanguageCodes().size(); i++){
                 Language language = Language.builder()
                         .user(user)
-                        .name(createUserProfileReq.getLanguageNames().get(i))
+                        .code(createUserProfileReq.getLanguageCodes().get(i))
                         .level(createUserProfileReq.getLanguageLevels().get(i))
                         .build();
                 languageRepository.save(language);
 
-                userProfileRes.addLanguage(createUserProfileReq.getLanguageNames().get(i), createUserProfileReq.getLanguageLevels().get(i));
+                userProfileRes.addLanguage(createUserProfileReq.getLanguageCodes().get(i), createUserProfileReq.getLanguageLevels().get(i));
             }
         }
 
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
         List<Language> languages = languageRepository.findAllByUserId(getUserProfileReq.getUserId());
         if(!languages.isEmpty()){
             for(Language l : languages){
-                userProfileRes.addLanguage(l.getName(), l.getLevel());
+                userProfileRes.addLanguage(l.getCode(), l.getLevel());
             }
         }
 

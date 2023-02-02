@@ -40,7 +40,7 @@ public class UserController {
             @ApiImplicitParam(name = "userAge", dataTypeClass = int.class, example = "25"),
             @ApiImplicitParam(name = "gender", dataTypeClass = String.class, example = "Male"),
             @ApiImplicitParam(name = "nationality", dataTypeClass = String.class, example = "Korea"),
-            @ApiImplicitParam(name = "languageNames", dataType = "list", value = "언어 이름을 순서대로 넣어주세요"),
+            @ApiImplicitParam(name = "languageCodes", dataType = "list", value = "언어 이름 코드를 순서대로 넣어주세요"),
             @ApiImplicitParam(name = "languageLevels", dataType = "list", value = "언어 레벨을 순서대로 넣어주세요"),
             @ApiImplicitParam(name = "latitude", dataTypeClass = Float.class, example = "10.23"),
             @ApiImplicitParam(name = "longitude", dataTypeClass = Float.class, example = "10.23"),

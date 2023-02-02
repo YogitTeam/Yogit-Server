@@ -1,7 +1,6 @@
 package com.yogit.server.board.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yogit.server.user.entity.CityName;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
@@ -25,7 +24,7 @@ public class PatchBoardReq {
 
     @ApiModelProperty(example = "SEOUL")
     @ApiParam(value = "도시 Name", required = true)
-    private String cityName;
+    private String localityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)

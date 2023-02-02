@@ -15,34 +15,34 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class City extends BaseEntity {
+public class Locality extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "city_id")
+    @Column(name = "locality_id")
     private Long id;
 
-    @OneToMany(mappedBy = "city")
+    @OneToMany(mappedBy = "locality")
     private List<User> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "city")
+    @OneToMany(mappedBy = "locality")
     private List<Board> boards = new ArrayList<>();
 
-    private String cityName;
+    private String localityName;
 
     @Builder
-    public City(User user, String cityName){
-        this.cityName = cityName;
+    public Locality(User user, String localityName){
+        this.localityName = localityName;
         this.users.add(user);
-        user.addCity(this);
+        user.addLocality(this);
     }
 
     public void addUser(User user){
         this.users.add(user);
-        user.addCity(this);
+        user.addLocality(this);
     }
 
     public void addBoard(Board board){
         this.boards.add(board);
-        board.addCity(this);
+        board.addLocality(this);
     }
 }

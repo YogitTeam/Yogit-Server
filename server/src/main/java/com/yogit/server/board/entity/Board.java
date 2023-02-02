@@ -5,7 +5,7 @@ import com.yogit.server.board.dto.request.PatchBoardReq;
 import com.yogit.server.config.domain.BaseEntity;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.report.entity.BoardReport;
-import com.yogit.server.user.entity.City;
+import com.yogit.server.user.entity.Locality;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,8 +28,8 @@ public class Board extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id")
-    private City city;
+    @JoinColumn(name = "locality_id")
+    private Locality locality;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -80,9 +80,9 @@ public class Board extends BaseEntity {
 
     // 생성자
     @Builder
-    public Board(Long id, City city, User host, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
+    public Board(Long id, Locality locality, User host, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, List<BoardUser> boardUsers, List<BoardImage> boardImages, Category category, List<BookMark> bookMarks, List<ClipBoard> clipBoards) {
         this.id = id;
-        this.city = city;
+        this.locality = locality;
         this.host = host;
         this.title = title;
         this.address = address;
@@ -103,9 +103,9 @@ public class Board extends BaseEntity {
     }
 
     // 개발 중 임시 생성자
-    public Board(CreateBoardReq dto, User host, City city, Category category){
+    public Board(CreateBoardReq dto, User host, Locality locality, Category category){
 //        this.id = id;
-        this.city = city;
+        this.locality = locality;
         this.host = host;
         this.title = dto.getTitle();
         this.address = dto.getAddress();
@@ -142,8 +142,8 @@ public class Board extends BaseEntity {
         this.boardImages.add(boardImage);
     }
 
-    public void updateBoard(PatchBoardReq dto, City city, Category category){
-        this.city = city;
+    public void updateBoard(PatchBoardReq dto, Locality locality, Category category){
+        this.locality = locality;
         this.title = dto.getTitle();
         this.address = dto.getAddress();
         this.addressDetail = dto.getAddressDetail();
@@ -178,7 +178,7 @@ public class Board extends BaseEntity {
         this.reportedCnt+=1;
     }
 
-    public void addCity(City city){
-        this.city = city;
+    public void addLocality(Locality locality){
+        this.locality = locality;
     }
 }

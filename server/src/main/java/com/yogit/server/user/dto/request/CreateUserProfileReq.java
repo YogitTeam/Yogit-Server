@@ -25,7 +25,7 @@ public class CreateUserProfileReq {
     String aboutMe;
     String job;
 
-    String cityName;
+    String localityName;
     List<String> interests;
 
     String refreshToken;

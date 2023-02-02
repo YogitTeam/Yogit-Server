@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum CityExceptionList {
+public enum LocalityExceptionList {
 
     // 에러 목록
-    NOT_FOUND_CITY("C0001", HttpStatus.NOT_FOUND, "존재하지 않는 City아이디입니다.");
+    NOT_FOUND_LOCALITY("C0001", HttpStatus.NOT_FOUND, "존재하지 않는 Locality아이디입니다.");
 
     private final String CODE;
     private final HttpStatus HTTPSTATUS;

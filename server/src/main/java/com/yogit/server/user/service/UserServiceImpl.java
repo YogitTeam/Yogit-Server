@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final LanguageRepository languageRepository;
     private final UserImageRepository userImageRepository;
-    private final CityRepository cityRepository;
+    private final LocalityRepository localityRepository;
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
@@ -116,20 +116,20 @@ public class UserServiceImpl implements UserService {
         user.addAdditionalProfile(createUserProfileReq.getLatitude(), createUserProfileReq.getLongitude(), createUserProfileReq.getAboutMe(), createUserProfileReq.getJob());
 
         // 기존에 존재하는 city인 경우
-        if(cityRepository.existsByCityName(createUserProfileReq.getCityName())){
-            City city = cityRepository.findByCityName(createUserProfileReq.getCityName());
-            city.addUser(user);
+        if(localityRepository.existsByLocalityName(createUserProfileReq.getLocalityName())){
+            Locality locality = localityRepository.findByLocalityName(createUserProfileReq.getLocalityName());
+            locality.addUser(user);
         }
         else{ // 기존에 존재하지 않는 city인 경우
-            City city = City.builder()
+            Locality locality = Locality.builder()
                     .user(user)
-                    .cityName(createUserProfileReq.getCityName())
+                    .localityName(createUserProfileReq.getLocalityName())
                     .build();
-            cityRepository.save(city);
-            city.addUser(user);
+            localityRepository.save(locality);
+            locality.addUser(user);
         }
 
-        userProfileRes.setCity(createUserProfileReq.getCityName());
+        userProfileRes.setLocality(createUserProfileReq.getLocalityName());
 
         for(String interestName : createUserProfileReq.getInterests()){
             Interest interest = Interest.builder()

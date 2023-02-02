@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,11 +24,11 @@ public class GetBoardRes {
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "도시 ID")
-    private Long cityId;
+    private Long localityId;
 
     @ApiModelProperty(example = "Seoul")
     @ApiParam(value = "도시 Name")
-    private String cityName;
+    private String localityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID")
@@ -131,10 +130,10 @@ public class GetBoardRes {
 연관관계 편의 메서드
  */
     @Builder
-    public GetBoardRes(Long boardId, Long cityId, String cityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, List<Long> userIds, List<String> userImageUrls, Boolean isJoinedUser, BaseStatus status, String createdAt, String updatedAt) {
+    public GetBoardRes(Long boardId, Long localityId, String localityName, Long hostId, String hostName, String profileImgUrl, String title, String address, String addressDetail, float longitute, float latitude, LocalDateTime date, String notice, String introduction, String kindOfPerson, int currentMember, int totalMember, Long categoryId, String categoryName, List<String> imageUrls, List<Long> imageIds, List<Long> userIds, List<String> userImageUrls, Boolean isJoinedUser, BaseStatus status, String createdAt, String updatedAt) {
         this.boardId = boardId;
-        this.cityId = cityId;
-        this.cityName = cityName;
+        this.localityId = localityId;
+        this.localityName = localityName;
         this.hostId = hostId;
         this.hostName = hostName;
         this.profileImgUrl = profileImgUrl;
@@ -165,8 +164,8 @@ public class GetBoardRes {
     public static GetBoardRes toDto(Board board, List<String> imageUrls, String profileImgUrl, List<User> users, List<String> userImageUrls, User user){
         return GetBoardRes.builder()
                 .boardId(board.getId())
-                .cityId(board.getCity().getId())
-                .cityName(board.getCity().getCityName())
+                .localityId(board.getLocality().getId())
+                .localityName(board.getLocality().getLocalityName())
                 .hostId(board.getHost().getId())
                 .hostName(board.getHost().getName())
                 .profileImgUrl(profileImgUrl)

@@ -27,8 +27,8 @@ public class User extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="city_id")
-    private City city;
+    @JoinColumn(name="locality_id")
+    private Locality locality;
 
     @OneToMany(mappedBy = "user")
     private List<BoardUser> boardUsers = new ArrayList<>();
@@ -152,8 +152,8 @@ public class User extends BaseEntity {
         this.job = job;
     }
 
-    public void addCity(City city){
-        this.city = city;
+    public void addLocality(Locality locality){
+        this.locality = locality;
     }
 
     public void addPhoneNum(String phoneNum){

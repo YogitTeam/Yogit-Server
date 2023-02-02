@@ -4,7 +4,6 @@ import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
-import com.yogit.server.board.dto.response.BoardRes;
 import com.yogit.server.board.dto.response.DeleteBoardRes;
 import com.yogit.server.board.dto.response.GetAllBoardRes;
 import com.yogit.server.board.dto.response.GetBoardRes;
@@ -20,12 +19,10 @@ import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
-import com.yogit.server.user.entity.City;
-import com.yogit.server.user.entity.CityName;
+import com.yogit.server.user.entity.Locality;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
-import com.yogit.server.user.exception.city.NotFoundCityException;
-import com.yogit.server.user.repository.CityRepository;
+import com.yogit.server.user.repository.LocalityRepository;
 import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +43,7 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final CityRepository cityRepository;
+    private final LocalityRepository localityRepository;
     private final CategoryRepository categoryRepository;
     private final AwsS3Service awsS3Service;
     private final BoardImageRepository boardImageRepository;
@@ -68,15 +65,15 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
         // 기존에 존재하는 city인 경우
-        City city = null;
-        if(cityRepository.existsByCityName(dto.getCityName())){
-            city = cityRepository.findByCityName(dto.getCityName());
+        Locality locality = null;
+        if(localityRepository.existsByLocalityName(dto.getLocalityName())){
+            locality = localityRepository.findByLocalityName(dto.getLocalityName());
         }
         else{ // 기존에 존재하지 않는 city인 경우
-            city = City.builder()
-                    .cityName(dto.getCityName())
+            locality = Locality.builder()
+                    .localityName(dto.getLocalityName())
                     .build();
-            cityRepository.save(city);
+            localityRepository.save(locality);
         }
 
         // category 조회
@@ -84,7 +81,7 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new NotFoundCategoryException());
 
         // board 객체 생성
-        Board board = new Board(dto, host, city, category);
+        Board board = new Board(dto, host, locality, category);
         board.changeBoardCurrentMember(0);// currentMember 디폴트=0
 
         // 호스트 boardUser 생성 및 board에 추가
@@ -129,15 +126,15 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new NotFoundUserException());
 
         // 기존에 존재하는 city인 경우
-        City city = null;
-        if(cityRepository.existsByCityName(dto.getCityName())){
-            city = cityRepository.findByCityName(dto.getCityName());
+        Locality locality = null;
+        if(localityRepository.existsByLocalityName(dto.getLocalityName())){
+            locality = localityRepository.findByLocalityName(dto.getLocalityName());
         }
         else{ // 기존에 존재하지 않는 city인 경우
-            city = City.builder()
-                    .cityName(dto.getCityName())
+            locality = Locality.builder()
+                    .localityName(dto.getLocalityName())
                     .build();
-            cityRepository.save(city);
+            localityRepository.save(locality);
         }
 
         Category category = categoryRepository.findById(dto.getCategoryId())
@@ -151,7 +148,7 @@ public class BoardServiceImpl implements BoardService{
             throw new NotHostOfBoardExcepion();
         }
 
-        board.updateBoard(dto, city, category);
+        board.updateBoard(dto, locality, category);
 
         //BoardImages aws s3에 저장 후 리파지토리에도 저장
         if(dto.getImages() != null){

@@ -38,7 +38,7 @@ public class UserProfileRes {
     float longtitude;
     float latitude;
 
-    String city;
+    String locality;
 
     List<String> interests = new ArrayList<>();
 

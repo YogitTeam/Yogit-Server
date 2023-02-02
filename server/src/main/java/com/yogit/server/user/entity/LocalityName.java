@@ -1,6 +1,6 @@
 package com.yogit.server.user.entity;
 
-public enum CityName {
+public enum LocalityName {
     SEOUL,
     BUSAN,
     JEJU

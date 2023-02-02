@@ -1,14 +1,7 @@
 package com.yogit.server.board.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yogit.server.board.entity.Board;
-import com.yogit.server.user.entity.City;
-import com.yogit.server.user.entity.CityName;
-import com.yogit.server.user.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,7 +18,7 @@ public class CreateBoardReq {
 
     @ApiModelProperty(example = "SEOUL")
     @ApiParam(value = "도시 Name", required = true)
-    private String cityName;
+    private String localityName;
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "호스트 ID", required = true)

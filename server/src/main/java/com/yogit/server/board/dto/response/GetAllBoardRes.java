@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -22,11 +21,11 @@ public class GetAllBoardRes {
 
     @ApiModelProperty(example = "1")
     @ApiParam(value = "도시 ID")
-    private Long cityId;
+    private Long localityId;
 
     @ApiModelProperty(example = "SEOUL")
     @ApiParam(value = "도시 Name")
-    private String cityName;
+    private String localityName;
 
     @ApiModelProperty(example = "추가 예정")
     @ApiParam(value = "유저 프로필 이미지 url")
@@ -68,8 +67,8 @@ public class GetAllBoardRes {
     public static GetAllBoardRes toDto(Board board, String imageUrl, String profileImgUrl){
         return GetAllBoardRes.builder()
                 .boardId(board.getId())
-                .cityId(board.getCity().getId())
-                .cityName(board.getCity().getCityName())
+                .localityId(board.getLocality().getId())
+                .localityName(board.getLocality().getLocalityName())
                 .profileImgUrl(profileImgUrl)
                 .title(board.getTitle())
                 .date(board.getDate())
@@ -83,10 +82,10 @@ public class GetAllBoardRes {
     }
 
     @Builder
-    public GetAllBoardRes(Long boardId, Long cityId, String cityName, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
+    public GetAllBoardRes(Long boardId, Long localityId, String localityName, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
         this.boardId = boardId;
-        this.cityId = cityId;
-        this.cityName = cityName;
+        this.localityId = localityId;
+        this.localityName = localityName;
         this.profileImgUrl = profileImgUrl;
         this.title = title;
         this.date = date;

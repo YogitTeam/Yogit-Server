@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         validateRefreshToken(createUserProfileReq.getUserId(), createUserProfileReq.getRefreshToken());
 
-        if(!createUserProfileReq.getGender().equals("Prefer not to say") && !createUserProfileReq.getGender().equals("Male") && !createUserProfileReq.getGender().equals("Female")) throw new UserGenderException();
+        if(createUserProfileReq.getGender() != null && !createUserProfileReq.getGender().equals("Prefer not to say") && !createUserProfileReq.getGender().equals("Male") && !createUserProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
         User user = userRepository.findByUserId(createUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserInfo(createUserProfileReq.getUserName(), createUserProfileReq.getUserAge(), createUserProfileReq.getGender(), createUserProfileReq.getNationality());
@@ -128,7 +128,6 @@ public class UserServiceImpl implements UserService {
             cityRepository.save(city);
             city.addUser(user);
         }
-
         userProfileRes.setCity(createUserProfileReq.getCityName());
 
         for(String interestName : createUserProfileReq.getInterests()){

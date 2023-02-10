@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -130,19 +131,51 @@ public class UserServiceImpl implements UserService {
         }
         userProfileRes.setCity(createUserProfileReq.getCityName());
 
+        // 관심사 등록
         for(String interestName : createUserProfileReq.getInterests()){
-            Interest interest = Interest.builder()
-                    .name(interestName)
-                    .build();
-            interestRepository.save(interest);
+            // 기존에 존재하는 관심사일 경우
+            if(interestRepository.existsByName(interestName)){
+                // 관심사 검색
+                Interest interest = interestRepository.findByName(interestName);
+                // 관계 중복 형성을 막기 위함
+                if(!userInterestRepository.existsByUserIdAndInterestId(createUserProfileReq.getUserId(), interest.getId())) {
+                    // 관계 주입
+                    UserInterest userInterest = UserInterest.builder()
+                            .user(user)
+                            .interest(interest)
+                            .build();
+                    userInterestRepository.save(userInterest);
+                }
+            }
+            else{ // 기존에 존재하지 않는 관심사일 경우
+                // 관심사 생성
+                Interest interest = Interest.builder()
+                        .name(interestName)
+                        .build();
+                interestRepository.save(interest);
+                // 관계 주입
+                UserInterest userInterest = UserInterest.builder()
+                        .user(user)
+                        .interest(interest)
+                        .build();
+                userInterestRepository.save(userInterest);
+            }
+        }
 
-            UserInterest userInterest = UserInterest.builder()
-                    .user(user)
-                    .interest(interest)
-                    .build();
-            userInterestRepository.save(userInterest);
+        // res : 관심사
+        List<UserInterest> userInterests = userInterestRepository.findAllByUserId(createUserProfileReq.getUserId());
+        if(!userInterests.isEmpty()){
+            for(UserInterest ui : userInterests){
+                userProfileRes.addInterest(ui.getInterest().getName());
+            }
+        }
 
-            userProfileRes.getInterests().add(interestName);
+        // res : 프로필 사진
+        userProfileRes.setProfileImg(awsS3Service.makeUrlOfFilename(user.getProfileImg()));
+        List<UserImage> userImageList = userImageRepository.findAllByUserId(user.getId());
+        for (UserImage userImage : userImageList){
+            if(userImage.getStatus().equals(BaseStatus.INACTIVE)) continue;
+            userProfileRes.addImage(awsS3Service.makeUrlOfFilename(userImage.getImgUUid()));
         }
 
         return ApplicationResponse.ok(userProfileRes);

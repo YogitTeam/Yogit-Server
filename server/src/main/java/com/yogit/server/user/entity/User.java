@@ -146,10 +146,10 @@ public class User extends BaseEntity {
     }
 
     public void addAdditionalProfile(float latitude, float longitude, String aboutMe, String job){
-        this.latitude = latitude;
-        this.longtitude = longitude;
-        this.aboutMe = aboutMe;
-        this.job = job;
+        if(latitude != 0) this.latitude = latitude;
+        if(longitude != 0) this.longtitude = longitude;
+        if(aboutMe != null) this.aboutMe = aboutMe;
+        if(job != null) this.job = job;
     }
 
     public void addCity(City city){

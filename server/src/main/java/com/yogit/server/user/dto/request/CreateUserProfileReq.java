@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -17,8 +18,8 @@ public class CreateUserProfileReq {
     String gender;
     String nationality;
 
-    List<String> languageCodes;
-    List<Integer> languageLevels;
+    List<String> languageCodes = new ArrayList<>();
+    List<Integer> languageLevels = new ArrayList<>();
 
     float latitude;
     float longitude;
@@ -26,7 +27,7 @@ public class CreateUserProfileReq {
     String job;
 
     String cityName;
-    List<String> interests;
+    List<String> interests = new ArrayList<>();
 
     String refreshToken;
 }

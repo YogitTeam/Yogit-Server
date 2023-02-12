@@ -97,6 +97,8 @@ public class UserServiceImpl implements UserService {
         user.changeUserInfo(createUserProfileReq.getUserName(), createUserProfileReq.getUserAge(), createUserProfileReq.getGender(), createUserProfileReq.getNationality());
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
+        if(createUserProfileReq.getAboutMe() != null)userProfileRes.setAboutMe(createUserProfileReq.getAboutMe());
+        if(createUserProfileReq.getJob() != null)userProfileRes.setJob(createUserProfileReq.getJob());
 
         if(createUserProfileReq.getLanguageCodes() != null) {
             // 기존 languages 삭제

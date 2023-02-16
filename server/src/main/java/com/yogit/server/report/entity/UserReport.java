@@ -1,7 +1,6 @@
 package com.yogit.server.report.entity;
 
 import com.yogit.server.report.enums.ReportStatus;
-import com.yogit.server.report.enums.ReportType;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,7 +17,7 @@ import javax.persistence.Entity;
 public class UserReport extends Report{
 
     @Builder
-    public UserReport(String content, User reportingUser, User reportedUser, ReportType reportType, ReportStatus reportStatus) {
-        super(content, reportingUser, reportedUser, reportType, reportStatus);
+    public UserReport(String content, User reportingUser, User reportedUser, Integer reportTypeNum, ReportStatus reportStatus) {
+        super(content, reportingUser, reportedUser, reportTypeNum, reportStatus);
     }
 }

@@ -52,7 +52,7 @@ public class CommentReportServiceImpl implements CommentReportService{
         }
 
 
-        CommentReport commentReport = new CommentReport(dto.getContent(), reportingUser, reportedUser, dto.getReportType(), ReportStatus.ONGOIN, reportedComment);
+        CommentReport commentReport = new CommentReport(dto.getContent(), reportingUser, reportedUser, dto.getReportTypeNum(), ReportStatus.ONGOIN, reportedComment);
         commentReportRepository.save(commentReport);
 
         reportedComment.changeReportedCnt();//신고 당한 횟수 +1 증가

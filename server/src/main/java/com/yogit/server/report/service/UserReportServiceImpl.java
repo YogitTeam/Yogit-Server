@@ -46,7 +46,7 @@ public class UserReportServiceImpl implements UserReportService{
         }
 
         //신고 객체 생성
-        UserReport userReport = new UserReport(dto.getContent(), reportingUser, reportedUser, dto.getReportType(), ReportStatus.ONGOIN);
+        UserReport userReport = new UserReport(dto.getContent(), reportingUser, reportedUser, dto.getReportTypeNum(), ReportStatus.ONGOIN);
         userReportRepository.save(userReport);
 
         reportingUser.changeReportingCnt();  //신고하는 유저 신고 한 횟수 1증가

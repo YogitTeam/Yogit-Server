@@ -2,7 +2,6 @@ package com.yogit.server.report.entity;
 
 import com.yogit.server.board.entity.Board;
 import com.yogit.server.report.enums.ReportStatus;
-import com.yogit.server.report.enums.ReportType;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,8 +21,8 @@ public class BoardReport extends Report{
     private Board board;
 
     @Builder
-    public BoardReport(String content, User reportingUser, User reportedUser, ReportType reportType, ReportStatus reportStatus, Board board) {
-        super(content, reportingUser, reportedUser, reportType, reportStatus);
+    public BoardReport(String content, User reportingUser, User reportedUser, Integer reportTypeNum, ReportStatus reportStatus, Board board) {
+        super(content, reportingUser, reportedUser, reportTypeNum, reportStatus);
         this.board = board;
     }
 }

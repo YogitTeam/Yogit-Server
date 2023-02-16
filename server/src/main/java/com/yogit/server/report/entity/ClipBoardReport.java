@@ -1,9 +1,7 @@
 package com.yogit.server.report.entity;
 
-import com.yogit.server.board.entity.Board;
 import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.report.enums.ReportStatus;
-import com.yogit.server.report.enums.ReportType;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,8 +21,8 @@ public class ClipBoardReport extends Report{
     private ClipBoard clipBoard;
 
     @Builder
-    public ClipBoardReport(String content, User reportingUser, User reportedUser, ReportType reportType, ReportStatus reportStatus, ClipBoard clipBoard) {
-        super(content, reportingUser, reportedUser, reportType, reportStatus);
+    public ClipBoardReport(String content, User reportingUser, User reportedUser, Integer reportTypeNum, ReportStatus reportStatus, ClipBoard clipBoard) {
+        super(content, reportingUser, reportedUser, reportTypeNum, reportStatus);
         this.clipBoard = clipBoard;
     }
 }

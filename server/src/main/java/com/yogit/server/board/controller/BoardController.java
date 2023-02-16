@@ -4,10 +4,7 @@ package com.yogit.server.board.controller;
 import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
-import com.yogit.server.board.dto.response.BoardRes;
-import com.yogit.server.board.dto.response.DeleteBoardRes;
-import com.yogit.server.board.dto.response.GetAllBoardRes;
-import com.yogit.server.board.dto.response.GetBoardRes;
+import com.yogit.server.board.dto.response.*;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.user.entity.CityName;
@@ -16,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -138,14 +134,14 @@ public class BoardController {
      * 게시글 카테고리 별 전체 조회
      * @author 토마스
      */
-    @ApiOperation(value = "게시글 카테고리 별 전체 조회", notes = "그룹 게시글 카테고리 별 전체 조회 요청.")
+    @ApiOperation(value = "게시글 카테고리 별(1개) 전체 조회", notes = "그룹 게시글 카테고리 별 전체 조회 요청.")
     @ApiResponses({
             @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/category")
-    public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
+    public ApplicationResponse<GetAllBoardsByCategoryRes> findAllBoardsByCategory(@RequestBody @Validated GetAllBoardsByCategoryReq getAllBoardsByCategoryReq){
         return boardService.findAllBoardsByCategory(getAllBoardsByCategoryReq);
     }
 

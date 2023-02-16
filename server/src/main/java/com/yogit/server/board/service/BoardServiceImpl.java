@@ -4,10 +4,7 @@ import com.yogit.server.block.repository.BlockRepository;
 import com.yogit.server.board.dto.request.*;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageReq;
 import com.yogit.server.board.dto.request.boardimage.DeleteBoardImageRes;
-import com.yogit.server.board.dto.response.BoardRes;
-import com.yogit.server.board.dto.response.DeleteBoardRes;
-import com.yogit.server.board.dto.response.GetAllBoardRes;
-import com.yogit.server.board.dto.response.GetBoardRes;
+import com.yogit.server.board.dto.response.*;
 import com.yogit.server.board.entity.*;
 import com.yogit.server.board.exception.InvalidMyClubTypeException;
 import com.yogit.server.board.exception.NotFoundBoardException;
@@ -21,14 +18,13 @@ import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.City;
-import com.yogit.server.user.entity.CityName;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
-import com.yogit.server.user.exception.city.NotFoundCityException;
 import com.yogit.server.user.repository.CityRepository;
 import com.yogit.server.user.repository.UserRepository;
 import com.yogit.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -296,7 +292,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetAllBoardRes>> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
+    public ApplicationResponse<GetAllBoardsByCategoryRes> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
 
         userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
@@ -312,12 +308,13 @@ public class BoardServiceImpl implements BoardService{
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 
-        Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
+        Page<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
         //  보드 res에 이미지uuid -> aws s3 url로 변환
         List<GetAllBoardRes> boardsRes = boards.stream()
                 .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
                 .collect(Collectors.toList());
-        return ApplicationResponse.ok(boardsRes);
+
+        return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(boardsRes, boards.getTotalPages()));
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package com.yogit.server.board.repository;
 
 import com.yogit.server.board.entity.Board;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +21,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Slice<Board> findAllBoards(Pageable pageable);
 
     @Query("select b from Board b where b.status = 'ACTIVE' and b.category.id = :categoryId")
-    Slice<Board> findAllBoardsByCategory(Pageable pageable, @Param("categoryId") Long categoryId);
+    Page<Board> findAllBoardsByCategory(Pageable pageable, @Param("categoryId") Long categoryId);
 
     @Query("select b from Board b where b.status = 'ACTIVE' and b.host.id = :userId")
     Slice<Board> findMyClubBoardsByUserId(Pageable pageable, @Param("userId") Long userId);

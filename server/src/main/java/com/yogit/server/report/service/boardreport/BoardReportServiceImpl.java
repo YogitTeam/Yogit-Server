@@ -52,7 +52,7 @@ public class BoardReportServiceImpl implements BoardReportService {
             throw new AlreadyReportBoardException();
         }
 
-        BoardReport boardReport = new BoardReport(dto.getContent(), reportingUser, reportedUser, dto.getReportType(), ReportStatus.ONGOIN, reportedBoard);
+        BoardReport boardReport = new BoardReport(dto.getContent(), reportingUser, reportedUser, dto.getReportTypeNum(), ReportStatus.ONGOIN, reportedBoard);
         boardReportRepository.save(boardReport);
 
         reportedBoard.changeReportedCnt();//게시글 신고 당한 횟수 +1 증가

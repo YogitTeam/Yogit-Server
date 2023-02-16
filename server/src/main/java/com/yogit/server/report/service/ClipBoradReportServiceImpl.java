@@ -52,7 +52,7 @@ public class ClipBoradReportServiceImpl implements ClipBoradReportService{
             throw new AlreadyReportClipBoardException();
         }
 
-        ClipBoardReport clipBoardReport = new ClipBoardReport(dto.getContent(), reportingUser, reportedUser, dto.getReportType(), ReportStatus.ONGOIN, reportedClipBoard);
+        ClipBoardReport clipBoardReport = new ClipBoardReport(dto.getContent(), reportingUser, reportedUser, dto.getReportTypeNum(), ReportStatus.ONGOIN, reportedClipBoard);
         clipBoardReportRepository.save(clipBoardReport);
 
         reportedClipBoard.changeReportedCnt();//클립 보드 신고 당한 횟수 +1 증가

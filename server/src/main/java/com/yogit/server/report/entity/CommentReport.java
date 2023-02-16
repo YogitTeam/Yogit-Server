@@ -4,7 +4,6 @@ import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.entity.Comment;
 import com.yogit.server.report.dto.req.CreateCommentReportReq;
 import com.yogit.server.report.enums.ReportStatus;
-import com.yogit.server.report.enums.ReportType;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,8 +23,8 @@ public class CommentReport extends Report{
     private Comment comment;
 
     @Builder
-    public CommentReport(String content, User reportingUser, User reportedUser, ReportType reportType, ReportStatus reportStatus, Comment comment) {
-        super(content, reportingUser, reportedUser, reportType, reportStatus);
+    public CommentReport(String content, User reportingUser, User reportedUser, Integer reportTypeNum, ReportStatus reportStatus, Comment comment) {
+        super(content, reportingUser, reportedUser, reportTypeNum, reportStatus);
         this.comment = comment;
     }
 

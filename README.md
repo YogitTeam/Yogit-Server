@@ -1,1 +1,3 @@
-# Yogit-Server
+# Yogit-Server  
+
+주제: 현지의 외국인과 로컬인이 함께 하는 관심사 모임 앱입니다.

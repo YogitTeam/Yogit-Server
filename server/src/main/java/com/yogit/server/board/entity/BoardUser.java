@@ -1,6 +1,7 @@
 package com.yogit.server.board.entity;
 
 import com.yogit.server.config.domain.BaseEntity;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,5 +41,9 @@ public class BoardUser extends BaseEntity {
 
     public void changeApplyStatus(){
         this.applyStatus = 1;
+    }
+
+    public void changeStatusToInactive(){
+        this.setStatus(BaseStatus.INACTIVE);
     }
 }

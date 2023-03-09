@@ -85,7 +85,8 @@ public class BoardServiceImpl implements BoardService{
 
         // 호스트 boardUser 생성 및 board에 추가
         board.addBoardUser(new BoardUser(host, board));
-        board.addCurrentMember();// 보드 현재 인원 +1
+        //board.addCurrentMember();// 보드 현재 인원 +1
+
 
         // board 저장
         Board savedBoard = boardRepository.save(board);
@@ -102,7 +103,11 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
-        List<User> participants = board.getBoardUsers().stream()
+        // 보드 현재 인원
+        List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(board.getId());
+        board.changeBoardCurrentMember(participantsOrigin.size());
+
+        List<User> participants = participantsOrigin.stream()
                 .map(boardUser -> boardUser.getUser())
                 .collect(Collectors.toList());
 
@@ -373,7 +378,11 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
 
-        List<User> participants = board.getBoardUsers().stream()
+        // 보드 현재 인원
+        List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(board.getId());
+        board.changeBoardCurrentMember(participantsOrigin.size());
+
+        List<User> participants = participantsOrigin.stream()
                 .map(boardUser -> boardUser.getUser())
                 .collect(Collectors.toList());
 

@@ -19,5 +19,6 @@ public interface BoardUserRepository extends JpaRepository<BoardUser, Long> {
     @Query("select bu from BoardUser bu where bu.status = 'ACTIVE' and bu.user.id = :userId")
     Slice<BoardUser> findByUserId(@Param("userId") Long userId);
 
-    List<BoardUser> findAllByBoardId(Long boardId);
+    @Query("select bu from BoardUser bu where bu.status = 'ACTIVE' and bu.board.id = :boardId")
+    List<BoardUser> findAllByBoardId(@Param("boardId") Long boardId);
 }

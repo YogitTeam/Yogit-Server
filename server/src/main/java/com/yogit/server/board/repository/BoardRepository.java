@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,5 +26,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("select b from Board b where b.status = 'ACTIVE' and b.host.id = :userId")
     Slice<Board> findMyClubBoardsByUserId(Pageable pageable, @Param("userId") Long userId);
+
+    @Query("select b from Board b where b.status = 'ACTIVE' and b.host.id = :userId")
+    List<Board> findBoardsByUserId(@Param("userId") Long userId);
 
 }

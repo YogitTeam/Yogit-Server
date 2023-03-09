@@ -216,7 +216,7 @@ public class BoardServiceImpl implements BoardService{
 
         // jpa 다중 정렬 order
         Sort sort = Sort.by(
-                Sort.Order.desc("date")
+                Sort.Order.desc("boardId")
         );
         PageRequest pageRequest = PageRequest.of(cursor, 10, sort); // 페이징 요청 객체
 
@@ -249,7 +249,7 @@ public class BoardServiceImpl implements BoardService{
 
         // jpa 다중 정렬 order
         Sort sort = Sort.by(
-                Sort.Order.desc("date")
+                Sort.Order.desc("boardId")
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 
@@ -301,7 +301,7 @@ public class BoardServiceImpl implements BoardService{
 
         // jpa 다중 정렬 order
         Sort sort = Sort.by(
-                Sort.Order.desc("date")
+                Sort.Order.desc("boardId")
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 
@@ -337,7 +337,7 @@ public class BoardServiceImpl implements BoardService{
 
         // jpa 다중 정렬 order
         Sort sort = Sort.by(
-                Sort.Order.desc("date")
+                Sort.Order.desc("boardId")
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 

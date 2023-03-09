@@ -2,6 +2,7 @@ package com.yogit.server.board.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yogit.server.board.entity.Board;
+import com.yogit.server.board.entity.BoardUser;
 import com.yogit.server.config.domain.BaseStatus;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
@@ -11,6 +12,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +33,7 @@ public class GetAllBoardRes {
 
     @ApiModelProperty(example = "추가 예정")
     @ApiParam(value = "유저 프로필 이미지 url")
-    private String profileImgUrl;
+    private List<String> profileImgUrls;
 
     @ApiModelProperty(example = "경복궁 탐사입니다.")
     @ApiParam(value = "게시글 제목")
@@ -65,12 +68,13 @@ public class GetAllBoardRes {
     @ApiParam(value = "객체 상태")
     private BaseStatus status;
 
-    public static GetAllBoardRes toDto(Board board, String imageUrl, String profileImgUrl){
+    public static GetAllBoardRes toDto(Board board, String imageUrl, List<String> profileImgUrls){
+        if(profileImgUrls.size() > 6) profileImgUrls = profileImgUrls.subList(0,6);
         return GetAllBoardRes.builder()
                 .boardId(board.getId())
                 .cityId(board.getCity().getId())
                 .cityName(board.getCity().getCityName())
-                .profileImgUrl(profileImgUrl)
+                .profileImgUrls(profileImgUrls)
                 .title(board.getTitle())
                 .date(board.getDate())
                 .currentMember(board.getCurrentMember())
@@ -83,11 +87,11 @@ public class GetAllBoardRes {
     }
 
     @Builder
-    public GetAllBoardRes(Long boardId, Long cityId, String cityName, String profileImgUrl, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
+    public GetAllBoardRes(Long boardId, Long cityId, String cityName, List<String> profileImgUrls, String title, LocalDateTime date, int currentMember, int totalMember, Long categoryId, String imageUrl, Long imageId, BaseStatus status) {
         this.boardId = boardId;
         this.cityId = cityId;
         this.cityName = cityName;
-        this.profileImgUrl = profileImgUrl;
+        this.profileImgUrls = profileImgUrls;
         this.title = title;
         this.date = date;
         this.currentMember = currentMember;

@@ -226,7 +226,7 @@ public class BoardServiceImpl implements BoardService{
             Slice<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, categoryList.get(i).getId());
             //  보드 res에 이미지uuid -> aws s3 url로 변환
             List<GetAllBoardRes> boardsRes = boards.stream()
-                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                     .collect(Collectors.toList());
             // 전체 리스트에 카테고리 별 리스트 추가
             res.add(boardsRes);
@@ -266,7 +266,7 @@ public class BoardServiceImpl implements BoardService{
             //  보드 res에 이미지uuid -> aws s3 url로 변환
             if(boards != null){
                 res = boards.stream()
-                        .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                        .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                         .collect(Collectors.toList());
             }
         }
@@ -278,7 +278,7 @@ public class BoardServiceImpl implements BoardService{
             if(boardUsers!= null && !boardUsers.isEmpty()){
                 res = boardUsers.stream()
                         .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
-                        .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(user.getProfileImg())))
+                        .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), boardUser.getBoard().getBoardUsers().stream().map(board -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                         .collect(Collectors.toList());
             }
         }
@@ -313,7 +313,7 @@ public class BoardServiceImpl implements BoardService{
         //  보드 res에 이미지uuid -> aws s3 url로 변환
         List<GetAllBoardRes> boardsRes = boards.stream()
                 .filter(board -> !blockedUsers.contains(board.getHost())) // 차단당한 유저의 데이터 제외
-                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg())))
+                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
         return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(boardsRes, boards.getTotalPages()));
@@ -352,7 +352,7 @@ public class BoardServiceImpl implements BoardService{
             //  보드 res에 이미지uuid -> aws s3 url로 변환
             List<GetAllBoardRes> boardsRes = boards.stream()
                     .filter(board -> !blockedUsers.contains(board.getHost()))// 차단당한 유저의 데이터 제외
-                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), awsS3Service.makeUrlOfFilename(board.getHost().getProfileImg())))
+                    .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                     .collect(Collectors.toList());
 
             boardsByCategories.add(boardsRes);

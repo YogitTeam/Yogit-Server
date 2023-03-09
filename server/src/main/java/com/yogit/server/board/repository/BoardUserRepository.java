@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,4 +18,6 @@ public interface BoardUserRepository extends JpaRepository<BoardUser, Long> {
 
     @Query("select bu from BoardUser bu where bu.status = 'ACTIVE' and bu.user.id = :userId")
     Slice<BoardUser> findByUserId(@Param("userId") Long userId);
+
+    List<BoardUser> findAllByBoardId(Long boardId);
 }

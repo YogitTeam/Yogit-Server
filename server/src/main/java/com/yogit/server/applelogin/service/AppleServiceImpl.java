@@ -107,6 +107,7 @@ public class AppleServiceImpl implements AppleService {
                     .orElseThrow(() -> new NotFoundUserException());
             tokenResponse.setUserId(findUser.getId());
             tokenResponse.setUserName(findUser.getName());
+            tokenResponse.setRefresh_token(refresh_token);
             findUser.changeUserStatus(UserStatus.LOGIN);
         }
 

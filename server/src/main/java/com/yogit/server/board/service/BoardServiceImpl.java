@@ -271,11 +271,20 @@ public class BoardServiceImpl implements BoardService{
         if(dto.getMyClubType().equals(MyClubType.OPENED_CLUB.toString())){
             boards = boardRepository.findMyClubBoardsByUserId(pageRequest, dto.getUserId());
 
+
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            if(boards != null){
+            /*if(boards != null){
                 res = boards.stream()
                         .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                         .collect(Collectors.toList());
+            }*/
+
+            if(boards != null && !boards.isEmpty()){
+                for(Board b: boards){
+                    List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(b.getId());// 보드 현재 인원 반영
+                    b.changeBoardCurrentMember(participantsOrigin.size());
+                    res.add(GetAllBoardRes.toDto(b, awsS3Service.makeUrlOfFilename(b.getBoardImagesUUids().get(0)), b.getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+                }
             }
         }
         else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())) {
@@ -288,7 +297,7 @@ public class BoardServiceImpl implements BoardService{
 
                         List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(bu.getBoard().getId());// 보드 현재 인원 반영
                         bu.getBoard().changeBoardCurrentMember(participantsOrigin.size());
-                        res.add(GetAllBoardRes.toDto(bu.getBoard(), awsS3Service.makeUrlOfFilename(bu.getBoard().getBoardImagesUUids().get(0)), bu.getBoard().getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+                        res.add(GetAllBoardRes.toDto(bu.getBoard(), awsS3Service.makeUrlOfFilename(bu.getBoard().getBoardImagesUUids().get(0)), bu.getBoard().getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
                     }
                 }
             }

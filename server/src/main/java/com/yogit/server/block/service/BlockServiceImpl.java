@@ -11,6 +11,7 @@ import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.NotFoundUserException;
 import com.yogit.server.user.repository.UserRepository;
@@ -28,15 +29,15 @@ public class BlockServiceImpl implements BlockService{
 
     private final BlockRepository blockRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final BoardRepository boardRepository;
     private final BoardUserRepository boardUserRepository;
+    private final TokenService tokenService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<BlockRes> createBlock(CreateBlockReq dto){
 
-        userService.validateRefreshToken(dto.getBlockingUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getBlockingUserId(), dto.getRefreshToken());
 
         // 차단 생성하는 유저 조회
         User blockingUser = userRepository.findByUserId(dto.getBlockingUserId())
@@ -92,5 +93,10 @@ public class BlockServiceImpl implements BlockService{
 
         BlockRes res = BlockRes.toDto(block);
         return ApplicationResponse.create("자단하였습니다.", res);
+    }
+
+    @Override
+    public boolean isBlockingUser(Long blockingUserId, Long blockedUserId){
+        return blockRepository.existsByBlockingUserIdAndBlockedUserId(blockingUserId, blockedUserId);
     }
 }

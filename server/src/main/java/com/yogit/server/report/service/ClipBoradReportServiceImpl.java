@@ -4,6 +4,7 @@ import com.yogit.server.board.entity.ClipBoard;
 import com.yogit.server.board.exception.clipboard.NotFoundClipBoardException;
 import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.report.dto.req.CreateClipBoardReportReq;
 import com.yogit.server.report.dto.res.ClipBoardReportRes;
 import com.yogit.server.report.entity.ClipBoardReport;
@@ -28,13 +29,13 @@ public class ClipBoradReportServiceImpl implements ClipBoradReportService{
     private final UserRepository userRepository;
     private final ClipBoardRepository clipBoardRepository;
     private final UserService userService;
-
+    private final TokenService tokenService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<ClipBoardReportRes> createClipBoardReport(CreateClipBoardReportReq dto) {
 
-        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
 
         User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());

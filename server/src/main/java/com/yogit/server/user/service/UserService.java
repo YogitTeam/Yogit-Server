@@ -6,7 +6,6 @@ import com.yogit.server.user.dto.response.*;
 import com.yogit.server.user.entity.User;
 
 public interface UserService {
-    Void validateRefreshToken(Long userId, String refreshToken);
 
     ApplicationResponse<UserProfileRes> enterProfile(CreateUserProfileReq createUserProfileReq);
 

@@ -2,8 +2,10 @@ package com.yogit.server.user.service;
 
 import com.yogit.server.applelogin.exception.InvalidRefreshTokenException;
 import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
+import com.yogit.server.block.service.BlockService;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.dto.request.*;
 import com.yogit.server.user.dto.response.LogoutRes;
@@ -42,26 +44,8 @@ public class UserServiceImpl implements UserService {
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
     private final AwsS3Service awsS3Service;
-
-    /**
-     * 리프레시 토큰 검증
-     *
-     * refresh_token은 만료되지 않기 때문에 권한이 필요한 요청일 경우
-     * 굳이 매번 애플 ID 서버로부터 refresh_token을 통해 access_token을 발급 받기보다는
-     * 유저의 refresh_token을 따로 DB나 기타 저장소에 저장해두고 캐싱해두고 조회해서 검증하는편이 성능면에서 낫다는 자료를 참고
-     * https://hwannny.tistory.com/71
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Void validateRefreshToken(Long userId, String refreshToken){
-        User user = userRepository.findByUserId(userId).orElseThrow(() -> new NotFoundUserException());
-
-        if(user.getRefreshToken() == null) throw new NotFoundRefreshTokenException();
-
-        if(!user.getRefreshToken().equals(refreshToken)) throw new InvalidRefreshTokenException();
-
-        return null;
-    }
+    private final BlockService blockService;
+    private final TokenService tokenService;
 
     // 국가 정보 조회 Open Api
     JSONObject getNation(String nationality) {
@@ -89,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApplicationResponse<UserProfileRes> enterProfile(CreateUserProfileReq createUserProfileReq){
 
-        validateRefreshToken(createUserProfileReq.getUserId(), createUserProfileReq.getRefreshToken());
+        tokenService.validateRefreshToken(createUserProfileReq.getUserId(), createUserProfileReq.getRefreshToken());
 
         if(createUserProfileReq.getGender() != null && !createUserProfileReq.getGender().equals("Prefer not to say") && !createUserProfileReq.getGender().equals("Male") && !createUserProfileReq.getGender().equals("Female")) throw new UserGenderException();
 
@@ -186,11 +170,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq){
 
-        validateRefreshToken(getUserProfileReq.getRefreshTokenUserId(), getUserProfileReq.getRefreshToken());
+        tokenService.validateRefreshToken(getUserProfileReq.getRefreshTokenUserId(), getUserProfileReq.getRefreshToken());
 
         User user = userRepository.findByUserId(getUserProfileReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
         UserProfileRes userProfileRes = UserProfileRes.create(user);
+
+        // 차단 유무
+        if(blockService.isBlockingUser(getUserProfileReq.getRefreshTokenUserId(), getUserProfileReq.getUserId())) userProfileRes.setIsBlockingUser(1);
+        else userProfileRes.setIsBlockingUser(0);
 
         // 언어
         List<Language> languages = languageRepository.findAllByUserId(getUserProfileReq.getUserId());
@@ -236,7 +224,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApplicationResponse<UserImagesRes> getUserImage(GetUserImageReq getUserImageReq){
 
-        validateRefreshToken(getUserImageReq.getUserId(), getUserImageReq.getRefreshToken());
+        tokenService.validateRefreshToken(getUserImageReq.getUserId(), getUserImageReq.getRefreshToken());
 
         User user = userRepository.findByUserId(getUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
         UserImagesRes userImagesRes = new UserImagesRes();
@@ -258,7 +246,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ApplicationResponse<UserImagesRes> AddAndDeleteUserImage(AddAndDeleteUserImageReq addAndDeleteUserImageReq){
 
-        validateRefreshToken(addAndDeleteUserImageReq.getUserId(), addAndDeleteUserImageReq.getRefreshToken());
+        tokenService.validateRefreshToken(addAndDeleteUserImageReq.getUserId(), addAndDeleteUserImageReq.getRefreshToken());
 
         User user = userRepository.findByUserId(addAndDeleteUserImageReq.getUserId()).orElseThrow(NotFoundUserException::new);
 
@@ -342,7 +330,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ApplicationResponse<UserDeviceTokenRes> addDeviceToken(AddUserDeviceTokenReq addUserDeviceTokenReq){
 
-        validateRefreshToken(addUserDeviceTokenReq.getUserId(), addUserDeviceTokenReq.getRefreshToken());
+        tokenService.validateRefreshToken(addUserDeviceTokenReq.getUserId(), addUserDeviceTokenReq.getRefreshToken());
 
         User user = userRepository.findByUserId(addUserDeviceTokenReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.addDeviceToken(addUserDeviceTokenReq.getDeviceToken());
@@ -356,7 +344,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ApplicationResponse<LogoutRes> logout(LogoutReq logoutReq){
 
-        validateRefreshToken(logoutReq.getUserId(), logoutReq.getRefreshToken());
+        tokenService.validateRefreshToken(logoutReq.getUserId(), logoutReq.getRefreshToken());
 
         User user = userRepository.findByUserId(logoutReq.getUserId()).orElseThrow(NotFoundUserException::new);
         user.changeUserStatus(UserStatus.LOGOUT);

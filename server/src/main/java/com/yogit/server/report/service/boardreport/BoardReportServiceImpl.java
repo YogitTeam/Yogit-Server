@@ -5,6 +5,7 @@ import com.yogit.server.board.exception.NotFoundBoardException;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.service.BoardService;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.report.dto.req.CreateBoardReportReq;
 import com.yogit.server.report.dto.res.BoardReportRes;
 import com.yogit.server.report.entity.BoardReport;
@@ -29,12 +30,13 @@ public class BoardReportServiceImpl implements BoardReportService {
     private final UserRepository userRepository;
     private final BoardRepository boardReport;
     private final UserService userService;
+    private final TokenService tokenService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<BoardReportRes> createBoardReport(CreateBoardReportReq dto) {
 
-        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
 
         User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());

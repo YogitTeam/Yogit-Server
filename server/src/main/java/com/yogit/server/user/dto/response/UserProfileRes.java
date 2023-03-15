@@ -37,10 +37,11 @@ public class UserProfileRes {
     // 유저 추가 정보
     float longtitude;
     float latitude;
-
     String city;
-
     List<String> interests = new ArrayList<>();
+
+    // 조회 유저가 조회할 프로필의 유저를 차단 했는지 유무
+    Integer isBlockingUser; // 0: 안된사람, 1: 내가 조회할 사람을 차단
 
     public static UserProfileRes create(User user){
         UserProfileRes userProfileRes = new UserProfileRes();

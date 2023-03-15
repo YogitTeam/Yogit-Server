@@ -13,6 +13,7 @@ import com.yogit.server.board.exception.NotFoundUserBoard;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.entity.UserStatus;
@@ -39,12 +40,13 @@ public class BoardUserServiceImpl implements BoardUserService{
     private final UserService userService;
     private final AwsS3Service awsS3Service;
     private final APNService apnService;
+    private final TokenService tokenService;
 
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<BoardUserRes> joinBoardUser(CreateBoardUserReq dto) {
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -99,7 +101,7 @@ public class BoardUserServiceImpl implements BoardUserService{
     @Override
     public ApplicationResponse<BoardUserRes> approveBoardUser(CreateBoardUserReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -139,7 +141,7 @@ public class BoardUserServiceImpl implements BoardUserService{
     @Override
     public ApplicationResponse<Void> delBoardUser(CreateBoardUserReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());

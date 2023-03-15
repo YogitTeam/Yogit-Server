@@ -19,6 +19,7 @@ import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.board.repository.CommentRepository;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.entity.UserStatus;
@@ -49,12 +50,13 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     private final BlockRepository blockRepository;
     private final UserService userService;
     private final APNService apnService;
+    private final TokenService tokenService;
 
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<ClipBoardRes> createClipBoard(CreateClipBoardReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -97,7 +99,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Override
     public ApplicationResponse<GetClipBoardRes> findClipBoard(GetClipBoardReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -154,7 +156,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Override
     public ApplicationResponse<GetClipBoardsRes> findAllClipBoards(GetAllClipBoardsReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         int cursor = dto.getCursor();
         int totalPage=0;
@@ -197,7 +199,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Override
     public ApplicationResponse<ClipBoardRes> updateClipBoard(PatchClipBoardReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         //필요 객체 조회
         User user = userRepository.findByUserId(dto.getUserId())
@@ -227,7 +229,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
     @Override
     public ApplicationResponse<String> deleteClipBoard(DeleteClipBoardReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());

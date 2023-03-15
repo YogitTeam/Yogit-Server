@@ -284,7 +284,10 @@ public class BoardServiceImpl implements BoardService{
             //  보드 res에 이미지uuid -> aws s3 url로 변환
             if (boardUsers != null && !boardUsers.isEmpty()) {
                 for (BoardUser bu : boardUsers) {
-                    if (bu.getStatus().equals(BaseStatus.ACTIVE) && bu.getBoard().getHost().getId().equals(dto.getUserId())) {// 조건1: 호스트가 아닌 것
+                    if (bu.getStatus().equals(BaseStatus.ACTIVE) && !bu.getBoard().getHost().getId().equals(dto.getUserId())) {// 조건1: 호스트가 아닌 것
+
+                        List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(bu.getBoard().getId());// 보드 현재 인원 반영
+                        bu.getBoard().changeBoardCurrentMember(participantsOrigin.size());
                         res.add(GetAllBoardRes.toDto(bu.getBoard(), awsS3Service.makeUrlOfFilename(bu.getBoard().getBoardImagesUUids().get(0)), bu.getBoard().getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
                     }
                 }

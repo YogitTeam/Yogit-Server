@@ -4,6 +4,7 @@ import com.yogit.server.board.entity.Comment;
 import com.yogit.server.board.exception.comment.NotFoundCommentException;
 import com.yogit.server.board.repository.CommentRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.report.dto.req.CreateCommentReportReq;
 import com.yogit.server.report.dto.res.CommentReportRes;
 import com.yogit.server.report.entity.CommentReport;
@@ -28,12 +29,13 @@ public class CommentReportServiceImpl implements CommentReportService{
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final TokenService tokenService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<CommentReportRes> createCommentReport(CreateCommentReportReq dto) {
 
-        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
 
         User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());

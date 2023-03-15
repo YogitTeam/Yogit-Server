@@ -16,6 +16,7 @@ import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.s3.AwsS3Service;
 import com.yogit.server.user.entity.City;
 import com.yogit.server.user.entity.User;
@@ -49,6 +50,7 @@ public class BoardServiceImpl implements BoardService{
     private final BlockRepository blockRepository;
     private final UserService userService;
     private final BoardUserRepository boardUserRepository;
+    private final TokenService tokenService;
 
     private static final int PAGING_SIZE = 10;
     private static final String PAGING_STANDARD = "date";
@@ -57,7 +59,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<GetBoardRes> createBoard(CreateBoardReq dto){
 
-        userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
         // host 조회
         User host = userRepository.findByUserId(dto.getHostId())
@@ -124,7 +126,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<GetBoardRes> updateBoard(PatchBoardReq dto){
-        userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getHostId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -188,7 +190,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<DeleteBoardRes> deleteBoard(DeleteBoardReq dto){
 
-        userService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getHostId(), dto.getRefreshToken());
 
         Board board = boardRepository.findBoardById(dto.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException());
@@ -210,7 +212,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<List<List<GetAllBoardRes>>> findAllBoards(GetAllBoardsReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         int cursor = dto.getCursor();
 
@@ -245,7 +247,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         int cursor = dto.getCursor();
 
@@ -297,7 +299,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<GetAllBoardsByCategoryRes> findAllBoardsByCategory(GetAllBoardsByCategoryReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         int cursor = dto.getCursor();
 
@@ -328,7 +330,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<List<List<GetAllBoardRes>>> findBoardsByCategories(GetBoardsByCategoriesReq dto) {
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         int cursor = dto.getCursor();
         List<List<GetAllBoardRes>> boardsByCategories = new ArrayList<>();
@@ -370,7 +372,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<GetBoardRes> findBoard(GetBoardReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -399,7 +401,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());

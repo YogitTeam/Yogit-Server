@@ -15,6 +15,7 @@ import com.yogit.server.board.exception.comment.NotHostOfCommentException;
 import com.yogit.server.board.repository.ClipBoardRepository;
 import com.yogit.server.board.repository.CommentRepository;
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.exception.InvalidTokenException;
 import com.yogit.server.user.exception.NotFoundUserException;
@@ -37,13 +38,14 @@ public class CommentServiceImpl implements CommentService{
     private final ClipBoardRepository clipBoardRepository;
     private final BlockRepository blockRepository;
     private final UserService userService;
+    private final TokenService tokenService;
 
 
     @Transactional(readOnly = false)
     @Override
     public ApplicationResponse<CommentRes> createComment(CreateCommentReq dto){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -61,7 +63,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<List<CommentRes>> findAllComments(Long clipBoardId, Long userId, GetCommentsReq dto){
 
-        userService.validateRefreshToken(userId, dto.getRefreshToken());
+        tokenService.validateRefreshToken(userId, dto.getRefreshToken());
 
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundUserException());
@@ -86,7 +88,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<DeleteCommentRes> deleteComment(DeleteCommentReq dto, Long commentId){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
@@ -109,7 +111,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public ApplicationResponse<CommentRes> updateComment(PatchCommentReq dto, Long commentId){
 
-        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());

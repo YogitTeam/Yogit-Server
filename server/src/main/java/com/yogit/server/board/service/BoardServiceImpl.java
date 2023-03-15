@@ -15,6 +15,7 @@ import com.yogit.server.board.repository.BoardImageRepository;
 import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.global.service.TokenService;
 import com.yogit.server.s3.AwsS3Service;
@@ -277,17 +278,18 @@ public class BoardServiceImpl implements BoardService{
                         .collect(Collectors.toList());
             }
         }
-        else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())){
+        else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())) {
             boardUsers = boardUserRepository.findByUserId(pageRequest, dto.getUserId());
-//            System.out.println("보드 유저는?: "+ boardUsers);
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            if(boardUsers!= null && !boardUsers.isEmpty()){
-                res = boardUsers.stream()
-                        .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
-                        .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), boardUser.getBoard().getBoardUsers().stream().map(board -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
-                        .collect(Collectors.toList());
+            if (boardUsers != null && !boardUsers.isEmpty()) {
+                for (BoardUser bu : boardUsers) {
+                    if (bu.getStatus().equals(BaseStatus.ACTIVE) && bu.getBoard().getHost().getId().equals(dto.getUserId())) {// 조건1: 호스트가 아닌 것
+                        res.add(GetAllBoardRes.toDto(bu.getBoard(), awsS3Service.makeUrlOfFilename(bu.getBoard().getBoardImagesUUids().get(0)), bu.getBoard().getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+                    }
+                }
             }
+
         }
         else{ throw new InvalidMyClubTypeException();}
 
@@ -336,7 +338,7 @@ public class BoardServiceImpl implements BoardService{
                 // 보드 현재 인원
                 List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(b.getId());
                 b.changeBoardCurrentMember(participantsOrigin.size());
-                boardsRes.add(GetAllBoardRes.toDto(b, awsS3Service.makeUrlOfFilename(b.getBoardImagesUUids().get(0)), b.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+                boardsRes.add(GetAllBoardRes.toDto(b, awsS3Service.makeUrlOfFilename(b.getBoardImagesUUids().get(0)), b.getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
             }
         }
 
@@ -406,6 +408,7 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
 
         List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE))
                 .map(boardUser -> boardUser.getUser().getProfileImg())
                 .collect(Collectors.toList());
 

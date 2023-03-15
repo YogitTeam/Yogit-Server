@@ -25,7 +25,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Page<Board> findAllBoardsByCategory(Pageable pageable, @Param("categoryId") Long categoryId);
 
     @Query("select b from Board b where b.status = 'ACTIVE' and b.host.id = :userId")
-    Slice<Board> findMyClubBoardsByUserId(Pageable pageable, @Param("userId") Long userId);
+    Page<Board> findMyClubBoardsByUserId(Pageable pageable, @Param("userId") Long userId);
 
     @Query("select b from Board b where b.status = 'ACTIVE' and b.host.id = :userId")
     List<Board> findBoardsByUserId(@Param("userId") Long userId);

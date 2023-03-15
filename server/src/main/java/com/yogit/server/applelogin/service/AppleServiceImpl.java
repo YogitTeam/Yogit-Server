@@ -148,6 +148,8 @@ public class AppleServiceImpl implements AppleService {
 //        return null;
 //    }
 
+    @Override
+    @Transactional
     public void deleteUser(DeleteUserReq deleteUserReq) {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
         String revokeUrl = "https://appleid.apple.com/auth/revoke";

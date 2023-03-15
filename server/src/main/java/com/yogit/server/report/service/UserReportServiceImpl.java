@@ -1,6 +1,7 @@
 package com.yogit.server.report.service;
 
 import com.yogit.server.global.dto.ApplicationResponse;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.report.dto.req.CreateUserReportReq;
 import com.yogit.server.report.dto.res.UserReportRes;
 import com.yogit.server.report.entity.UserReport;
@@ -24,12 +25,13 @@ public class UserReportServiceImpl implements UserReportService{
     private final UserReportRepository userReportRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final TokenService tokenService;
 
     @Override
     @Transactional(readOnly = false)
     public ApplicationResponse<UserReportRes> createUserReport(CreateUserReportReq dto) {
 
-        userService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
+        tokenService.validateRefreshToken(dto.getReportingUserId(), dto.getRefreshToken());
 
         User reportingUser = userRepository.findByUserId(dto.getReportingUserId())
                 .orElseThrow(() -> new NotFoundUserException());

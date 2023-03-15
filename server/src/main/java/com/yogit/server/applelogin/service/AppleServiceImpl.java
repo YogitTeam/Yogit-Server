@@ -5,6 +5,7 @@ import com.yogit.server.applelogin.model.DeleteUserReq;
 import com.yogit.server.applelogin.model.ServicesResponse;
 import com.yogit.server.applelogin.model.TokenResponse;
 import com.yogit.server.applelogin.util.AppleUtils;
+import com.yogit.server.global.service.TokenService;
 import com.yogit.server.user.dto.request.CreateUserAppleReq;
 import com.yogit.server.user.entity.User;
 import com.yogit.server.user.entity.UserStatus;
@@ -37,6 +38,7 @@ public class AppleServiceImpl implements AppleService {
     private final AppleUtils appleUtils;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final TokenService tokenService;
 
     @Value("${APPLE.AUD}")
     String client_id;
@@ -163,7 +165,7 @@ public class AppleServiceImpl implements AppleService {
         restTemplate.postForEntity(revokeUrl, httpEntity, String.class);
 
         // 유저 정보 삭제 및 유저 상태 변경 (DELETE)
-        userService.validateRefreshToken(deleteUserReq.getUserId(), deleteUserReq.getRefreshToken());
+        tokenService.validateRefreshToken(deleteUserReq.getUserId(), deleteUserReq.getRefreshToken());
         User user = userRepository.findByUserId(deleteUserReq.getUserId()).orElseThrow(() -> new NotFoundUserException());
         user.deleteUser();
     }

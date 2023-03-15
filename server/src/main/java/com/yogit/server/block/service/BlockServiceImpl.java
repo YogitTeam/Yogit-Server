@@ -66,7 +66,7 @@ public class BlockServiceImpl implements BlockService{
                 if(!boardUsers.isEmpty()){
                     for(BoardUser bu: boardUsers){
                         if(bu.getUser().getId().equals(blockingUser.getId()) && bu.getStatus().equals(BaseStatus.ACTIVE)){
-                            //bu.changeStatusToInactive();
+                            bu.changeStatusToInactive();
                         }
                     }
                 }
@@ -83,7 +83,7 @@ public class BlockServiceImpl implements BlockService{
                 if(!boardUsers.isEmpty()){
                     for(BoardUser bu: boardUsers){
                         if(bu.getUser().getId().equals(blockedUser.getId()) && bu.getStatus().equals(BaseStatus.ACTIVE)){
-                            //bu.changeStatusToInactive();
+                            bu.changeStatusToInactive();
                         }
                     }
                 }

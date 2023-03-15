@@ -262,7 +262,7 @@ public class BoardServiceImpl implements BoardService{
 
         Page<Board> boards = null;
         Page<BoardUser> boardUsers = null;
-        List<GetAllBoardRes> res = null;
+        List<GetAllBoardRes> res = new ArrayList<>();
         /*
         1.생성한 보드: Opened Club
         2.참여한 보드 : Applied Club

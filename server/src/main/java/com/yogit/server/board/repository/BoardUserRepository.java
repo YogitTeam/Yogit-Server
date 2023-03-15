@@ -19,7 +19,7 @@ public interface BoardUserRepository extends JpaRepository<BoardUser, Long> {
     @Query("select bu from BoardUser bu where bu.user.id = :userId and bu.board.id = :boardId and bu.status = 'ACTIVE'")
     Optional<BoardUser> findByUserIdAndBoardId(@Param("userId") Long userId, @Param("boardId") Long boardId);
 
-    @Query("select bu from BoardUser bu where bu.status = 'ACTIVE' and bu.user.id = :userId")
+    @Query("select bu from BoardUser bu where bu.status = 'ACTIVE' and bu.user.id = :userId and bu.board.status = 'ACTIVE'")
     Page<BoardUser> findByUserId(Pageable pageable, @Param("userId") Long userId);
 
     @Query("select bu from BoardUser bu where bu.status = 'ACTIVE' and bu.board.id = :boardId")

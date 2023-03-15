@@ -172,7 +172,7 @@ public class BoardController {
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
     @PostMapping("/get/myclub")
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(@RequestBody @Validated GetMyClubBoardsReq dto){
+    public ApplicationResponse<GetAllBoardsByCategoryRes> findMyClubBoards(@RequestBody @Validated GetMyClubBoardsReq dto){
         return boardService.findMyClubBoards(dto);
     }
 

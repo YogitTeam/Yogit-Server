@@ -245,7 +245,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq dto){
+    public ApplicationResponse<GetAllBoardsByCategoryRes> findMyClubBoards(GetMyClubBoardsReq dto){
 
         tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
@@ -260,8 +260,8 @@ public class BoardServiceImpl implements BoardService{
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 
-        Slice<Board> boards = null;
-        Slice<BoardUser> boardUsers = null;
+        Page<Board> boards = null;
+        Page<BoardUser> boardUsers = null;
         List<GetAllBoardRes> res = null;
         /*
         1.생성한 보드: Opened Club
@@ -278,7 +278,7 @@ public class BoardServiceImpl implements BoardService{
             }
         }
         else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())){
-            boardUsers = boardUserRepository.findByUserId(dto.getUserId());
+            boardUsers = boardUserRepository.findByUserId(pageRequest, dto.getUserId());
 //            System.out.println("보드 유저는?: "+ boardUsers);
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
@@ -291,7 +291,12 @@ public class BoardServiceImpl implements BoardService{
         }
         else{ throw new InvalidMyClubTypeException();}
 
-        return ApplicationResponse.ok(res);
+        if(dto.getMyClubType().equals(MyClubType.OPENED_CLUB.toString())){
+            return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(res, boards.getTotalPages()));
+        }
+        else {
+            return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(res, boardUsers.getTotalPages()));
+        }
     }
 
 

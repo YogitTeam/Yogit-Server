@@ -30,7 +30,6 @@ public class BlockServiceImpl implements BlockService{
     private final BlockRepository blockRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
-    private final BoardUserRepository boardUserRepository;
     private final TokenService tokenService;
 
     @Override

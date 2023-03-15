@@ -15,6 +15,7 @@ import com.yogit.server.board.repository.BoardImageRepository;
 import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.board.repository.CategoryRepository;
 import com.yogit.server.board.repository.BoardRepository;
+import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.global.service.TokenService;
 import com.yogit.server.s3.AwsS3Service;
@@ -245,7 +246,7 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationResponse<List<GetAllBoardRes>> findMyClubBoards(GetMyClubBoardsReq dto){
+    public ApplicationResponse<GetAllBoardsByCategoryRes> findMyClubBoards(GetMyClubBoardsReq dto){
 
         tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
 
@@ -260,9 +261,9 @@ public class BoardServiceImpl implements BoardService{
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 
-        Slice<Board> boards = null;
-        Slice<BoardUser> boardUsers = null;
-        List<GetAllBoardRes> res = null;
+        Page<Board> boards = null;
+        Page<BoardUser> boardUsers = null;
+        List<GetAllBoardRes> res = new ArrayList<>();
         /*
         1.생성한 보드: Opened Club
         2.참여한 보드 : Applied Club
@@ -270,28 +271,46 @@ public class BoardServiceImpl implements BoardService{
         if(dto.getMyClubType().equals(MyClubType.OPENED_CLUB.toString())){
             boards = boardRepository.findMyClubBoardsByUserId(pageRequest, dto.getUserId());
 
+
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            if(boards != null){
+            /*if(boards != null){
                 res = boards.stream()
                         .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
                         .collect(Collectors.toList());
+            }*/
+
+            if(boards != null && !boards.isEmpty()){
+                for(Board b: boards){
+                    List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(b.getId());// 보드 현재 인원 반영
+                    b.changeBoardCurrentMember(participantsOrigin.size());
+                    res.add(GetAllBoardRes.toDto(b, awsS3Service.makeUrlOfFilename(b.getBoardImagesUUids().get(0)), b.getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+                }
             }
         }
-        else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())){
-            boardUsers = boardUserRepository.findByUserId(dto.getUserId());
-//            System.out.println("보드 유저는?: "+ boardUsers);
+        else if(dto.getMyClubType().equals(MyClubType.APPLIED_CLUB.toString())) {
+            boardUsers = boardUserRepository.findByUserId(pageRequest, dto.getUserId());
 
             //  보드 res에 이미지uuid -> aws s3 url로 변환
-            if(boardUsers!= null && !boardUsers.isEmpty()){
-                res = boardUsers.stream()
-                        .filter(boardUser -> !boardUser.getBoard().getHost().getId().equals(dto.getUserId())) // 조건1: 호스트가 아닌 것
-                        .map(boardUser -> GetAllBoardRes.toDto(boardUser.getBoard(), awsS3Service.makeUrlOfFilename(boardUser.getBoard().getBoardImagesUUids().get(0)), boardUser.getBoard().getBoardUsers().stream().map(board -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
-                        .collect(Collectors.toList());
+            if (boardUsers != null && !boardUsers.isEmpty()) {
+                for (BoardUser bu : boardUsers) {
+                    if (bu.getStatus().equals(BaseStatus.ACTIVE) && !bu.getBoard().getHost().getId().equals(dto.getUserId())) {// 조건1: 호스트가 아닌 것
+
+                        List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(bu.getBoard().getId());// 보드 현재 인원 반영
+                        bu.getBoard().changeBoardCurrentMember(participantsOrigin.size());
+                        res.add(GetAllBoardRes.toDto(bu.getBoard(), awsS3Service.makeUrlOfFilename(bu.getBoard().getBoardImagesUUids().get(0)), bu.getBoard().getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+                    }
+                }
             }
+
         }
         else{ throw new InvalidMyClubTypeException();}
 
-        return ApplicationResponse.ok(res);
+        if(dto.getMyClubType().equals(MyClubType.OPENED_CLUB.toString())){
+            return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(res, boards.getTotalPages()));
+        }
+        else {
+            return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(res, boardUsers.getTotalPages()));
+        }
     }
 
 
@@ -318,10 +337,22 @@ public class BoardServiceImpl implements BoardService{
 
         Page<Board> boards = boardRepository.findAllBoardsByCategory(pageRequest, dto.getCategoryId());
         //  보드 res에 이미지uuid -> aws s3 url로 변환
-        List<GetAllBoardRes> boardsRes = boards.stream()
+        /*List<GetAllBoardRes> boardsRes = boards.stream()
                 .filter(board -> !blockedUsers.contains(board.getHost())) // 차단당한 유저의 데이터 제외
                 .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+
+        //  보드 res에 이미지uuid -> aws s3 url로 변환
+        //TODO: 동작 잘 되는지 확인
+        List<GetAllBoardRes> boardsRes = new ArrayList<>();
+        for(Board b:boards){
+            if(!blockedUsers.contains(b.getHost())){
+                // 보드 현재 인원
+                List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(b.getId());
+                b.changeBoardCurrentMember(participantsOrigin.size());
+                boardsRes.add(GetAllBoardRes.toDto(b, awsS3Service.makeUrlOfFilename(b.getBoardImagesUUids().get(0)), b.getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+            }
+        }
 
         return ApplicationResponse.ok(GetAllBoardsByCategoryRes.toDto(boardsRes, boards.getTotalPages()));
     }
@@ -389,6 +420,7 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
 
         List<String> participantsImageUUIds = board.getBoardUsers().stream()
+                .filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE))
                 .map(boardUser -> boardUser.getUser().getProfileImg())
                 .collect(Collectors.toList());
 

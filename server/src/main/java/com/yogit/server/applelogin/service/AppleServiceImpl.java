@@ -85,7 +85,7 @@ public class AppleServiceImpl implements AppleService {
             tokenResponse = appleUtils.validateAuthorizationGrantCode(client_secret, code);
 
             // 유저 생성
-            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),null, UserType.APPLE);
+            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(), null, UserType.APPLE, tokenResponse.getAccess_token(), tokenResponse.getExpires_in());
             saveduser = userService.createUserApple(createUserAppleReq);
         }
         // 이미 refresh 토큰 있는 유저면 client_secret, refresh_token로 검증

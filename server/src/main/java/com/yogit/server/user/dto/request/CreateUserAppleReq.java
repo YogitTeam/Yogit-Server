@@ -15,9 +15,11 @@ public class CreateUserAppleReq {
     String refreshToken;
     String name;
     UserType userType;
+    String access_token;
+    Long expires_in;
 
     public static User toEntityUserApple(CreateUserAppleReq createUserAppleReq){
-        User user = new User(createUserAppleReq.loginId, createUserAppleReq.refreshToken, createUserAppleReq.name, createUserAppleReq.userType);
+        User user = new User(createUserAppleReq.loginId, createUserAppleReq.refreshToken, createUserAppleReq.name, createUserAppleReq.userType, createUserAppleReq.access_token, createUserAppleReq.expires_in);
         return user;
     }
 }

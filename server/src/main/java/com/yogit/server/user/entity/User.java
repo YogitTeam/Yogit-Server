@@ -57,6 +57,8 @@ public class User extends BaseEntity {
     private String nationality;
 
     private String refreshToken;
+    private String access_token;
+    private Long expires_in;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
@@ -107,13 +109,15 @@ public class User extends BaseEntity {
         this.reportedCnt=0;
     }
 
-    public User (String loginId, String refreshToken, String name, UserType userType){
+    public User (String loginId, String refreshToken, String name, UserType userType, String access_token, Long expires_in){
         this.loginId = loginId;
         this.refreshToken = refreshToken;
         this.name = name;
         this.userType = userType;
         this.reportingCnt=0;
         this.reportedCnt=0;
+        this.access_token = access_token;
+        this.expires_in = expires_in;
     }
 
     public void addLanguage(Language language){

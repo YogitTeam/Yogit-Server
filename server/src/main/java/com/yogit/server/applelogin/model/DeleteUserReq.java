@@ -10,6 +10,4 @@ import lombok.NoArgsConstructor;
 public class DeleteUserReq {
     Long userId;
     String refreshToken;
-
-    //String identityToken;
 }

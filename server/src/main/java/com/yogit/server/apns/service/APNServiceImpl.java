@@ -8,6 +8,7 @@ import com.turo.pushy.apns.util.TokenUtil;
 import com.turo.pushy.apns.util.concurrent.PushNotificationFuture;
 import com.yogit.server.apns.dto.req.CreateBoardUserJoinAPNReq;
 import com.yogit.server.apns.dto.req.CreateClipBoardAPNReq;
+import com.yogit.server.apns.dto.req.DelBoardUserJoinAPNReq;
 import com.yogit.server.apns.entity.PushType;
 import com.yogit.server.global.dto.ApplicationResponse;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +80,7 @@ public class APNServiceImpl implements APNService{
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
         payloadBuilder.setAlertTitle("모임 참여 알림");
-        payloadBuilder.setAlertBody(dto.getJoinUserName()+"님이 "+dto.getBoardName()+"을 신청하였습니다.");
+        payloadBuilder.setAlertBody(dto.getJoinUserName()+"님이 "+dto.getBoardName()+" 모임을 신청하였습니다.");
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.JOINAPPLY.toString());
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
@@ -114,6 +115,34 @@ public class APNServiceImpl implements APNService{
         return ApplicationResponse.ok("애플 푸쉬 알람 성공");
     }
 
+    @Override
+    @Transactional
+    public ApplicationResponse<String> delBoardUserJoinAPN(DelBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
+
+        ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
+        payloadBuilder.setAlertTitle("모임 취소 알림");
+        payloadBuilder.setAlertBody(dto.getDelUserName()+"님이 "+dto.getBoardName()+" 모임을 취소하였습니다.");
+        payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
+        payloadBuilder.addCustomProperty("pushType", PushType.DELAPPLY.toString());
+        val payload = payloadBuilder.buildWithDefaultMaximumLength();
+
+        val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());
+        val pushNotification = new SimpleApnsPushNotification(token, APP_BUNDLE_ID, payload);
+        PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification);
+
+        // 메시지를 동기로 전송
+        val response = sendNotificationFuture.get();
+
+        // 메시지를 비동기로 전송
+        //        sendNotificationFuture.addListener { future ->
+        //                val response = future.now
+        //            println(response);
+        //        }
+        sendNotificationFuture.addListener(future ->
+                System.out.println("getNow는 == "+future.getNow()));
+
+        return ApplicationResponse.ok("애플 푸쉬 알람 성공");
+    }
 
     @Override
     @Transactional(readOnly = false)

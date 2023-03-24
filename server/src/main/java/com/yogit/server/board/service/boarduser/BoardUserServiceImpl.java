@@ -1,6 +1,7 @@
 package com.yogit.server.board.service.boarduser;
 
 import com.yogit.server.apns.dto.req.CreateBoardUserJoinAPNReq;
+import com.yogit.server.apns.dto.req.DelBoardUserJoinAPNReq;
 import com.yogit.server.apns.service.APNService;
 import com.yogit.server.board.dto.request.boarduser.CreateBoardUserReq;
 import com.yogit.server.board.dto.response.boarduser.BoardUserRes;
@@ -82,8 +83,7 @@ public class BoardUserServiceImpl implements BoardUserService{
                 .map(bu -> bu.getUser().getProfileImg())
                 .collect(Collectors.toList());
 
-        // 호스트에게 참여 APN 푸쉬 알림
-
+        // 호스트에게 멤버 참여 APN 푸쉬 알림
         try {
             if(user.getUserStatus().equals(UserStatus.LOGIN)) apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
         } catch (ExecutionException e) {
@@ -154,6 +154,15 @@ public class BoardUserServiceImpl implements BoardUserService{
         if(!boardUser.isPresent()) throw new NotFoundUserBoard();
 
         boardUserRepository.deleteById(boardUser.get().getId());
+
+        // 호스트에게 멤버 참여 취소 APN 푸쉬 알림
+        try {
+            if(user.getUserStatus().equals(UserStatus.LOGIN)) apnService.delBoardUserJoinAPN(new DelBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return ApplicationResponse.ok();
     }

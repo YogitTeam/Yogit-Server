@@ -79,8 +79,7 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createBoardUserJoinAPN(CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("모임 신청 알림");
-        payloadBuilder.setAlertBody(dto.getJoinUserName()+"님이 "+dto.getBoardName()+" 모임을 신청하였습니다.");
+        payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_JOIN");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getJoinUserName();
@@ -125,8 +124,7 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> delBoardUserJoinAPN(DelBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("모임 취소 알림");
-        payloadBuilder.setAlertBody(dto.getDelUserName()+"님이 "+dto.getBoardName()+" 모임을 취소하였습니다.");
+        payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_WITHDRAW");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getDelUserName();
@@ -159,9 +157,8 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createClipBoardAPN(CreateClipBoardAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("ClipBoard Alarm");
-        payloadBuilder.setAlertBody(dto.getUserName()+"님이 "+dto.getBoardName()+"에 댓글을 달았습니다.");
-        payloadBuilder.addCustomProperty("title-loc-key", "CLIPBOARD_CHATING");
+        payloadBuilder.setAlertBody("");
+        payloadBuilder.addCustomProperty("title-loc-key", "CLIPBOARD_CHATTING");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getUserName();
         locArgs[1] = dto.getBoardName();

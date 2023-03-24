@@ -191,6 +191,8 @@ public class User extends BaseEntity {
         this.reportingCnt = null;
         this.reportedCnt = null;
         this.deviceToken = null;
+        this.access_token = null;
+        this.expires_in = null;
 
         this.userStatus = UserStatus.DELETE;
     }

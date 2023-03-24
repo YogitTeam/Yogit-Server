@@ -80,16 +80,13 @@ public class APNServiceImpl implements APNService{
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
 
-        String[] locArgs = new String[2];
-        locArgs[0] = dto.getJoinUserName();
-        locArgs[1] = dto.getBoardName();
-        payloadBuilder.setLocalizedAlertTitle("GATHERING_JOIN_TITLE", new String[1]);
-        payloadBuilder.setLocalizedAlertMessage("GATHERING_JOIN_BODY", locArgs);
+        payloadBuilder.setLocalizedAlertTitle("GATHERING_JOIN_TITLE", "");
+        payloadBuilder.setLocalizedAlertMessage("GATHERING_JOIN_BODY", dto.getJoinUserName(), dto.getBoardName());
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.JOINAPPLY.toString());
-        val payload = payloadBuilder.buildWithDefaultMaximumLength();
 
+        val payload = payloadBuilder.buildWithDefaultMaximumLength();
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());
         val pushNotification = new SimpleApnsPushNotification(token, APP_BUNDLE_ID, payload);
         PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification);
@@ -126,16 +123,13 @@ public class APNServiceImpl implements APNService{
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
 
-        String[] locArgs = new String[2];
-        locArgs[0] = dto.getDelUserName();
-        locArgs[1] = dto.getBoardName();
-        payloadBuilder.setLocalizedAlertTitle("GATHERING_WITHDRAW_TITLE", new String[1]);
-        payloadBuilder.setLocalizedAlertMessage("GATHERING_WITHDRAW_BODY", locArgs);
+        payloadBuilder.setLocalizedAlertTitle("GATHERING_WITHDRAW_TITLE", "");
+        payloadBuilder.setLocalizedAlertMessage("GATHERING_WITHDRAW_BODY", dto.getDelUserName(), dto.getBoardName());
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.DELAPPLY.toString());
-        val payload = payloadBuilder.buildWithDefaultMaximumLength();
 
+        val payload = payloadBuilder.buildWithDefaultMaximumLength();
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());
         val pushNotification = new SimpleApnsPushNotification(token, APP_BUNDLE_ID, payload);
         PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification);
@@ -160,17 +154,13 @@ public class APNServiceImpl implements APNService{
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
 
-//        String[] locArgs = new String[2];
-//        locArgs[0] = dto.getUserName();
-//        locArgs[1] = dto.getBoardName();
         payloadBuilder.setLocalizedAlertTitle("CLIPBOARD_CHATTING_TITLE", "");
-        //payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName(), dto.getBoardName());
-        payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName());
+        payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName(), dto.getBoardName());
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.CREATE_CLIPBOARD.toString());
-        val payload = payloadBuilder.buildWithDefaultMaximumLength();
 
+        val payload = payloadBuilder.buildWithDefaultMaximumLength();
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());
         val pushNotification = new SimpleApnsPushNotification(token, APP_BUNDLE_ID, payload);
         PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification);

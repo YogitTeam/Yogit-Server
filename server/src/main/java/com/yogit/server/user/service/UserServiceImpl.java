@@ -209,14 +209,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ApplicationResponse<Void> delProfile(Long userId){
+    public ApplicationResponse<Void> delUser(Long userId){
         User user = userRepository.findByUserId(userId).orElseThrow(NotFoundUserException::new);
+        user.deleteUser();
 
-        // 유저 탈퇴시 이름, 대표 사진 null 처리
-        user.delUser();
-
-        // image 엔티티 삭제
+        // user_image 엔티티 삭제
         userImageRepository.deleteAllByUserId(user.getId());
+        // user_interest 엔티티 삭제
+        userInterestRepository.deleteAllByUserId(user.getId());
 
         return ApplicationResponse.ok();
     }

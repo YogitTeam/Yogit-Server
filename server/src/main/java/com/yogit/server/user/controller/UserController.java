@@ -70,17 +70,6 @@ public class UserController {
     }
 
     /**
-     * 유저 프로필 삭제
-     * @author 강신현
-     */
-    @ApiOperation(value = "유저 프로필 삭제")
-    @ApiImplicitParam(name = "userId", required = true, dataTypeClass = Long.class, example = "0")
-    @PatchMapping("/{userId}")
-    public ApplicationResponse<Void> delProfile(@PathVariable Long userId){
-        return userService.delProfile(userId);
-    }
-
-    /**
      * 유저 사진 조회
      * @author 강신현
      */

@@ -11,7 +11,7 @@ public interface UserService {
 
     ApplicationResponse<UserProfileRes> getProfile(GetUserProfileReq getUserProfileReq);
 
-    ApplicationResponse<Void> delProfile(Long userId);
+    ApplicationResponse<Void> delUser(Long userId);
 
     ApplicationResponse<UserImagesRes> getUserImage(GetUserImageReq getUserImageReq);
 

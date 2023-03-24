@@ -37,21 +37,4 @@ public class APNController {
     public ApplicationResponse<String> createAPN() throws ExecutionException, InterruptedException {
         return apnService.createApplePushNotification();
     }
-
-//    /**
-//     * apn 참여자 보드 참여 신청 호스트에게 푸쉬 알림
-//     * @author 토마스
-//     */
-//    @ApiOperation(value = "apn 참여자 보드 참여 신청 호스트에게 푸쉬 알림", notes = "apn 푸쉬 알람 생성 요청.")
-//    @ApiResponses({
-//            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
-//            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
-//            @ApiResponse(code= 404, message = "존재하지 않는 Board아이디입니다."),
-//            @ApiResponse(code= 404, message = "요청한 유저가 호스트가 아닙니다."),
-//            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
-//    })
-//    @PostMapping("/boarduser-join")
-//    public ApplicationResponse<String> createBoardUserJoinAPN(@RequestBody @Validated CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
-//        return apnService.createBoardUserJoinAPN(dto);
-//    }
 }

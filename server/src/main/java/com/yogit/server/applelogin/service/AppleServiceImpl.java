@@ -74,12 +74,6 @@ public class AppleServiceImpl implements AppleService {
         // 이메일 추출
         String email = user.getAsString("email");
 
-        // 이름 추출
-//        Map<String, String> name = (Map<String, String>) user.get("name");
-//        String lastName = name.get("lastName");
-//        String firstName = name.get("firstName");
-//        String fullName = lastName + firstName;
-
         // 만약 처음 인증하는 유저여서  refresh 토큰 없으면 client_secret, authorization_code로 검증
         if (client_secret != null && code != null && refresh_token == null) {
             tokenResponse = appleUtils.validateAuthorizationGrantCode(client_secret, code);
@@ -88,6 +82,7 @@ public class AppleServiceImpl implements AppleService {
             CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(), null, UserType.APPLE, tokenResponse.getAccess_token(), tokenResponse.getExpires_in());
             saveduser = userService.createUserApple(createUserAppleReq);
         }
+
         // 이미 refresh 토큰 있는 유저면 client_secret, refresh_token로 검증
         else if (client_secret != null && code == null && refresh_token != null) {
             tokenResponse = appleUtils.validateAnExistingRefreshToken(client_secret, refresh_token);

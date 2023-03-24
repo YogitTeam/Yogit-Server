@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class City extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +29,6 @@ public class City extends BaseEntity {
 
     private String cityName;
 
-    @Builder
-    public City(User user, String cityName){
-        this.cityName = cityName;
-        this.users.add(user);
-        user.addCity(this);
-    }
-
     public void addUser(User user){
         this.users.add(user);
         user.addCity(this);
@@ -44,5 +37,9 @@ public class City extends BaseEntity {
     public void addBoard(Board board){
         this.boards.add(board);
         board.addCity(this);
+    }
+
+    public void changeCityName(String cityName){
+        this.cityName = cityName;
     }
 }

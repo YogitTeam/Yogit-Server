@@ -160,11 +160,11 @@ public class APNServiceImpl implements APNService{
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
 
-        String[] locArgs = new String[]{"",""};
-        locArgs[0] += dto.getUserName();
-        locArgs[1] += dto.getBoardName();
-        payloadBuilder.setLocalizedAlertTitle("CLIPBOARD_CHATTING_TITLE", new String[1]);
-        payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", locArgs);
+//        String[] locArgs = new String[2];
+//        locArgs[0] = dto.getUserName();
+//        locArgs[1] = dto.getBoardName();
+        payloadBuilder.setLocalizedAlertTitle("CLIPBOARD_CHATTING_TITLE", "");
+        payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName(), dto.getBoardName());
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.CREATE_CLIPBOARD.toString());

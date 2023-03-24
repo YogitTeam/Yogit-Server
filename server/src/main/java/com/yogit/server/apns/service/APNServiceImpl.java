@@ -79,6 +79,9 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createBoardUserJoinAPN(CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
+        payloadBuilder.setAlertTitle("모임 신청 알림");
+        payloadBuilder.setAlertBody(dto.getJoinUserName()+"님이 "+dto.getBoardName()+" 모임을 신청하였습니다.");
+
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_JOIN");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getJoinUserName();

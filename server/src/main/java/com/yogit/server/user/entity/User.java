@@ -188,6 +188,6 @@ public class User extends BaseEntity {
         this.reportedCnt = null;
         this.deviceToken = null;
 
-        userStatus = UserStatus.DELETE;
+        this.userStatus = UserStatus.DELETE;
     }
 }

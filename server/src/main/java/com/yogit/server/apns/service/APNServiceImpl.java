@@ -79,9 +79,10 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createBoardUserJoinAPN(CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("");
-        payloadBuilder.setAlertBody("");
+//        payloadBuilder.setAlertTitle("");
+//        payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_JOIN");
+        payloadBuilder.addCustomProperty("loc-key", "");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getJoinUserName();
         locArgs[1] = dto.getBoardName();
@@ -125,9 +126,10 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> delBoardUserJoinAPN(DelBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("");
-        payloadBuilder.setAlertBody("");
+//        payloadBuilder.setAlertTitle("");
+//        payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_WITHDRAW");
+        payloadBuilder.addCustomProperty("loc-key", "");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getDelUserName();
         locArgs[1] = dto.getBoardName();
@@ -159,9 +161,10 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createClipBoardAPN(CreateClipBoardAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("");
-        payloadBuilder.setAlertBody("");
+//        payloadBuilder.setAlertTitle("");
+//        payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "CLIPBOARD_CHATTING");
+        payloadBuilder.addCustomProperty("loc-key", "");
         String[] locArgs = new String[2];
         locArgs[0] = dto.getUserName();
         locArgs[1] = dto.getBoardName();

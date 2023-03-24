@@ -127,12 +127,6 @@ public class User extends BaseEntity {
         if(nationality != null) this.nationality = nationality;
     }
 
-    public void delUser(){
-        this.name = null;
-        this.profileImg = null;
-        this.userStatus = UserStatus.DELETE;
-    }
-
     public void addImage(UserImage userImage) {
         this.userImages.add(userImage);
     }

@@ -169,10 +169,6 @@ public class AppleServiceImpl implements AppleService {
 
         // 유저 정보 삭제 및 유저 상태 변경 (DELETE)
         tokenService.validateRefreshToken(deleteUserReq.getUserId(), deleteUserReq.getRefreshToken());
-        // 유저 entity - 개인 정보 삭제
-        User user = userRepository.findByUserId(deleteUserReq.getUserId()).orElseThrow(() -> new NotFoundUserException());
-        user.deleteUser();
-        // 유저 연관 entity - 정보 삭제
-
+        userService.delUser(deleteUserReq.getUserId());
     }
 }

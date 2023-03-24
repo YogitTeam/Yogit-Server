@@ -103,6 +103,8 @@ public class AppleServiceImpl implements AppleService {
             tokenResponse.setUserId(findUser.getId());
             tokenResponse.setUserName(findUser.getName());
             tokenResponse.setRefresh_token(refresh_token);
+            tokenResponse.setAccess_token(findUser.getAccess_token());
+            tokenResponse.setExpires_in(findUser.getExpires_in());
             findUser.changeUserStatus(UserStatus.LOGIN);
         }
 

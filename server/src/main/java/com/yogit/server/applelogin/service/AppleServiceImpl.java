@@ -75,17 +75,17 @@ public class AppleServiceImpl implements AppleService {
         String email = user.getAsString("email");
 
         // 이름 추출
-        Map<String, String> name = (Map<String, String>) user.get("name");
-        String lastName = name.get("lastName");
-        String firstName = name.get("firstName");
-        String fullName = lastName + firstName;
+//        Map<String, String> name = (Map<String, String>) user.get("name");
+//        String lastName = name.get("lastName");
+//        String firstName = name.get("firstName");
+//        String fullName = lastName + firstName;
 
         // 만약 처음 인증하는 유저여서  refresh 토큰 없으면 client_secret, authorization_code로 검증
         if (client_secret != null && code != null && refresh_token == null) {
             tokenResponse = appleUtils.validateAuthorizationGrantCode(client_secret, code);
 
             // 유저 생성
-            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),fullName, UserType.APPLE);
+            CreateUserAppleReq createUserAppleReq = new CreateUserAppleReq(email, tokenResponse.getRefresh_token(),null, UserType.APPLE);
             saveduser = userService.createUserApple(createUserAppleReq);
         }
         // 이미 refresh 토큰 있는 유저면 client_secret, refresh_token로 검증
@@ -169,7 +169,10 @@ public class AppleServiceImpl implements AppleService {
 
         // 유저 정보 삭제 및 유저 상태 변경 (DELETE)
         tokenService.validateRefreshToken(deleteUserReq.getUserId(), deleteUserReq.getRefreshToken());
+        // 유저 entity - 개인 정보 삭제
         User user = userRepository.findByUserId(deleteUserReq.getUserId()).orElseThrow(() -> new NotFoundUserException());
         user.deleteUser();
+        // 유저 연관 entity - 정보 삭제
+
     }
 }

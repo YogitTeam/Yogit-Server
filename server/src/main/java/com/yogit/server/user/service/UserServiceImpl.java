@@ -3,6 +3,7 @@ package com.yogit.server.user.service;
 import com.yogit.server.applelogin.exception.InvalidRefreshTokenException;
 import com.yogit.server.applelogin.exception.NotFoundRefreshTokenException;
 import com.yogit.server.block.service.BlockService;
+import com.yogit.server.board.repository.BoardUserRepository;
 import com.yogit.server.config.domain.BaseStatus;
 import com.yogit.server.global.dto.ApplicationResponse;
 import com.yogit.server.global.service.TokenService;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final CityRepository cityRepository;
     private final InterestRepository interestRepository;
     private final UserInterestRepository userInterestRepository;
+    private final BoardUserRepository boardUserRepository;
     private final AwsS3Service awsS3Service;
     private final BlockService blockService;
     private final TokenService tokenService;
@@ -217,6 +219,8 @@ public class UserServiceImpl implements UserService {
         userImageRepository.deleteAllByUserId(user.getId());
         // user_interest 엔티티 삭제
         userInterestRepository.deleteAllByUserId(user.getId());
+        // board_user 엔티티 삭제
+        boardUserRepository.deleteAllByUserId(user.getId());
 
         return ApplicationResponse.ok();
     }

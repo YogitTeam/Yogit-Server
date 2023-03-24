@@ -49,7 +49,7 @@ public class APNServiceImpl implements APNService{
 
         // 메시지를 동기로 전송
         val response = sendNotificationFuture.get();
-        System.out.println("response는  ==="+ response);
+        // System.out.println("response는  ==="+ response);
 
         // 메시지를 비동기로 전송
         //        sendNotificationFuture.addListener { future ->
@@ -63,12 +63,12 @@ public class APNServiceImpl implements APNService{
         // 성공 응답시 null 반환
         // 오류 응답시 BadDeviceToken 등의 오류 코드 문자열 반환
         //        println(response.rejectionReason);
-        System.out.println("getRejectionReason는 === :"+response.getRejectionReason());
+        // System.out.println("getRejectionReason는 === :"+response.getRejectionReason());
 
         // 응답에서 원본 메시지 획득 가능
         // {"aps":{"alert":{"body":"test_body","title":"test_title"}},"test_data_3":"def","test_data_1":"abc"}
         //        println(response.pushNotification.payload);
-        System.out.println("getPushNotification는 === :"+response.getPushNotification());
+        // System.out.println("getPushNotification는 === :"+response.getPushNotification());
 
         return ApplicationResponse.ok("애플 푸쉬 알람 성공");
     }
@@ -93,26 +93,10 @@ public class APNServiceImpl implements APNService{
 
         // 메시지를 동기로 전송
         val response = sendNotificationFuture.get();
-        System.out.println("response는  ==="+ response);
 
         // 메시지를 비동기로 전송
-        //        sendNotificationFuture.addListener { future ->
-        //                val response = future.now
-        //            println(response);
-        //        }
         sendNotificationFuture.addListener(future ->
                 System.out.println("getNow는 == "+future.getNow()));
-
-
-        // 성공 응답시 null 반환
-        // 오류 응답시 BadDeviceToken 등의 오류 코드 문자열 반환
-        //        println(response.rejectionReason);
-        System.out.println("getRejectionReason는 === :"+response.getRejectionReason());
-
-        // 응답에서 원본 메시지 획득 가능
-        // {"aps":{"alert":{"body":"test_body","title":"test_title"}},"test_data_3":"def","test_data_1":"abc"}
-        //        println(response.pushNotification.payload);
-        System.out.println("getPushNotification는 === :"+response.getPushNotification());
 
         return ApplicationResponse.ok("애플 푸쉬 알람 성공");
     }
@@ -138,10 +122,6 @@ public class APNServiceImpl implements APNService{
         val response = sendNotificationFuture.get();
 
         // 메시지를 비동기로 전송
-        //        sendNotificationFuture.addListener { future ->
-        //                val response = future.now
-        //            println(response);
-        //        }
         sendNotificationFuture.addListener(future ->
                 System.out.println("getNow는 == "+future.getNow()));
 
@@ -167,25 +147,10 @@ public class APNServiceImpl implements APNService{
 
         // 메시지를 동기로 전송
         val response = sendNotificationFuture.get();
-        System.out.println("response는  ==="+ response);
 
         // 메시지를 비동기로 전송
-        //        sendNotificationFuture.addListener { future ->
-        //                val response = future.now
-        //            println(response);
-        //        }
         sendNotificationFuture.addListener(future ->
                 System.out.println("getNow는 == "+future.getNow()));
-
-        // 성공 응답시 null 반환
-        // 오류 응답시 BadDeviceToken 등의 오류 코드 문자열 반환
-        //        println(response.rejectionReason);
-        System.out.println("getRejectionReason는 === :"+response.getRejectionReason());
-
-        // 응답에서 원본 메시지 획득 가능
-        // {"aps":{"alert":{"body":"test_body","title":"test_title"}},"test_data_3":"def","test_data_1":"abc"}
-        //        println(response.pushNotification.payload);
-        System.out.println("getPushNotification는 === :"+response.getPushNotification());
 
         return ApplicationResponse.ok("애플 푸쉬 알람 성공");
     }

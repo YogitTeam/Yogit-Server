@@ -78,6 +78,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         List<BoardUser> boardUsers = board.getBoardUsers().stream()
                 .filter(boardUser -> boardUser.getUser().getStatus().equals(BaseStatus.ACTIVE))
                 .collect(Collectors.toList());
+
         if(boardUsers!=null){
             for(BoardUser bu: boardUsers){
                 try {
@@ -104,9 +105,6 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         User user = userRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException());
 
-        Board board = boardRepository.findBoardById(dto.getBoardId())
-                .orElseThrow(() -> new NotFoundBoardException());
-
         ClipBoard clipBoard = clipBoardRepository.findClipBoardById(dto.getClipBoardId())
                 .orElseThrow(() -> new NotFoundClipBoardException());
 
@@ -120,37 +118,6 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         GetClipBoardRes getClipBoardRes = GetClipBoardRes.toDto(clipBoard, comments, profileImgUrl);
         return ApplicationResponse.ok(getClipBoardRes);
     }
-
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public ApplicationResponse<List<GetClipBoardRes>> findAllClipBoards(GetAllClipBoardsReq dto){
-//
-//        userService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
-//
-//        User user = userRepository.findByUserId(dto.getUserId())
-//                .orElseThrow(() -> new NotFoundUserException());
-//
-//        Board board = boardRepository.findBoardById(dto.getBoardId())
-//                .orElseThrow(() -> new NotFoundBoardException());
-//
-//        List<User> blockedUsers = blockRepository.findBlocksByBlockingUserId(dto.getUserId()).stream()
-//                .map(block -> block.getBlockedUser())
-//                .collect(Collectors.toList());
-//
-//        // 클립보드 res안에 해당하는 코멘트 리스트까지 조회 및 포함
-//        // 유저 profileImgUrl 또한 img uuid -> s3 url로 변환
-//        List<GetClipBoardRes> getClipBoardResList = clipBoardRepository.findAllByBoardId(dto.getBoardId()).stream()
-//                .filter(clipBoard -> !blockedUsers.contains(clipBoard.getUser())) // 차단당한 유저의 데이터 제외
-//                .map(clipBoard -> GetClipBoardRes.toDto(clipBoard, commentRepository.findAllCommentsByClipBoardId(clipBoard.getId()).stream()
-//                        .filter(comment -> !blockedUsers.contains(comment.getUser()))
-//                        .map(comment -> CommentRes.toDto(comment))
-//                        .collect(Collectors.toList()),
-//                        awsS3Service.makeUrlOfFilename(clipBoard.getUser().getProfileImg())))
-//                .collect(Collectors.toList());
-//
-//        return ApplicationResponse.ok(getClipBoardResList);
-//    }
 
     @Transactional(readOnly = true)
     @Override

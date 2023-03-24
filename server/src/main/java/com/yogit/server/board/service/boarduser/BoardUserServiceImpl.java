@@ -119,16 +119,13 @@ public class BoardUserServiceImpl implements BoardUserService{
 
         boardUser.changeApplyStatus(); // 참여 승인으로 상태 업데이트
         board.addCurrentMember();// 보드 현재 인원 +1
-        //board.addBoardUser(boardUser); // 보드에 멤버 추가
 
         List<User> participants = board.getBoardUsers().stream()
-                //.filter(bu -> !bu.getUser().equals(board.getHost()))
                 .filter(bu -> bu.getApplyStatus().equals(1)) // 참여 승인된 사람만 조회
                 .map(bu -> bu.getUser())
                 .collect(Collectors.toList());
 
         List<String> participantsImageUUIds = board.getBoardUsers().stream()
-                //.filter(bu -> !bu.getUser().equals(board.getHost()))
                 .filter(bu -> bu.getApplyStatus().equals(1)) // 참여 승인된 사람만 조회
                 .map(bu -> bu.getUser().getProfileImg())
                 .collect(Collectors.toList());

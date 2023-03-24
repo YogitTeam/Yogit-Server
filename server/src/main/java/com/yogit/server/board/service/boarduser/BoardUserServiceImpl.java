@@ -85,7 +85,7 @@ public class BoardUserServiceImpl implements BoardUserService{
 
         // 호스트에게 멤버 참여 APN 푸쉬 알림
         try {
-            if(user.getUserStatus().equals(UserStatus.LOGIN)) apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
+            if(user.getUserStatus().equals(UserStatus.LOGIN) && board.getHost().getDeviceToken() != null) apnService.createBoardUserJoinAPN(new CreateBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -157,7 +157,7 @@ public class BoardUserServiceImpl implements BoardUserService{
 
         // 호스트에게 멤버 참여 취소 APN 푸쉬 알림
         try {
-            if(user.getUserStatus().equals(UserStatus.LOGIN)) apnService.delBoardUserJoinAPN(new DelBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
+            if(user.getUserStatus().equals(UserStatus.LOGIN) && board.getHost().getDeviceToken() != null) apnService.delBoardUserJoinAPN(new DelBoardUserJoinAPNReq(board.getHost().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

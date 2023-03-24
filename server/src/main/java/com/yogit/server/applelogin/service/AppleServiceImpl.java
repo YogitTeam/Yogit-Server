@@ -86,6 +86,8 @@ public class AppleServiceImpl implements AppleService {
             tokenResponse = appleUtils.validateAnExistingRefreshToken(client_secret, refresh_token);
         }
 
+        System.out.println("Id_token : " + tokenResponse.getId_token());
+
         tokenResponse.setUserType(UserType.APPLE.toString());
         tokenResponse.setUserStatus(UserStatus.LOGIN);
 

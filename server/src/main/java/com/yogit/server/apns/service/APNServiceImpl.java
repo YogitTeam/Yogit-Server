@@ -79,6 +79,7 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createBoardUserJoinAPN(CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
+        payloadBuilder.setAlertTitle("");
         payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_JOIN");
         String[] locArgs = new String[2];
@@ -124,6 +125,7 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> delBoardUserJoinAPN(DelBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
+        payloadBuilder.setAlertTitle("");
         payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_WITHDRAW");
         String[] locArgs = new String[2];
@@ -157,6 +159,7 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createClipBoardAPN(CreateClipBoardAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
+        payloadBuilder.setAlertTitle("");
         payloadBuilder.setAlertBody("");
         payloadBuilder.addCustomProperty("title-loc-key", "CLIPBOARD_CHATTING");
         String[] locArgs = new String[2];

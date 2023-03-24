@@ -67,14 +67,12 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new NotFoundUserException());
         // city조회
         // 기존에 존재하는 city인 경우
-        City city = null;
+        City city = new City();
         if(cityRepository.existsByCityName(dto.getCityName())){
             city = cityRepository.findByCityName(dto.getCityName());
         }
         else{ // 기존에 존재하지 않는 city인 경우
-            city = City.builder()
-                    .cityName(dto.getCityName())
-                    .build();
+            city.changeCityName(dto.getCityName());
             cityRepository.save(city);
         }
 
@@ -133,14 +131,12 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new NotFoundUserException());
 
         // 기존에 존재하는 city인 경우
-        City city = null;
+        City city = new City();
         if(cityRepository.existsByCityName(dto.getCityName())){
             city = cityRepository.findByCityName(dto.getCityName());
         }
         else{ // 기존에 존재하지 않는 city인 경우
-            city = City.builder()
-                    .cityName(dto.getCityName())
-                    .build();
+            city.changeCityName(dto.getCityName());
             cityRepository.save(city);
         }
 

@@ -105,15 +105,13 @@ public class UserServiceImpl implements UserService {
         user.addAdditionalProfile(createUserProfileReq.getLatitude(), createUserProfileReq.getLongitude(), createUserProfileReq.getAboutMe(), createUserProfileReq.getJob());
 
         // 기존에 존재하는 city인 경우
+        City city = new City();
         if(cityRepository.existsByCityName(createUserProfileReq.getCityName())){
-            City city = cityRepository.findByCityName(createUserProfileReq.getCityName());
+            city = cityRepository.findByCityName(createUserProfileReq.getCityName());
             city.addUser(user);
         }
         else{ // 기존에 존재하지 않는 city인 경우
-            City city = City.builder()
-                    .user(user)
-                    .cityName(createUserProfileReq.getCityName())
-                    .build();
+            city.changeCityName(createUserProfileReq.getCityName());
             cityRepository.save(city);
             city.addUser(user);
         }

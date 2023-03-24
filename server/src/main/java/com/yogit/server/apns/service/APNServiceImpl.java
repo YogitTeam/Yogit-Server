@@ -79,14 +79,13 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createBoardUserJoinAPN(CreateBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-//        payloadBuilder.setAlertTitle("");
-//        payloadBuilder.setAlertBody("");
-        payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_JOIN");
-        payloadBuilder.addCustomProperty("loc-key", "");
+
         String[] locArgs = new String[2];
         locArgs[0] = dto.getJoinUserName();
         locArgs[1] = dto.getBoardName();
-        payloadBuilder.addCustomProperty("loc-args", locArgs);
+        payloadBuilder.setLocalizedAlertTitle("GATHERING_JOIN_TITLE", new String[1]);
+        payloadBuilder.setLocalizedAlertMessage("GATHERING_JOIN_BODY", locArgs);
+
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.JOINAPPLY.toString());
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
@@ -126,14 +125,13 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> delBoardUserJoinAPN(DelBoardUserJoinAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-//        payloadBuilder.setAlertTitle("");
-//        payloadBuilder.setAlertBody("");
-        payloadBuilder.addCustomProperty("title-loc-key", "GATHERING_WITHDRAW");
-        payloadBuilder.addCustomProperty("loc-key", "");
+
         String[] locArgs = new String[2];
         locArgs[0] = dto.getDelUserName();
         locArgs[1] = dto.getBoardName();
-        payloadBuilder.addCustomProperty("loc-args", locArgs);
+        payloadBuilder.setLocalizedAlertTitle("GATHERING_WITHDRAW_TITLE", new String[1]);
+        payloadBuilder.setLocalizedAlertMessage("GATHERING_WITHDRAW_BODY", locArgs);
+
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.DELAPPLY.toString());
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
@@ -161,13 +159,10 @@ public class APNServiceImpl implements APNService{
     public ApplicationResponse<String> createClipBoardAPN(CreateClipBoardAPNReq dto) throws ExecutionException, InterruptedException {
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
-//        payloadBuilder.setAlertTitle("");
-//        payloadBuilder.setAlertBody("");
 
-        String[] locArgs = new String[2];
-        locArgs[0] = dto.getUserName();
-        locArgs[1] = dto.getBoardName();
-
+        String[] locArgs = new String[]{"",""};
+        locArgs[0] += dto.getUserName();
+        locArgs[1] += dto.getBoardName();
         payloadBuilder.setLocalizedAlertTitle("CLIPBOARD_CHATTING_TITLE", new String[1]);
         payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", locArgs);
 

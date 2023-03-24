@@ -164,7 +164,8 @@ public class APNServiceImpl implements APNService{
 //        locArgs[0] = dto.getUserName();
 //        locArgs[1] = dto.getBoardName();
         payloadBuilder.setLocalizedAlertTitle("CLIPBOARD_CHATTING_TITLE", "");
-        payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName(), dto.getBoardName());
+        //payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName(), dto.getBoardName());
+        payloadBuilder.setLocalizedAlertMessage("CLIPBOARD_CHATTING_BODY", dto.getUserName());
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.CREATE_CLIPBOARD.toString());

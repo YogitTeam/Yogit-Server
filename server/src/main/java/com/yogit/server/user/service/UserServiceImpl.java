@@ -119,6 +119,13 @@ public class UserServiceImpl implements UserService {
 
         // 관심사 등록
         for(String interestName : createUserProfileReq.getInterests()){
+            System.out.println("유저 관심: "+interestName);
+            if(interestName == null) {
+                System.out.println("null값임: " + interestName);
+            }
+            if(interestName.equals("NULL")) {
+                System.out.println("stirng null값임: " + interestName);
+            }
             // 기존에 존재하는 관심사일 경우
             if(interestRepository.existsByName(interestName)){
                 // 관심사 검색

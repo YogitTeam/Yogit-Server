@@ -118,20 +118,30 @@ public class UserServiceImpl implements UserService {
         userProfileRes.setCity(createUserProfileReq.getCityName());
 
         // 관심사 등록
-        for(String interestName : createUserProfileReq.getInterests()){
-            System.out.println("유저 관심: "+interestName);
-            if(interestName == null) {
-                System.out.println("null값임: " + interestName);
-            }
-            if(interestName.equals("NULL")) {
-                System.out.println("stirng null값임: " + interestName);
-            }
-            // 기존에 존재하는 관심사일 경우
-            if(interestRepository.existsByName(interestName)){
-                // 관심사 검색
-                Interest interest = interestRepository.findByName(interestName);
-                // 관계 중복 형성을 막기 위함
-                if(!userInterestRepository.existsByUserIdAndInterestId(createUserProfileReq.getUserId(), interest.getId())) {
+        List<UserInterest> userInterests;
+        if(createUserProfileReq.getInterests().size() != 0){ // 예외: 관심사 빈 배열 처리
+
+            for(String interestName : createUserProfileReq.getInterests()){
+                // 기존에 존재하는 관심사일 경우
+                if(interestRepository.existsByName(interestName)){
+                    // 관심사 검색
+                    Interest interest = interestRepository.findByName(interestName);
+                    // 관계 중복 형성을 막기 위함
+                    if(!userInterestRepository.existsByUserIdAndInterestId(createUserProfileReq.getUserId(), interest.getId())) {
+                        // 관계 주입
+                        UserInterest userInterest = UserInterest.builder()
+                                .user(user)
+                                .interest(interest)
+                                .build();
+                        userInterestRepository.save(userInterest);
+                    }
+                }
+                else{ // 기존에 존재하지 않는 관심사일 경우
+                    // 관심사 생성
+                    Interest interest = Interest.builder()
+                            .name(interestName)
+                            .build();
+                    interestRepository.save(interest);
                     // 관계 주입
                     UserInterest userInterest = UserInterest.builder()
                             .user(user)
@@ -140,23 +150,17 @@ public class UserServiceImpl implements UserService {
                     userInterestRepository.save(userInterest);
                 }
             }
-            else{ // 기존에 존재하지 않는 관심사일 경우
-                // 관심사 생성
-                Interest interest = Interest.builder()
-                        .name(interestName)
-                        .build();
-                interestRepository.save(interest);
-                // 관계 주입
-                UserInterest userInterest = UserInterest.builder()
-                        .user(user)
-                        .interest(interest)
-                        .build();
-                userInterestRepository.save(userInterest);
+        }
+        //관심사 삭제: req에 유저 관심사 빈 배열이면 그 유저의 모든 관심사 삭제.
+        else{
+            userInterests = userInterestRepository.findAllByUserId(createUserProfileReq.getUserId());
+            if(!userInterests.isEmpty()) {
+                userInterestRepository.deleteAllByUserId(createUserProfileReq.getUserId());
             }
         }
 
         // res : 관심사
-        List<UserInterest> userInterests = userInterestRepository.findAllByUserId(createUserProfileReq.getUserId());
+        userInterests = userInterestRepository.findAllByUserId(createUserProfileReq.getUserId());
         if(!userInterests.isEmpty()){
             for(UserInterest ui : userInterests){
                 userProfileRes.addInterest(ui.getInterest().getName());

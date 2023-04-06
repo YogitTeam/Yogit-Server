@@ -66,12 +66,12 @@ public class CreateBoardReq {
 
     @ApiModelProperty(example = "3시에 모여서 경복궁역에서 경복궁으로 출발합니다.")
     @ApiParam(value = "모임 상세설명", required = false)
-    @Size(max = 1000)
+    @Size(max = 3000)
     private String introduction; // 게시글 내용 상세설명
 
     @ApiModelProperty(example = "활발한 사람이 오면 좋습니다.")
     @ApiParam(value = "원하는 사람 설명", required = false)
-    @Size(max = 1000)
+    @Size(max = 3000)
     private String kindOfPerson; // 이런 사람을 원합니다 설명 글.
 
     @ApiModelProperty(example = "5")

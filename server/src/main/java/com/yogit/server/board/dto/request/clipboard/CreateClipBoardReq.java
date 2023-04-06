@@ -28,6 +28,7 @@ public class CreateClipBoardReq {
     @ApiModelProperty(example = "경복궁역 몇 번 출구인가요?")
     @ApiParam(value = "클립보드 상세 내용", required = false)
     @NotBlank
+    @Size(max = 1000)
     private String content;
 
     @ApiModelProperty(example = "reb5085c395164587b84ac583d023011f.0.sryrq.IDLsECw-rsTozfsX0Yz-CA")

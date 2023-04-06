@@ -119,7 +119,12 @@ public class UserServiceImpl implements UserService {
 
         // 관심사 등록
         List<UserInterest> userInterests;
-        if(createUserProfileReq.getInterests().size() != 0){ // 예외: 관심사 빈 배열 처리
+        //기존 관심사 삭제: 기존 유저의 관심사 모두 삭제하고 요청받은 interests배열로 저장.
+        userInterests = userInterestRepository.findAllByUserId(createUserProfileReq.getUserId());
+        if(!userInterests.isEmpty()) {
+            userInterestRepository.deleteAllByUserId(createUserProfileReq.getUserId());
+        }
+        if(createUserProfileReq.getInterests().size() != 0){
 
             for(String interestName : createUserProfileReq.getInterests()){
                 // 기존에 존재하는 관심사일 경우
@@ -149,13 +154,6 @@ public class UserServiceImpl implements UserService {
                             .build();
                     userInterestRepository.save(userInterest);
                 }
-            }
-        }
-        //관심사 삭제: req에 유저 관심사 빈 배열이면 그 유저의 모든 관심사 삭제.
-        else{
-            userInterests = userInterestRepository.findAllByUserId(createUserProfileReq.getUserId());
-            if(!userInterests.isEmpty()) {
-                userInterestRepository.deleteAllByUserId(createUserProfileReq.getUserId());
             }
         }
 

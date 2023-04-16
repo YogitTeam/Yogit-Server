@@ -40,3 +40,4 @@ AuthKey_QLHFNT37VK.p8
 application.properties
 application.yml
 Certificates.p12
+Certificates_prod.p12

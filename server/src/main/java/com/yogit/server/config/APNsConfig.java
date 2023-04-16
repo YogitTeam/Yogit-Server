@@ -24,13 +24,13 @@ class APNsConfig {
                 .build();
     }
 
-//    @Bean
-//    public ApnsClient someAppProdApnsClient() throws IOException {
-//        // 배표용 인증 키 파일
-//        return new ApnsClientBuilder()
-//                .setApnsServer(ApnsClientBuilder.PRODUCTION_APNS_HOST)
-//                .setClientCredentials(new ClassPathResource("some_app_prod_pkcs_12_file.p12").getInputStream(), "some_app_prod_password")
-//                .build();
-//    }
+    @Bean
+    public ApnsClient someAppProdApnsClient(@Value("${APN.PROD.P12.PW}") String PROD_PW, @Value("${APN.PROD.CERTIFICATE.PATH}") String PROD_CERTIFICATE_PATH) throws IOException {
+        // 배표용 인증 키 파일
+        return new ApnsClientBuilder()
+                .setApnsServer(ApnsClientBuilder.PRODUCTION_APNS_HOST)
+                .setClientCredentials(new ClassPathResource(PROD_CERTIFICATE_PATH).getInputStream(), PROD_PW)
+                .build();
+    }
 
 }

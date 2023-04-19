@@ -17,12 +17,16 @@ public class CreateClipBoardAPNReq {
     private String userName;
     private Long boardId;
     private String boardName;
+    private String time;
+    boolean isOpened;
 
     @Builder
-    public CreateClipBoardAPNReq(String destinationDeviceToken, String userName, Long boardId, String boardName) {
+    public CreateClipBoardAPNReq(String destinationDeviceToken, String userName, Long boardId, String boardName, String time) {
         this.destinationDeviceToken = destinationDeviceToken;
         this.userName = userName;
         this.boardId = boardId;
         this.boardName = boardName;
+        this.time = time;
+        this.isOpened = false;
     }
 }

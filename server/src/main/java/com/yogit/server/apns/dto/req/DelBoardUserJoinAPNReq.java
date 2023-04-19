@@ -17,12 +17,16 @@ public class DelBoardUserJoinAPNReq {
     private String delUserName;
     private Long boardId;
     private String boardName;
+    private String time;
+    boolean isOpened;
 
     @Builder
-    public DelBoardUserJoinAPNReq(String destinationDeviceToken, String delUserName, Long boardId, String boardName) {
+    public DelBoardUserJoinAPNReq(String destinationDeviceToken, String delUserName, Long boardId, String boardName, String time) {
         this.destinationDeviceToken = destinationDeviceToken;
         this.delUserName = delUserName;
         this.boardId = boardId;
         this.boardName = boardName;
+        this.time = time;
+        this.isOpened = false;
     }
 }

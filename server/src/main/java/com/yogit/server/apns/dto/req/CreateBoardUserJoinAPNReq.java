@@ -17,16 +17,12 @@ public class CreateBoardUserJoinAPNReq {
     private String joinUserName;
     private Long boardId;
     private String boardName;
-    private String time;
-    boolean isOpened;
 
     @Builder
-    public CreateBoardUserJoinAPNReq(String destinationDeviceToken, String joinUserName, Long boardId, String boardName, String time) {
+    public CreateBoardUserJoinAPNReq(String destinationDeviceToken, String joinUserName, Long boardId, String boardName) {
         this.destinationDeviceToken = destinationDeviceToken;
         this.joinUserName = joinUserName;
         this.boardId = boardId;
         this.boardName = boardName;
-        this.time = time;
-        this.isOpened = false;
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -85,6 +87,8 @@ public class APNServiceImpl implements APNService{
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.JOINAPPLY.toString());
+        payloadBuilder.addCustomProperty("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        payloadBuilder.addCustomProperty("isOpened", false);
 
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());
@@ -112,6 +116,8 @@ public class APNServiceImpl implements APNService{
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.DELAPPLY.toString());
+        payloadBuilder.addCustomProperty("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        payloadBuilder.addCustomProperty("isOpened", false);
 
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());
@@ -139,6 +145,8 @@ public class APNServiceImpl implements APNService{
 
         payloadBuilder.addCustomProperty("boardId", dto.getBoardId());
         payloadBuilder.addCustomProperty("pushType", PushType.CREATE_CLIPBOARD.toString());
+        payloadBuilder.addCustomProperty("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        payloadBuilder.addCustomProperty("isOpened", false);
 
         val payload = payloadBuilder.buildWithDefaultMaximumLength();
         val token = TokenUtil.sanitizeTokenString(dto.getDestinationDeviceToken());

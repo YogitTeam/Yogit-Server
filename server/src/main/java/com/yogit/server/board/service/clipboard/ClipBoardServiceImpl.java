@@ -83,7 +83,7 @@ public class ClipBoardServiceImpl implements ClipBoardService{
         if(boardUsers!=null){
             for(BoardUser bu: boardUsers){
                 try {
-                    if(user.getUserStatus().equals(UserStatus.LOGIN) && !user.equals(bu.getUser()) && bu.getUser().getDeviceToken() != null) apnService.createClipBoardAPN(new CreateClipBoardAPNReq(bu.getUser().getDeviceToken(), user.getName(), board.getId(), board.getTitle(), LocalDateTime.now().toString()));
+                    if(user.getUserStatus().equals(UserStatus.LOGIN) && !user.equals(bu.getUser()) && bu.getUser().getDeviceToken() != null) apnService.createClipBoardAPN(new CreateClipBoardAPNReq(bu.getUser().getDeviceToken(), user.getName(), board.getId(), board.getTitle()));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

@@ -24,6 +24,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from Board b where b.status = 'ACTIVE' and b.category.id = :categoryId")
     Page<Board> findAllBoardsByCategory(Pageable pageable, @Param("categoryId") Long categoryId);
 
+    @Query("select b from Board b where b.status = 'ACTIVE' and b.city.cityName = :cityName")
+    Page<Board> findAllBoardsByCityName(Pageable pageable, @Param("cityName") String cityName);
+
     @Query("select b from Board b where b.status = 'ACTIVE' and b.host.id = :userId")
     Page<Board> findMyClubBoardsByUserId(Pageable pageable, @Param("userId") Long userId);
 

@@ -27,4 +27,6 @@ public interface BoardService {
     ApplicationResponse<GetBoardRes> findBoard(GetBoardReq getBoardReq);
 
     ApplicationResponse<DeleteBoardImageRes> deleteBoardImage(DeleteBoardImageReq deleteBoardImageReq);
+
+    ApplicationResponse<GetAllBoardsByCityRes> findAllBoardsByCityName(GetAllBoardsByCityReq getAllBoardsByCityReq);
 }

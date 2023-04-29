@@ -395,6 +395,50 @@ public class BoardServiceImpl implements BoardService{
         return ApplicationResponse.ok(boardsByCategories);
     }
 
+
+    @Transactional(readOnly = true)
+    @Override
+    public ApplicationResponse<GetAllBoardsByCityRes> findAllBoardsByCityName(GetAllBoardsByCityReq dto){
+
+        tokenService.validateRefreshToken(dto.getUserId(), dto.getRefreshToken());
+
+        int cursor = dto.getCursor();
+
+        User user = userRepository.findByUserId(dto.getUserId())
+                .orElseThrow(() -> new NotFoundUserException());
+
+        List<User> blockedUsers = blockRepository.findBlocksByBlockingUserId(dto.getUserId()).stream()
+                .map(block -> block.getBlockedUser())
+                .collect(Collectors.toList());
+
+        // jpa 다중 정렬 order
+        Sort sort = Sort.by(
+                Sort.Order.desc("id")
+        );
+        PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
+
+        Page<Board> boards = boardRepository.findAllBoardsByCityName(pageRequest, dto.getCityName());
+        //  보드 res에 이미지uuid -> aws s3 url로 변환
+        /*List<GetAllBoardRes> boardsRes = boards.stream()
+                .filter(board -> !blockedUsers.contains(board.getHost())) // 차단당한 유저의 데이터 제외
+                .map(board -> GetAllBoardRes.toDto(board, awsS3Service.makeUrlOfFilename(board.getBoardImagesUUids().get(0)), board.getBoardUsers().stream().map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())))
+                .collect(Collectors.toList());*/
+
+        //  보드 res에 이미지uuid -> aws s3 url로 변환
+        //TODO: 동작 잘 되는지 확인
+        List<GetAllBoardRes> boardsRes = new ArrayList<>();
+        for(Board b:boards){
+            if(!blockedUsers.contains(b.getHost())){
+                // 보드 현재 인원
+                List<BoardUser> participantsOrigin = boardUserRepository.findAllByBoardId(b.getId());
+                b.changeBoardCurrentMember(participantsOrigin.size());
+                boardsRes.add(GetAllBoardRes.toDto(b, awsS3Service.makeUrlOfFilename(b.getBoardImagesUUids().get(0)), b.getBoardUsers().stream().filter(boardUser -> boardUser.getStatus().equals(BaseStatus.ACTIVE)).map(boardUser -> awsS3Service.makeUrlOfFilename(boardUser.getUser().getProfileImg())).collect(Collectors.toList())));
+            }
+        }
+
+        return ApplicationResponse.ok(GetAllBoardsByCityRes.toDto(boardsRes, boards.getTotalPages()));
+    }
+
     @Transactional(readOnly = true)
     @Override
     public ApplicationResponse<GetBoardRes> findBoard(GetBoardReq dto){

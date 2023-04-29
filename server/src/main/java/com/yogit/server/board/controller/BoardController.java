@@ -161,6 +161,22 @@ public class BoardController {
         return boardService.findBoardsByCategories(dto);
     }
 
+
+    /**
+     * 게시글 도시 별(1개) 전체 조회
+     * @author 토마스
+     */
+    @ApiOperation(value = "게시글 도시 별(1개) 전체 조회", notes = "게시글 도시 별(1개) 전체 조회")
+    @ApiResponses({
+            @ApiResponse(code= 201, message = "요청에 성공하였습니다."),
+            @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
+            @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
+    })
+    @PostMapping("/get/city")
+    public ApplicationResponse<GetAllBoardsByCityRes> findAllBoardsByCityName(@RequestBody @Validated GetAllBoardsByCityReq getAllBoardsByCityReq){
+        return boardService.findAllBoardsByCityName(getAllBoardsByCityReq);
+    }
+
     /**
      * 게시글 My Club 조회: 자신이 생성한 보드들 조회
      * @author 토마스

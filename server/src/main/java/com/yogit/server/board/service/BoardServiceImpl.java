@@ -417,7 +417,7 @@ public class BoardServiceImpl implements BoardService{
         );
         PageRequest pageRequest = PageRequest.of(cursor, PAGING_SIZE, sort);
 
-        Page<Board> boards = boardRepository.findAllBoardsByCityName(pageRequest, dto.getCityName());
+        Page<Board> boards = boardRepository.findAllBoardsByCityName(pageRequest, dto.getCategoryId(), dto.getCityName());
         //  보드 res에 이미지uuid -> aws s3 url로 변환
         /*List<GetAllBoardRes> boardsRes = boards.stream()
                 .filter(board -> !blockedUsers.contains(board.getHost())) // 차단당한 유저의 데이터 제외

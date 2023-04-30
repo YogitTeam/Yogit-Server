@@ -172,7 +172,7 @@ public class BoardController {
             @ApiResponse(code= 404, message = "존재하지 않는 유저입니다."),
             @ApiResponse(code = 4000 , message =  "서버 오류입니다.")
     })
-    @PostMapping("/get/city")
+    @PostMapping("/get/category/city")
     public ApplicationResponse<GetAllBoardsByCityRes> findAllBoardsByCityName(@RequestBody @Validated GetAllBoardsByCityReq getAllBoardsByCityReq){
         return boardService.findAllBoardsByCityName(getAllBoardsByCityReq);
     }
